@@ -1,0 +1,102 @@
+@options
+@packages
+@argfile
+-classpath
+'C:/Users/mcder/.m2/repository/se/michaelthelin/spotify/spotify-web-api-java/8.0.0/spotify-web-api-java-8.0.0.jar;C:/Users/mcder/.m2/repository/com/fasterxml/jackson/core/jackson-databind/2.14.2/jackson-databind-2.14.2.jar;C:/Users/mcder/.m2/repository/com/fasterxml/jackson/core/jackson-annotations/2.14.2/jackson-annotations-2.14.2.jar;C:/Users/mcder/.m2/repository/com/fasterxml/jackson/core/jackson-core/2.14.2/jackson-core-2.14.2.jar;C:/Users/mcder/.m2/repository/com/google/code/gson/gson/2.10.1/gson-2.10.1.jar;C:/Users/mcder/.m2/repository/com/neovisionaries/nv-i18n/1.29/nv-i18n-1.29.jar;C:/Users/mcder/.m2/repository/org/apache/httpcomponents/client5/httpclient5-cache/5.2.1/httpclient5-cache-5.2.1.jar;C:/Users/mcder/.m2/repository/org/apache/httpcomponents/client5/httpclient5/5.2.1/httpclient5-5.2.1.jar;C:/Users/mcder/.m2/repository/org/apache/httpcomponents/core5/httpcore5/5.2/httpcore5-5.2.jar;C:/Users/mcder/.m2/repository/org/apache/httpcomponents/core5/httpcore5-h2/5.2/httpcore5-h2-5.2.jar;C:/Users/mcder/.m2/repository/org/slf4j/slf4j-api/2.0.6/slf4j-api-2.0.6.jar'
+-encoding
+'UTF-8'
+-protected
+-source
+'17'
+-sourcepath
+'D:/JetBrains/IdeaProjects/TrueShuffle/src/main/java'
+-author
+-bottom
+'Copyright &#169; 2024. All rights reserved.'
+-charset
+'UTF-8'
+-d
+'D:/JetBrains/IdeaProjects/TrueShuffle/target/apidocs'
+-docencoding
+'UTF-8'
+-Xdoclint:all,-missing
+-doctitle
+'TrueShuffle 1.0 API'
+-use
+-version
+-windowtitle
+'TrueShuffle 1.0 API'
+trueshuffle.adhoc
+trueshuffle.exceptions
+trueshuffle.jobs
+trueshuffle.model
+trueshuffle.paging
+trueshuffle.requests.exceptions
+trueshuffle.requests
+trueshuffle
+trueshuffle.utility
+'D:/JetBrains/IdeaProjects/TrueShuffle/src/main/java/trueshuffle/adhoc/ApiDataSource.java'
+'D:/JetBrains/IdeaProjects/TrueShuffle/src/main/java/trueshuffle/adhoc/DataSource.java'
+'D:/JetBrains/IdeaProjects/TrueShuffle/src/main/java/trueshuffle/adhoc/LazyExpiringApiData.java'
+'D:/JetBrains/IdeaProjects/TrueShuffle/src/main/java/trueshuffle/adhoc/LazyExpiringData.java'
+'D:/JetBrains/IdeaProjects/TrueShuffle/src/main/java/trueshuffle/exceptions/TrueShuffleAuthorisationException.java'
+'D:/JetBrains/IdeaProjects/TrueShuffle/src/main/java/trueshuffle/exceptions/TrueShuffleInitialisationException.java'
+'D:/JetBrains/IdeaProjects/TrueShuffle/src/main/java/trueshuffle/exceptions/UserNotFoundException.java'
+'D:/JetBrains/IdeaProjects/TrueShuffle/src/main/java/trueshuffle/jobs/EJobStatus.java'
+'D:/JetBrains/IdeaProjects/TrueShuffle/src/main/java/trueshuffle/jobs/JobStatus.java'
+'D:/JetBrains/IdeaProjects/TrueShuffle/src/main/java/trueshuffle/jobs/ShuffleJob.java'
+'D:/JetBrains/IdeaProjects/TrueShuffle/src/main/java/trueshuffle/jobs/ShuffleJobPlaylistStatus.java'
+'D:/JetBrains/IdeaProjects/TrueShuffle/src/main/java/trueshuffle/jobs/ShuffleJobStatus.java'
+'D:/JetBrains/IdeaProjects/TrueShuffle/src/main/java/trueshuffle/jobs/ShuffleLikedJob.java'
+'D:/JetBrains/IdeaProjects/TrueShuffle/src/main/java/trueshuffle/jobs/ShufflePlaylistJob.java'
+'D:/JetBrains/IdeaProjects/TrueShuffle/src/main/java/trueshuffle/model/ShuffleApi.java'
+'D:/JetBrains/IdeaProjects/TrueShuffle/src/main/java/trueshuffle/model/ShufflePlaylist.java'
+'D:/JetBrains/IdeaProjects/TrueShuffle/src/main/java/trueshuffle/model/UserLibrary.java'
+'D:/JetBrains/IdeaProjects/TrueShuffle/src/main/java/trueshuffle/paging/PageAggregator.java'
+'D:/JetBrains/IdeaProjects/TrueShuffle/src/main/java/trueshuffle/paging/SpotifyFuturePage.java'
+'D:/JetBrains/IdeaProjects/TrueShuffle/src/main/java/trueshuffle/paging/SpotifyPage.java'
+'D:/JetBrains/IdeaProjects/TrueShuffle/src/main/java/trueshuffle/paging/SpotifyPageConsumer.java'
+'D:/JetBrains/IdeaProjects/TrueShuffle/src/main/java/trueshuffle/requests/exceptions/FatalRequestResponse.java'
+'D:/JetBrains/IdeaProjects/TrueShuffle/src/main/java/trueshuffle/requests/exceptions/RefreshTokenException.java'
+'D:/JetBrains/IdeaProjects/TrueShuffle/src/main/java/trueshuffle/requests/exceptions/RetryShortlyException.java'
+'D:/JetBrains/IdeaProjects/TrueShuffle/src/main/java/trueshuffle/requests/exceptions/SlowDownException.java'
+'D:/JetBrains/IdeaProjects/TrueShuffle/src/main/java/trueshuffle/requests/exceptions/TrueShuffleRequestException.java'
+'D:/JetBrains/IdeaProjects/TrueShuffle/src/main/java/trueshuffle/requests/RequestHandler.java'
+'D:/JetBrains/IdeaProjects/TrueShuffle/src/main/java/trueshuffle/requests/SynchronizedRequestHandler.java'
+'D:/JetBrains/IdeaProjects/TrueShuffle/src/main/java/trueshuffle/requests/TokenRefresher.java'
+'D:/JetBrains/IdeaProjects/TrueShuffle/src/main/java/trueshuffle/TrueShuffleClient.java'
+'D:/JetBrains/IdeaProjects/TrueShuffle/src/main/java/trueshuffle/TrueShuffleUser.java'
+'D:/JetBrains/IdeaProjects/TrueShuffle/src/main/java/trueshuffle/utility/ItemCounter.java'
+'D:/JetBrains/IdeaProjects/TrueShuffle/src/main/java/trueshuffle/utility/ShuffleAlgorithms.java'
+'D:/JetBrains/IdeaProjects/TrueShuffle/src/main/java/trueshuffle/utility/ShuffleUtil.java'
+C:\Users\mcder\.m2\repository\se\michaelthelin\spotify\spotify-web-api-java\8.0.0\spotify-web-api-java-8.0.0.jar = 1688581201104
+C:\Users\mcder\.m2\repository\com\fasterxml\jackson\core\jackson-databind\2.14.2\jackson-databind-2.14.2.jar = 1717241906575
+C:\Users\mcder\.m2\repository\com\fasterxml\jackson\core\jackson-annotations\2.14.2\jackson-annotations-2.14.2.jar = 1717241906325
+C:\Users\mcder\.m2\repository\com\fasterxml\jackson\core\jackson-core\2.14.2\jackson-core-2.14.2.jar = 1717241906437
+C:\Users\mcder\.m2\repository\com\google\code\gson\gson\2.10.1\gson-2.10.1.jar = 1717241906404
+C:\Users\mcder\.m2\repository\com\neovisionaries\nv-i18n\1.29\nv-i18n-1.29.jar = 1688581201026
+C:\Users\mcder\.m2\repository\org\apache\httpcomponents\client5\httpclient5-cache\5.2.1\httpclient5-cache-5.2.1.jar = 1717241906404
+C:\Users\mcder\.m2\repository\org\apache\httpcomponents\client5\httpclient5\5.2.1\httpclient5-5.2.1.jar = 1717241906529
+C:\Users\mcder\.m2\repository\org\apache\httpcomponents\core5\httpcore5\5.2\httpcore5-5.2.jar = 1717241906591
+C:\Users\mcder\.m2\repository\org\apache\httpcomponents\core5\httpcore5-h2\5.2\httpcore5-h2-5.2.jar = 1717241906575
+C:\Users\mcder\.m2\repository\org\slf4j\slf4j-api\2.0.6\slf4j-api-2.0.6.jar = 1717241906635
+D:\JetBrains\IdeaProjects\TrueShuffle\src\main\java = 1717241674905
+D:\JetBrains\IdeaProjects\TrueShuffle\target\apidocs\allclasses-index.html = 1718547507485
+D:\JetBrains\IdeaProjects\TrueShuffle\target\apidocs\allpackages-index.html = 1718547507485
+D:\JetBrains\IdeaProjects\TrueShuffle\target\apidocs\constant-values.html = 1718547507235
+D:\JetBrains\IdeaProjects\TrueShuffle\target\apidocs\element-list = 1718547507141
+D:\JetBrains\IdeaProjects\TrueShuffle\target\apidocs\help-doc.html = 1718547507532
+D:\JetBrains\IdeaProjects\TrueShuffle\target\apidocs\index-all.html = 1718547507516
+D:\JetBrains\IdeaProjects\TrueShuffle\target\apidocs\index.html = 1718547507438
+D:\JetBrains\IdeaProjects\TrueShuffle\target\apidocs\jquery-ui.overrides.css = 1718547507563
+D:\JetBrains\IdeaProjects\TrueShuffle\target\apidocs\member-search-index.js = 1718547507485
+D:\JetBrains\IdeaProjects\TrueShuffle\target\apidocs\module-search-index.js = 1718547507485
+D:\JetBrains\IdeaProjects\TrueShuffle\target\apidocs\overview-summary.html = 1718547507516
+D:\JetBrains\IdeaProjects\TrueShuffle\target\apidocs\overview-tree.html = 1718547507438
+D:\JetBrains\IdeaProjects\TrueShuffle\target\apidocs\package-search-index.js = 1718547507485
+D:\JetBrains\IdeaProjects\TrueShuffle\target\apidocs\script.js = 1718547507532
+D:\JetBrains\IdeaProjects\TrueShuffle\target\apidocs\search.js = 1718547507532
+D:\JetBrains\IdeaProjects\TrueShuffle\target\apidocs\serialized-form.html = 1718547507251
+D:\JetBrains\IdeaProjects\TrueShuffle\target\apidocs\stylesheet.css = 1718547507532
+D:\JetBrains\IdeaProjects\TrueShuffle\target\apidocs\tag-search-index.js = 1718547507485
+D:\JetBrains\IdeaProjects\TrueShuffle\target\apidocs\type-search-index.js = 1718547507485

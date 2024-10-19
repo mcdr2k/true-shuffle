@@ -1,0 +1,9 @@
+trueshuffle
+trueshuffle.adhoc
+trueshuffle.exceptions
+trueshuffle.jobs
+trueshuffle.model
+trueshuffle.paging
+trueshuffle.requests
+trueshuffle.requests.exceptions
+trueshuffle.utility
