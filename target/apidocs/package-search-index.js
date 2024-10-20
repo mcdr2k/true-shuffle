@@ -1,1 +1,0 @@
-packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"trueshuffle"},{"l":"trueshuffle.adhoc"},{"l":"trueshuffle.exceptions"},{"l":"trueshuffle.jobs"},{"l":"trueshuffle.model"},{"l":"trueshuffle.paging"},{"l":"trueshuffle.requests"},{"l":"trueshuffle.requests.exceptions"},{"l":"trueshuffle.utility"}];updateSearchResults();
