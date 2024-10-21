@@ -1,5 +1,6 @@
 package nl.martderoos.trueshuffle.jobs;
 
+import nl.martderoos.trueshuffle.TrueShuffleUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import nl.martderoos.trueshuffle.model.ShuffleApi;
@@ -15,10 +16,10 @@ public abstract class ShuffleJob {
     private static final Logger LOGGER = LoggerFactory.getLogger(ShuffleJob.class);
     public static final String TRUE_SHUFFLE_SUFFIX = " - TrueShuffle";
     public static final String LIKED_SONGS_TRUE_SHUFFLE = "Liked Songs" + TRUE_SHUFFLE_SUFFIX;
-    private final ShuffleApi api;
+    private final TrueShuffleUser user;
 
-    ShuffleJob(ShuffleApi api) {
-        this.api = Objects.requireNonNull(api);
+    ShuffleJob(TrueShuffleUser user) {
+        this.user = Objects.requireNonNull(user);
     }
 
     /**
@@ -32,7 +33,7 @@ public abstract class ShuffleJob {
         return status;
     }
 
-    private final void execute(ShuffleJobStatus status) {
+    private void execute(ShuffleJobStatus status) {
         status.getJobStatus().setStatus(EJobStatus.EXECUTING);
         try {
             internalExecute(status);
@@ -81,11 +82,11 @@ public abstract class ShuffleJob {
         return true;
     }
 
-    protected final ShuffleApi getApi() {
-        return api;
+    protected final TrueShuffleUser getUser() {
+        return user;
     }
 
     public final String getUserId() {
-        return api.getUserId();
+        return user.getUserId();
     }
 }

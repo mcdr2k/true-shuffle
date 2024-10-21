@@ -30,7 +30,6 @@ public class RequestHandler {
         this.refresher = refresher;
     }
 
-    @SuppressWarnings("TryWithIdenticalCatches")
     public <T> T handleRequest(IRequest<T> request) throws FatalRequestResponse {
         try {
             return request.execute();

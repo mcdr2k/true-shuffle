@@ -4,209 +4,18 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f4c9cad5-be35-462f-aaff-ecb9e1d8ea8f" name="Changes" comment="Add target to gitignore">
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_core_jackson_annotations_2_14_2.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_core_jackson_core_2_14_2.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_core_jackson_databind_2_14_2.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_google_code_gson_gson_2_10_1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_neovisionaries_nv_i18n_1_29.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_httpcomponents_client5_httpclient5_5_2_1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_httpcomponents_client5_httpclient5_cache_5_2_1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_httpcomponents_core5_httpcore5_5_2.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_httpcomponents_core5_httpcore5_h2_5_2.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_slf4j_slf4j_api_2_0_6.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__se_michaelthelin_spotify_spotify_web_api_java_8_0_0.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/trueshuffle/TrueShuffleClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/TrueShuffleClient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/trueshuffle/TrueShuffleUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/TrueShuffleUser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/trueshuffle/adhoc/ApiDataSource.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/adhoc/ApiDataSource.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/trueshuffle/adhoc/DataSource.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/adhoc/DataSource.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/trueshuffle/adhoc/LazyExpiringApiData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/adhoc/LazyExpiringApiData.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/trueshuffle/adhoc/LazyExpiringData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/adhoc/LazyExpiringData.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/trueshuffle/exceptions/TrueShuffleAuthorisationException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/exceptions/TrueShuffleAuthorisationException.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/trueshuffle/exceptions/TrueShuffleInitialisationException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/exceptions/TrueShuffleInitialisationException.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/trueshuffle/exceptions/UserNotFoundException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/exceptions/UserNotFoundException.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/trueshuffle/jobs/EJobStatus.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/jobs/EJobStatus.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/trueshuffle/jobs/JobStatus.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/jobs/JobStatus.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/trueshuffle/jobs/ShuffleJob.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/jobs/ShuffleJob.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/trueshuffle/jobs/ShuffleJobPlaylistStatus.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/jobs/ShuffleJobPlaylistStatus.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/trueshuffle/jobs/ShuffleJobStatus.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/jobs/ShuffleJobStatus.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/trueshuffle/jobs/ShuffleLikedJob.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/jobs/ShuffleLikedJob.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/trueshuffle/jobs/ShufflePlaylistJob.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/jobs/ShufflePlaylistJob.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/trueshuffle/model/ShuffleApi.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/model/ShuffleApi.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/trueshuffle/model/ShufflePlaylist.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/model/ShufflePlaylist.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/trueshuffle/model/UserLibrary.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/model/UserLibrary.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/trueshuffle/paging/PageAggregator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/paging/PageAggregator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/trueshuffle/paging/SpotifyFuturePage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/paging/SpotifyFuturePage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/trueshuffle/paging/SpotifyPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/paging/SpotifyPage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/trueshuffle/paging/SpotifyPageConsumer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/paging/SpotifyPageConsumer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/trueshuffle/requests/RequestHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/requests/RequestHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/trueshuffle/requests/SynchronizedRequestHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/requests/SynchronizedRequestHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/trueshuffle/requests/TokenRefresher.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/requests/TokenRefresher.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/trueshuffle/requests/exceptions/FatalRequestResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/requests/exceptions/FatalRequestResponse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/trueshuffle/requests/exceptions/RefreshTokenException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/requests/exceptions/RefreshTokenException.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/trueshuffle/requests/exceptions/RetryShortlyException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/requests/exceptions/RetryShortlyException.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/trueshuffle/requests/exceptions/SlowDownException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/requests/exceptions/SlowDownException.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/trueshuffle/requests/exceptions/TrueShuffleRequestException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/requests/exceptions/TrueShuffleRequestException.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/trueshuffle/utility/ItemCounter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/utility/ItemCounter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/trueshuffle/utility/ShuffleAlgorithms.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/utility/ShuffleAlgorithms.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/trueshuffle/utility/ShuffleUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/utility/ShuffleUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/TrueShuffle-1.0-javadoc.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/TrueShuffle-1.0-javadoc.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/TrueShuffle-1.0.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/TrueShuffle-1.0.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/allclasses-index.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/allclasses-index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/allpackages-index.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/allpackages-index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/constant-values.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/constant-values.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/help-doc.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/help-doc.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/index-all.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/index-all.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/jquery-ui.overrides.css" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/jquery-ui.overrides.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/legal/jquery.md" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/legal/jquery.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/legal/jqueryUI.md" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/legal/jqueryUI.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/overview-summary.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/overview-summary.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/overview-tree.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/overview-tree.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/script-dir/jquery-ui.min.css" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/script-dir/jquery-ui.min.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/script-dir/jquery-ui.min.js" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/script-dir/jquery-ui.min.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/script.js" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/script.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/search.js" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/search.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/serialized-form.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/serialized-form.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/stylesheet.css" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/stylesheet.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/TrueShuffleClient.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/TrueShuffleClient.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/TrueShuffleUser.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/TrueShuffleUser.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/adhoc/ApiDataSource.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/adhoc/ApiDataSource.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/adhoc/DataSource.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/adhoc/DataSource.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/adhoc/LazyExpiringApiData.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/adhoc/LazyExpiringApiData.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/adhoc/LazyExpiringData.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/adhoc/LazyExpiringData.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/adhoc/class-use/ApiDataSource.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/adhoc/class-use/ApiDataSource.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/adhoc/class-use/DataSource.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/adhoc/class-use/DataSource.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/adhoc/class-use/LazyExpiringApiData.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/adhoc/class-use/LazyExpiringApiData.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/adhoc/class-use/LazyExpiringData.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/adhoc/class-use/LazyExpiringData.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/adhoc/package-summary.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/adhoc/package-summary.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/adhoc/package-tree.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/adhoc/package-tree.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/adhoc/package-use.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/adhoc/package-use.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/class-use/TrueShuffleClient.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/class-use/TrueShuffleClient.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/class-use/TrueShuffleUser.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/class-use/TrueShuffleUser.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/exceptions/TrueShuffleAuthorisationException.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/exceptions/TrueShuffleAuthorisationException.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/exceptions/TrueShuffleInitialisationException.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/exceptions/TrueShuffleInitialisationException.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/exceptions/UserNotFoundException.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/exceptions/UserNotFoundException.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/exceptions/class-use/TrueShuffleAuthorisationException.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/exceptions/class-use/TrueShuffleAuthorisationException.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/exceptions/class-use/TrueShuffleInitialisationException.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/exceptions/class-use/TrueShuffleInitialisationException.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/exceptions/class-use/UserNotFoundException.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/exceptions/class-use/UserNotFoundException.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/exceptions/package-summary.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/exceptions/package-summary.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/exceptions/package-tree.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/exceptions/package-tree.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/exceptions/package-use.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/exceptions/package-use.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/jobs/EJobStatus.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/jobs/EJobStatus.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/jobs/JobStatus.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/jobs/JobStatus.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/jobs/ShuffleJob.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/jobs/ShuffleJob.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/jobs/ShuffleJobPlaylistStatus.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/jobs/ShuffleJobPlaylistStatus.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/jobs/ShuffleJobStatus.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/jobs/ShuffleJobStatus.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/jobs/ShuffleLikedJob.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/jobs/ShuffleLikedJob.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/jobs/ShufflePlaylistJob.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/jobs/ShufflePlaylistJob.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/jobs/class-use/EJobStatus.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/jobs/class-use/EJobStatus.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/jobs/class-use/JobStatus.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/jobs/class-use/JobStatus.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/jobs/class-use/ShuffleJob.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/jobs/class-use/ShuffleJob.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/jobs/class-use/ShuffleJobPlaylistStatus.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/jobs/class-use/ShuffleJobPlaylistStatus.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/jobs/class-use/ShuffleJobStatus.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/jobs/class-use/ShuffleJobStatus.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/jobs/class-use/ShuffleLikedJob.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/jobs/class-use/ShuffleLikedJob.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/jobs/class-use/ShufflePlaylistJob.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/jobs/class-use/ShufflePlaylistJob.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/jobs/package-summary.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/jobs/package-summary.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/jobs/package-tree.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/jobs/package-tree.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/jobs/package-use.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/jobs/package-use.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/model/ShuffleApi.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/model/ShuffleApi.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/model/ShufflePlaylist.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/model/ShufflePlaylist.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/model/UserLibrary.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/model/UserLibrary.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/model/class-use/ShuffleApi.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/model/class-use/ShuffleApi.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/model/class-use/ShufflePlaylist.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/model/class-use/ShufflePlaylist.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/model/class-use/UserLibrary.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/model/class-use/UserLibrary.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/model/package-summary.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/model/package-summary.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/model/package-tree.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/model/package-tree.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/model/package-use.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/model/package-use.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/package-summary.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/package-summary.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/package-tree.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/package-tree.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/package-use.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/package-use.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/paging/PageAggregator.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/paging/PageAggregator.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/paging/SpotifyFuturePage.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/paging/SpotifyFuturePage.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/paging/SpotifyPage.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/paging/SpotifyPage.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/paging/SpotifyPageConsumer.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/paging/SpotifyPageConsumer.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/paging/class-use/PageAggregator.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/paging/class-use/PageAggregator.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/paging/class-use/SpotifyFuturePage.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/paging/class-use/SpotifyFuturePage.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/paging/class-use/SpotifyPage.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/paging/class-use/SpotifyPage.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/paging/class-use/SpotifyPageConsumer.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/paging/class-use/SpotifyPageConsumer.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/paging/package-summary.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/paging/package-summary.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/paging/package-tree.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/paging/package-tree.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/paging/package-use.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/paging/package-use.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/requests/RequestHandler.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/requests/RequestHandler.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/requests/SynchronizedRequestHandler.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/requests/SynchronizedRequestHandler.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/requests/TokenRefresher.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/requests/TokenRefresher.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/requests/class-use/RequestHandler.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/requests/class-use/RequestHandler.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/requests/class-use/SynchronizedRequestHandler.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/requests/class-use/SynchronizedRequestHandler.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/requests/class-use/TokenRefresher.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/requests/class-use/TokenRefresher.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/requests/exceptions/FatalRequestResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/requests/exceptions/FatalRequestResponse.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/requests/exceptions/RefreshTokenException.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/requests/exceptions/RefreshTokenException.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/requests/exceptions/RetryShortlyException.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/requests/exceptions/RetryShortlyException.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/requests/exceptions/SlowDownException.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/requests/exceptions/SlowDownException.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/requests/exceptions/TrueShuffleRequestException.Action.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/requests/exceptions/TrueShuffleRequestException.Action.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/requests/exceptions/TrueShuffleRequestException.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/requests/exceptions/TrueShuffleRequestException.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/requests/exceptions/class-use/FatalRequestResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/requests/exceptions/class-use/FatalRequestResponse.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/requests/exceptions/class-use/RefreshTokenException.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/requests/exceptions/class-use/RefreshTokenException.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/requests/exceptions/class-use/RetryShortlyException.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/requests/exceptions/class-use/RetryShortlyException.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/requests/exceptions/class-use/SlowDownException.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/requests/exceptions/class-use/SlowDownException.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/requests/exceptions/class-use/TrueShuffleRequestException.Action.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/requests/exceptions/class-use/TrueShuffleRequestException.Action.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/requests/exceptions/class-use/TrueShuffleRequestException.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/requests/exceptions/class-use/TrueShuffleRequestException.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/requests/exceptions/package-summary.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/requests/exceptions/package-summary.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/requests/exceptions/package-tree.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/requests/exceptions/package-tree.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/requests/exceptions/package-use.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/requests/exceptions/package-use.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/requests/package-summary.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/requests/package-summary.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/requests/package-tree.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/requests/package-tree.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/requests/package-use.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/requests/package-use.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/utility/ItemCounter.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/utility/ItemCounter.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/utility/ShuffleUtil.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/utility/ShuffleUtil.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/utility/class-use/ItemCounter.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/utility/class-use/ItemCounter.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/utility/class-use/ShuffleUtil.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/utility/class-use/ShuffleUtil.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/utility/package-summary.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/utility/package-summary.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/utility/package-tree.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/utility/package-tree.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/apidocs/trueshuffle/utility/package-use.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/apidocs/trueshuffle/utility/package-use.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/trueshuffle/TrueShuffleClient.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/trueshuffle/TrueShuffleUser.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/trueshuffle/adhoc/ApiDataSource.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/trueshuffle/adhoc/DataSource.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/trueshuffle/adhoc/LazyExpiringApiData.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/trueshuffle/adhoc/LazyExpiringData.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/trueshuffle/exceptions/TrueShuffleAuthorisationException.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/trueshuffle/exceptions/TrueShuffleInitialisationException.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/trueshuffle/exceptions/UserNotFoundException.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/trueshuffle/jobs/EJobStatus.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/trueshuffle/jobs/JobStatus.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/trueshuffle/jobs/ShuffleJob.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/trueshuffle/jobs/ShuffleJobPlaylistStatus.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/trueshuffle/jobs/ShuffleJobStatus.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/trueshuffle/jobs/ShuffleLikedJob.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/trueshuffle/jobs/ShufflePlaylistJob.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/trueshuffle/model/ShuffleApi$TrackIterationPerformer.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/trueshuffle/model/ShuffleApi.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/trueshuffle/model/ShufflePlaylist$LazyPlaylistData.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/trueshuffle/model/ShufflePlaylist.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/trueshuffle/model/UserLibrary$ShufflePlaylistIndex.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/trueshuffle/model/UserLibrary.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/trueshuffle/paging/PageAggregator.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/trueshuffle/paging/SpotifyFuturePage.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/trueshuffle/paging/SpotifyPage.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/trueshuffle/paging/SpotifyPageConsumer.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/trueshuffle/requests/RequestHandler.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/trueshuffle/requests/SynchronizedRequestHandler.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/trueshuffle/requests/TokenRefresher.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/trueshuffle/requests/exceptions/FatalRequestResponse.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/trueshuffle/requests/exceptions/RefreshTokenException.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/trueshuffle/requests/exceptions/RetryShortlyException.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/trueshuffle/requests/exceptions/SlowDownException.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/trueshuffle/requests/exceptions/TrueShuffleRequestException$Action.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/trueshuffle/requests/exceptions/TrueShuffleRequestException.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/trueshuffle/utility/ItemCounter.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/trueshuffle/utility/ShuffleAlgorithms.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/trueshuffle/utility/ShuffleUtil.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/javadoc-bundle-options/javadoc-options-javadoc-resources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/target/javadoc-bundle-options/javadoc-options-javadoc-resources.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/maven-javadoc-plugin-stale-data.txt" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-javadoc-plugin-stale-data.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
+    <list default="true" id="f4c9cad5-be35-462f-aaff-ecb9e1d8ea8f" name="Changes" comment="Move all to package nl.martderoos">
+      <change afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/utility/PlaylistUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/TrueShuffleUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/TrueShuffleUser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/adhoc/LazyExpiringData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/adhoc/LazyExpiringData.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/jobs/ShuffleJob.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/jobs/ShuffleJob.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/jobs/ShuffleLikedJob.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/jobs/ShuffleLikedJob.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/jobs/ShufflePlaylistJob.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/jobs/ShufflePlaylistJob.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/model/ShuffleApi.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/model/ShuffleApi.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/model/ShufflePlaylist.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/model/ShufflePlaylist.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/model/UserLibrary.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/model/UserLibrary.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/requests/RequestHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/requests/RequestHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/utility/ShuffleAlgorithms.java" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -227,7 +36,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="master2" />
+        <entry key="$PROJECT_DIR$" value="main" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -252,6 +61,9 @@
     &quot;accountId&quot;: &quot;a4a5bddd-1e0b-44a5-9f13-c759997d273d&quot;
   }
 }</component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="ProjectErrors" />
+  </component>
   <component name="ProjectCodeStyleSettingsMigration">
     <option name="version" value="2" />
   </component>
@@ -264,21 +76,24 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Maven.TrueShuffle [compile].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.TrueShuffle [install].executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Maven.TrueShuffle [compile].executor": "Run",
+    "Maven.TrueShuffle [install].executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "feature/cleanup",
+    "kotlin-language-version-configured": "true",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="D:\JetBrains\IdeaProjects\TrueShuffle\src\main\java\trueshuffle" />
@@ -318,7 +133,7 @@
       <workItem from="1729345130235" duration="934000" />
       <workItem from="1729360975577" duration="69000" />
       <workItem from="1729444892876" duration="938000" />
-      <workItem from="1729446534708" duration="1808000" />
+      <workItem from="1729446534708" duration="11079000" />
     </task>
     <task id="LOCAL-00001" summary="Init">
       <created>1729345895625</created>
@@ -335,7 +150,15 @@
       <option name="project" value="LOCAL" />
       <updated>1729361018089</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Move all to package nl.martderoos">
+      <option name="closed" value="true" />
+      <created>1729448540595</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1729448540595</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -355,6 +178,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Init" />
     <MESSAGE value="Add target to gitignore" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add target to gitignore" />
+    <MESSAGE value="Move all to package nl.martderoos" />
+    <option name="LAST_COMMIT_MESSAGE" value="Move all to package nl.martderoos" />
   </component>
 </project>

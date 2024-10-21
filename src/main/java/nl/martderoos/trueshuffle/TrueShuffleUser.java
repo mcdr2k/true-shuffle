@@ -22,22 +22,28 @@ import java.util.concurrent.Executor;
  * when using {@link UserLibrary} or {@link ShufflePlaylist} directly.
  */
 public class TrueShuffleUser {
+    private final ShuffleApi api;
+    private final UserLibrary userLibrary;
+
     private final String userId;
     private final String birthdate;
     private final CountryCode country;
     private final String displayName;
     private final String email;
     private final Image[] images;
-    private final ShuffleApi api;
 
     public TrueShuffleUser(User user, ShuffleApi api) {
+        this.api = Objects.requireNonNull(api);
+
+        Objects.requireNonNull(user);
         this.userId = user.getId();
         this.birthdate = user.getBirthdate();
         this.country = user.getCountry();
         this.displayName = user.getDisplayName();
         this.email = user.getEmail();
         this.images = user.getImages();
-        this.api = api;
+
+        this.userLibrary = new UserLibrary(api);
     }
 
     /**
@@ -49,7 +55,7 @@ public class TrueShuffleUser {
      * @return The status of the shuffle job, which is updated continuously until it has finished.
      */
     public ShuffleJobStatus shuffleLikedSongs(Executor executor) {
-        var job = new ShuffleLikedJob(api);
+        var job = new ShuffleLikedJob(this);
         return job.execute(Objects.requireNonNull(executor));
     }
 
@@ -63,12 +69,12 @@ public class TrueShuffleUser {
      * @return The status of the shuffle job, which is updated continuously until it has finished.
      */
     public ShuffleJobStatus shufflePlaylist(String playlistId, Executor executor) {
-        var job = new ShufflePlaylistJob(api, playlistId);
+        var job = new ShufflePlaylistJob(this, playlistId);
         return job.execute(Objects.requireNonNull(executor));
     }
 
     public UserLibrary getUserLibrary() {
-        return api.getUserLibrary();
+        return userLibrary;
     }
 
     public String getUserId() {
@@ -93,6 +99,10 @@ public class TrueShuffleUser {
 
     public Image[] getImages() {
         return images;
+    }
+
+    public ShuffleApi getApi() {
+        return api;
     }
 
     @Transient

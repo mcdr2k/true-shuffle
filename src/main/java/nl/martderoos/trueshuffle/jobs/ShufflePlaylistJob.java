@@ -1,5 +1,6 @@
 package nl.martderoos.trueshuffle.jobs;
 
+import nl.martderoos.trueshuffle.TrueShuffleUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import nl.martderoos.trueshuffle.model.ShuffleApi;
@@ -13,18 +14,18 @@ public class ShufflePlaylistJob extends ShuffleJob {
     private static final Logger LOGGER = LoggerFactory.getLogger(ShufflePlaylistJob.class);
     private final String playlistId;
 
-    public ShufflePlaylistJob(ShuffleApi api, String playlistId) {
-        super(api);
+    public ShufflePlaylistJob(TrueShuffleUser user, String playlistId) {
+        super(user);
         this.playlistId = Objects.requireNonNull(playlistId);
     }
 
     @Override
     protected void internalExecute(ShuffleJobStatus status) throws FatalRequestResponse {
-        var api = getApi();
+        var api = getUser();
 
         var playlist = api.getUserLibrary().getPlaylistById(playlistId);
         if (!playlist.getOwnerId().equals(getUserId()))
-            shuffleCopy(api, status, playlist);
+            shuffleCopy(status, playlist);
         else
             shuffleInPlace(status, playlist);
     }
@@ -40,7 +41,7 @@ public class ShufflePlaylistJob extends ShuffleJob {
         status.setTargetPlaylist(new ShuffleJobPlaylistStatus(name, source.getImages()));
     }
 
-    private void shuffleCopy(ShuffleApi api, ShuffleJobStatus status, ShufflePlaylist source) throws FatalRequestResponse {
+    private void shuffleCopy(ShuffleJobStatus status, ShufflePlaylist source) throws FatalRequestResponse {
         // if (isUniqueName(stat, name, usedBatchNames))
         var name = source.getName();
         if (!name.endsWith(TRUE_SHUFFLE_SUFFIX))
@@ -51,7 +52,7 @@ public class ShufflePlaylistJob extends ShuffleJob {
         status.setTargetPlaylist(new ShuffleJobPlaylistStatus(name, null));
 
         var target = findOrCreateUniquePlaylistByName(
-                api.getUserLibrary(),
+                getUser().getUserLibrary(),
                 name,
                 source.getName() + " shuffled by TrueShuffle",
                 status.getJobStatus());
@@ -61,7 +62,7 @@ public class ShufflePlaylistJob extends ShuffleJob {
 
         status.setTargetPlaylist(new ShuffleJobPlaylistStatus(target.getName(), target.getImages()));
 
-        ShuffleUtil.shuffleInto(api, target, source.getPlaylistTracksUris());
+        ShuffleUtil.shuffleInto(getUser().getApi(), target, source.getPlaylistTracksUris());
 
         status.setTargetPlaylist(new ShuffleJobPlaylistStatus(target.getName(), target.getImages()));
     }

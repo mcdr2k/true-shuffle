@@ -8,8 +8,8 @@ public class LazyExpiringData<T, E extends Exception> {
     private final DataSource<T, E> source;
     private final long refreshTimeoutMillis;
 
-    private T data;
-    private long validTill = 0;
+    private volatile T data;
+    private volatile long validTill = 0;
 
     public LazyExpiringData(DataSource<T, E> source) {
         this(source, true);
@@ -61,7 +61,7 @@ public class LazyExpiringData<T, E extends Exception> {
         validate();
     }
 
-    private void reload() throws E {
+    private synchronized void reload() throws E {
         validateWith(source.load());
     }
 
