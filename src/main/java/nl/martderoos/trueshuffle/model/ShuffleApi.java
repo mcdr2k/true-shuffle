@@ -294,6 +294,10 @@ public class ShuffleApi {
         assignCredentials(credentials);
     }
 
+    /**
+     * Update the credentials of this api. Note that this function should only be called from TrueShuffle.
+     * Any attempt to assign (likely invalid) credentials will likely lead to undefined behavior.
+     */
     public synchronized void assignCredentials(AuthorizationCodeCredentials credentials) {
         var minimum = Math.min(60, credentials.getExpiresIn());
         accessTokenValidUntilAtLeast = System.currentTimeMillis() + minimum;

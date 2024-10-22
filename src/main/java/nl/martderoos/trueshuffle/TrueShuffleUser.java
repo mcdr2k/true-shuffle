@@ -15,6 +15,7 @@ import java.util.Objects;
 import java.util.concurrent.Executor;
 
 /**
+ * todo: re-document
  * Class that encapsulates a Spotify user and provides TrueShuffle functionalities.
  * Note that the underlying api used by this instance is synchronized such that no more than 1 thread can actually
  * modify the user's data at the same time. This means that it may take quite some time before control is returned
@@ -72,38 +73,70 @@ public class TrueShuffleUser {
         return job.execute(Objects.requireNonNull(executor));
     }
 
+    /**
+     * Get the user's library
+     */
     public UserLibrary getUserLibrary() {
         return userLibrary;
     }
 
+    /**
+     * Get the user's unique identifier
+     */
     public String getUserId() {
         return userId;
     }
 
+    /**
+     * Get the user's birthdate
+     */
     public String getBirthdate() {
         return birthdate;
     }
 
+    /**
+     * Get the user's country code
+     * @return null, TrueShuffle is not authorized to access this information (requires USER_READ_PRIVATE)
+     */
     public CountryCode getCountry() {
         return country;
     }
 
+    /**
+     * Get the user's (non-unique) display name
+     */
     public String getDisplayName() {
         return displayName;
     }
 
+    /**
+     * Get the user's email. This email address may or may not be verified by Spotify.
+     * @return null, TrueShuffle is not authorized to access this information (requires USER_READ_EMAIL)
+     */
     public String getEmail() {
         return email;
     }
 
+    /**
+     * Get the user's profile image
+     * @return the user's profile images in different resolutions
+     */
     public Image[] getImages() {
         return images;
     }
 
+    /**
+     * Get the underlying {@link ShuffleApi} linked to this user. Can be used
+     * @return the linked api, never null
+     */
     public ShuffleApi getApi() {
         return api;
     }
 
+    /**
+     * Update credentials up the underlying spotify api
+     * @param credentials
+     */
     void assignCredentials(AuthorizationCodeCredentials credentials) {
         api.assignCredentials(credentials);
     }
