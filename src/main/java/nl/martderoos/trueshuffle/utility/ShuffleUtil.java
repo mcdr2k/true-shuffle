@@ -13,6 +13,8 @@ import java.util.List;
 public class ShuffleUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger(ShuffleUtil.class);
 
+    private ShuffleUtil() {}
+
     /**
      * Shuffles provided list of tracks into target playlist. The provided list of tracks will be diffed with the current
      * tracks to reduce the number of api calls.

@@ -1,7 +1,9 @@
 package nl.martderoos.trueshuffle.adhoc;
 
 /**
- * To be able to throw exceptions, this interface is used over Java's {@link java.util.function.Supplier} interface.
+ * Interface that describes a source of data that may be loaded at any time.
+ * @param <T> the type of data this source may produce.
+ * @param <E> the exception this source may throw upon attempting to load new data.
  */
 public interface DataSource<T, E extends Exception> {
     T load() throws E;
