@@ -17,6 +17,10 @@ import java.util.concurrent.TimeUnit;
  * Thread-safe class for modifying a user's playlist data (if allowed).
  */
 public class ShufflePlaylist {
+    /**
+     * The maximum number of tracks we may retrieve for any playlist. Currently, 2000.
+     */
+    public static final int PLAYLIST_TRACKS_HARD_LIMIT = 2000;
     private static final Logger LOGGER = LoggerFactory.getLogger(ShufflePlaylist.class);
 
     private final ShuffleApi api;
@@ -43,7 +47,7 @@ public class ShufflePlaylist {
 
         playlistData = new LazyExpiringApiData<>(() -> api.streamPlaylistSimplified(playlistId), true, 10, TimeUnit.MINUTES);
         playlistData.setData(Objects.requireNonNull(playlist));
-        playlistTracksUris = new LazyExpiringApiData<>(() -> api.streamPlaylistTracksUris(getPlaylistId()));
+        playlistTracksUris = new LazyExpiringApiData<>(() -> api.streamPlaylistTracksUris(getPlaylistId(), PLAYLIST_TRACKS_HARD_LIMIT));
     }
 
     /**

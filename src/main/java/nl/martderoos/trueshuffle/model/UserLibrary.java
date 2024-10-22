@@ -15,6 +15,10 @@ import static nl.martderoos.trueshuffle.utility.PlaylistUtil.toSimplifiedPlaylis
  * Thread-safe class that encapsulates a Spotify user's library.
  */
 public class UserLibrary {
+    /**
+     * The maximum number of liked tracks to retrieve for a specific user.
+     */
+    public static final int LIKED_TRACKS_HARD_LIMIT = 2000;
     private final ShuffleApi api;
     private final String userId;
 
@@ -24,10 +28,14 @@ public class UserLibrary {
     public UserLibrary(ShuffleApi api) {
         this.api = Objects.requireNonNull(api);
         this.userId = api.getUserId();
-        userLikedTracksUris = new LazyExpiringApiData<>(api::streamUserLikedTracksUris);
+        userLikedTracksUris = new LazyExpiringApiData<>(() -> api.streamUserLikedTracksUris(LIKED_TRACKS_HARD_LIMIT));
         this.index = new LazyExpiringApiData<>(this::createIndex);
     }
 
+    /**
+     * Get the URIs of the user's liked tracks.
+     * @return the list of user liked tracks with a maximum of {@link #LIKED_TRACKS_HARD_LIMIT} elements.
+     */
     public synchronized List<String> getUserLikedTracksUris() throws FatalRequestResponse {
         return userLikedTracksUris.getData();
     }
