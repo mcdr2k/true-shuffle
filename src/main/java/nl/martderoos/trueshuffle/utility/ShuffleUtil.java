@@ -1,10 +1,10 @@
 package nl.martderoos.trueshuffle.utility;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import nl.martderoos.trueshuffle.model.ShuffleApi;
 import nl.martderoos.trueshuffle.model.ShufflePlaylist;
 import nl.martderoos.trueshuffle.requests.exceptions.FatalRequestResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;

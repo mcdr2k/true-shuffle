@@ -1,8 +1,8 @@
 package nl.martderoos.trueshuffle.jobs;
 
 import nl.martderoos.trueshuffle.TrueShuffleUser;
-import nl.martderoos.trueshuffle.utility.ShuffleUtil;
 import nl.martderoos.trueshuffle.requests.exceptions.FatalRequestResponse;
+import nl.martderoos.trueshuffle.utility.ShuffleUtil;
 
 public class ShuffleLikedJob extends ShuffleJob {
 

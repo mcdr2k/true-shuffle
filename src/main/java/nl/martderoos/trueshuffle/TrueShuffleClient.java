@@ -1,10 +1,5 @@
 package nl.martderoos.trueshuffle;
 
-import se.michaelthelin.spotify.SpotifyApi;
-import se.michaelthelin.spotify.SpotifyHttpManager;
-import se.michaelthelin.spotify.enums.AuthorizationScope;
-import se.michaelthelin.spotify.model_objects.credentials.AuthorizationCodeCredentials;
-import se.michaelthelin.spotify.model_objects.specification.User;
 import nl.martderoos.trueshuffle.exceptions.TrueShuffleAuthorizationException;
 import nl.martderoos.trueshuffle.exceptions.TrueShuffleInitializationException;
 import nl.martderoos.trueshuffle.exceptions.UserNotFoundException;
@@ -12,6 +7,11 @@ import nl.martderoos.trueshuffle.jobs.ShuffleJobStatus;
 import nl.martderoos.trueshuffle.model.ShuffleApi;
 import nl.martderoos.trueshuffle.requests.SynchronizedRequestHandler;
 import nl.martderoos.trueshuffle.requests.exceptions.FatalRequestResponse;
+import se.michaelthelin.spotify.SpotifyApi;
+import se.michaelthelin.spotify.SpotifyHttpManager;
+import se.michaelthelin.spotify.enums.AuthorizationScope;
+import se.michaelthelin.spotify.model_objects.credentials.AuthorizationCodeCredentials;
+import se.michaelthelin.spotify.model_objects.specification.User;
 
 import java.net.URI;
 import java.util.*;

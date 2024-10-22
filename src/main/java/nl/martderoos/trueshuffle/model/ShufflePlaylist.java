@@ -1,12 +1,12 @@
 package nl.martderoos.trueshuffle.model;
 
+import nl.martderoos.trueshuffle.adhoc.LazyExpiringApiData;
 import nl.martderoos.trueshuffle.exceptions.ImmutablePlaylistException;
+import nl.martderoos.trueshuffle.requests.exceptions.FatalRequestResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.michaelthelin.spotify.model_objects.specification.Image;
 import se.michaelthelin.spotify.model_objects.specification.PlaylistSimplified;
-import nl.martderoos.trueshuffle.adhoc.LazyExpiringApiData;
-import nl.martderoos.trueshuffle.requests.exceptions.FatalRequestResponse;
 
 import java.util.List;
 import java.util.Objects;

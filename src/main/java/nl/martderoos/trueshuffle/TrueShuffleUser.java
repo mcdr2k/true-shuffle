@@ -1,17 +1,16 @@
 package nl.martderoos.trueshuffle;
 
 import com.neovisionaries.i18n.CountryCode;
-import se.michaelthelin.spotify.model_objects.credentials.AuthorizationCodeCredentials;
-import se.michaelthelin.spotify.model_objects.specification.Image;
-import se.michaelthelin.spotify.model_objects.specification.User;
 import nl.martderoos.trueshuffle.jobs.ShuffleJobStatus;
 import nl.martderoos.trueshuffle.jobs.ShuffleLikedJob;
 import nl.martderoos.trueshuffle.jobs.ShufflePlaylistJob;
 import nl.martderoos.trueshuffle.model.ShuffleApi;
 import nl.martderoos.trueshuffle.model.ShufflePlaylist;
 import nl.martderoos.trueshuffle.model.UserLibrary;
+import se.michaelthelin.spotify.model_objects.credentials.AuthorizationCodeCredentials;
+import se.michaelthelin.spotify.model_objects.specification.Image;
+import se.michaelthelin.spotify.model_objects.specification.User;
 
-import java.beans.Transient;
 import java.util.Objects;
 import java.util.concurrent.Executor;
 
@@ -105,17 +104,6 @@ public class TrueShuffleUser {
         return api;
     }
 
-    @Transient
-    public String getRefreshToken() {
-        return api.getRefreshToken();
-    }
-
-    @Transient
-    public String getAccessToken() {
-        return api.getAccessToken();
-    }
-
-    @Transient
     void assignCredentials(AuthorizationCodeCredentials credentials) {
         api.assignCredentials(credentials);
     }

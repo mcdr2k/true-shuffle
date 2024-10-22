@@ -8,7 +8,6 @@ import org.apache.hc.core5.http.ParseException;
 import se.michaelthelin.spotify.exceptions.SpotifyWebApiException;
 import se.michaelthelin.spotify.exceptions.detailed.*;
 import se.michaelthelin.spotify.requests.IRequest;
-import nl.martderoos.trueshuffle.requests.exceptions.*;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;

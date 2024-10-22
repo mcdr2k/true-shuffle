@@ -1,7 +1,7 @@
 package nl.martderoos.trueshuffle.paging;
 
-import se.michaelthelin.spotify.model_objects.specification.Paging;
 import nl.martderoos.trueshuffle.requests.exceptions.FatalRequestResponse;
+import se.michaelthelin.spotify.model_objects.specification.Paging;
 
 @FunctionalInterface
 public interface SpotifyPageConsumer<T> {

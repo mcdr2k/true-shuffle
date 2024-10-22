@@ -1,7 +1,7 @@
 package nl.martderoos.trueshuffle.requests;
 
-import se.michaelthelin.spotify.requests.IRequest;
 import nl.martderoos.trueshuffle.requests.exceptions.FatalRequestResponse;
+import se.michaelthelin.spotify.requests.IRequest;
 
 /**
  * Synchronizes the {@link #handleRequest(IRequest)} function of {@link RequestHandler}.

@@ -1,12 +1,11 @@
 package nl.martderoos.trueshuffle.jobs;
 
 import nl.martderoos.trueshuffle.TrueShuffleUser;
+import nl.martderoos.trueshuffle.model.ShufflePlaylist;
+import nl.martderoos.trueshuffle.requests.exceptions.FatalRequestResponse;
+import nl.martderoos.trueshuffle.utility.ShuffleUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import nl.martderoos.trueshuffle.model.ShuffleApi;
-import nl.martderoos.trueshuffle.model.ShufflePlaylist;
-import nl.martderoos.trueshuffle.utility.ShuffleUtil;
-import nl.martderoos.trueshuffle.requests.exceptions.FatalRequestResponse;
 
 import java.util.Objects;
 

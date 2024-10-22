@@ -1,10 +1,10 @@
 package nl.martderoos.trueshuffle.model;
 
 
-import se.michaelthelin.spotify.model_objects.specification.Playlist;
-import se.michaelthelin.spotify.model_objects.specification.PlaylistSimplified;
 import nl.martderoos.trueshuffle.adhoc.LazyExpiringApiData;
 import nl.martderoos.trueshuffle.requests.exceptions.FatalRequestResponse;
+import se.michaelthelin.spotify.model_objects.specification.Playlist;
+import se.michaelthelin.spotify.model_objects.specification.PlaylistSimplified;
 
 import java.util.*;
 import java.util.stream.Collectors;
