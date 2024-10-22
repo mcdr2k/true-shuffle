@@ -7,6 +7,9 @@ import se.michaelthelin.spotify.model_objects.specification.PlaylistSimplified;
 public class PlaylistUtil {
     private PlaylistUtil() {}
 
+    /**
+     * Convert a rich {@link Playlist} instance to a {@link PlaylistSimplified} instance
+     */
     public static PlaylistSimplified toSimplifiedPlaylist(Playlist playlist) {
         return new PlaylistSimplified.Builder()
                 .setCollaborative(playlist.getIsCollaborative())
