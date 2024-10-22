@@ -35,7 +35,7 @@ public class ShufflePlaylist {
         this.ownerId = playlist.getOwner().getId();
 
         playlistData = new LazyExpiringApiData<>(() -> api.streamPlaylistSimplified(playlistId), true, 10, TimeUnit.MINUTES);
-        playlistData.validateWith(Objects.requireNonNull(playlist));
+        playlistData.setData(Objects.requireNonNull(playlist));
         playlistTracksUris = new LazyExpiringApiData<>(() -> api.streamPlaylistTracksUris(getPlaylistId()));
     }
 
