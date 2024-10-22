@@ -4,9 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f4c9cad5-be35-462f-aaff-ecb9e1d8ea8f" name="Changes" comment="Refactor ShuffleApi to be standalone&#10;&#10;Remove most synchronized statements&#10;Remove complex hidden class in ShufflePlaylist">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/adhoc/LazyExpiringData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/adhoc/LazyExpiringData.java" afterDir="false" />
+    <list default="true" id="f4c9cad5-be35-462f-aaff-ecb9e1d8ea8f" name="Changes" comment="Document LazyExpiringData">
+      <change afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/exceptions/ImmutablePlaylistException.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/model/ShufflePlaylist.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/model/ShufflePlaylist.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -127,7 +126,7 @@
       <workItem from="1729444892876" duration="938000" />
       <workItem from="1729446534708" duration="11079000" />
       <workItem from="1729530061285" duration="2004000" />
-      <workItem from="1729619531008" duration="2427000" />
+      <workItem from="1729619531008" duration="3337000" />
     </task>
     <task id="LOCAL-00001" summary="Init">
       <created>1729345895625</created>
@@ -160,7 +159,23 @@
       <option name="project" value="LOCAL" />
       <updated>1729530732242</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Document LazyExpiringData">
+      <option name="closed" value="true" />
+      <created>1729622101238</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1729622101238</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Document LazyExpiringData">
+      <option name="closed" value="true" />
+      <created>1729622137299</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1729622137299</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -182,6 +197,7 @@
     <MESSAGE value="Add target to gitignore" />
     <MESSAGE value="Move all to package nl.martderoos" />
     <MESSAGE value="Refactor ShuffleApi to be standalone&#10;&#10;Remove most synchronized statements&#10;Remove complex hidden class in ShufflePlaylist" />
-    <option name="LAST_COMMIT_MESSAGE" value="Refactor ShuffleApi to be standalone&#10;&#10;Remove most synchronized statements&#10;Remove complex hidden class in ShufflePlaylist" />
+    <MESSAGE value="Document LazyExpiringData" />
+    <option name="LAST_COMMIT_MESSAGE" value="Document LazyExpiringData" />
   </component>
 </project>
