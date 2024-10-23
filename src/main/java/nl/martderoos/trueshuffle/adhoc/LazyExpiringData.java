@@ -5,6 +5,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Thread-safe class that encapsulates lazily evaluated data that may expire over time.
+ *
  * @param <T> The data to store.
  * @param <E> The exception that can be thrown when attempting to reload data.
  */
@@ -34,7 +35,7 @@ public class LazyExpiringData<T, E extends Exception> {
         this.refreshTimeoutMillis = Objects.requireNonNull(timeUnit).toMillis(refreshTimeout);
     }
 
-    private T checkReload(boolean forceReload) throws E {
+    private synchronized T checkReload(boolean forceReload) throws E {
         var data = this.data;
         if (forceReload || System.currentTimeMillis() > validTill) {
             invalidate();
@@ -77,8 +78,9 @@ public class LazyExpiringData<T, E extends Exception> {
      * Validate the current data held for at least the provided amount of time.
      * If the current data is valid for longer than the provided amount of time to validate for, then this call
      * will have no effect.
+     *
      * @param validForAtLeast The value of time
-     * @param timeUnit The unit of time
+     * @param timeUnit        The unit of time
      */
     public final synchronized void validateForAtLeast(long validForAtLeast, TimeUnit timeUnit) {
         var stillValidFor = validTill - System.currentTimeMillis();
@@ -90,6 +92,7 @@ public class LazyExpiringData<T, E extends Exception> {
     /**
      * Get the data if available. Will cause a reload if the data is not available. If the {@link DataSource} is configured
      * to be able to return null, then this function may also return null.
+     *
      * @return The already available data or the newly retrieved data if it were not available.
      * @throws E When the {@link DataSource} throws an exception.
      */
@@ -100,6 +103,7 @@ public class LazyExpiringData<T, E extends Exception> {
     /**
      * Get the data if available. Will cause a reload if the data is not available. If the {@link DataSource} is configured
      * to be able to return null, then this function may also return null.
+     *
      * @param forceReload Whether to reload regardless of the current available data.
      * @return The already available data or the newly retrieved data if it were not available.
      * @throws E When the {@link DataSource} throws an exception.

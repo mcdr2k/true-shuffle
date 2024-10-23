@@ -34,9 +34,10 @@ public class ShufflePlaylist {
 
     /**
      * Create a new shuffle playlist.
-     * @param api the api that the playlist may leverage to get more data for this playlist
+     *
+     * @param api      the api that the playlist may leverage to get more data for this playlist
      * @param playlist the initial playlist's data
-     * @param mutable whether the playlist is mutable
+     * @param mutable  whether the playlist is mutable
      */
     public ShufflePlaylist(ShuffleApi api, PlaylistSimplified playlist, boolean mutable) {
         this.api = Objects.requireNonNull(api);

@@ -5,7 +5,7 @@ import nl.martderoos.trueshuffle.exceptions.TrueShuffleInitializationException;
 import nl.martderoos.trueshuffle.exceptions.UserNotFoundException;
 import nl.martderoos.trueshuffle.jobs.ShuffleJobStatus;
 import nl.martderoos.trueshuffle.model.ShuffleApi;
-import nl.martderoos.trueshuffle.requests.SynchronizedRequestHandler;
+import nl.martderoos.trueshuffle.requests.RequestHandler;
 import nl.martderoos.trueshuffle.requests.exceptions.FatalRequestResponse;
 import se.michaelthelin.spotify.SpotifyApi;
 import se.michaelthelin.spotify.SpotifyHttpManager;
@@ -27,7 +27,7 @@ public class TrueShuffleClient {
     private final SpotifyApi client;
     private boolean initialized = false;
 
-    private final SynchronizedRequestHandler handler = new SynchronizedRequestHandler(null);
+    private final RequestHandler handler = new RequestHandler(null);
 
     private final Map<String, TrueShuffleUser> authorizedUsersMap = Collections.synchronizedMap(new HashMap<>());
 

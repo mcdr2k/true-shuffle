@@ -17,6 +17,7 @@ import se.michaelthelin.spotify.requests.IRequest;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static nl.martderoos.trueshuffle.utility.PlaylistUtil.toSimplifiedPlaylist;
@@ -243,7 +244,8 @@ public class ShuffleApi {
     /**
      * Create a new playlist for the user bound to this {@link ShuffleApi}. The playlist will be public and
      * non-collaborative.
-     * @param playlistName the name of the new playlist (does not have to be unique)
+     *
+     * @param playlistName        the name of the new playlist (does not have to be unique)
      * @param playlistDescription the description of the new playlist
      * @return the newly created playlist's details
      */
@@ -270,9 +272,7 @@ public class ShuffleApi {
         return user.getDisplayName();
     }
 
-    // note: because this is synchronized, it means that it is impossible to send two api requests at the same time!
-    // todo: remove synchronization
-    private synchronized <T> T apiRequest(IRequest<T> request) throws FatalRequestResponse {
+    private <T> T apiRequest(IRequest<T> request) throws FatalRequestResponse {
         return requestHandler.handleRequest(request);
     }
 
@@ -281,11 +281,11 @@ public class ShuffleApi {
     }
 
     private synchronized void refreshAccessToken() throws FatalRequestResponse {
-        // prevent another refresh during concurrent operations
+        // prevent another refresh if it was recently refreshed
         if (System.currentTimeMillis() < accessTokenValidUntilAtLeast) {
             return;
         }
-        if (getApi().getRefreshToken() == null) {
+        if (api.getRefreshToken() == null) {
             LOGGER.error("An attempt was made to refresh credentials for which we do not have a refresh token");
             throw new FatalRequestResponse(String.format("Could not refresh credentials for '%s', there was no refresh token", user.getDisplayName()));
         }
@@ -296,16 +296,16 @@ public class ShuffleApi {
 
     /**
      * Update the credentials of this api. Note that this function should only be called from TrueShuffle.
-     * Any attempt to assign (likely invalid) credentials will likely lead to undefined behavior.
+     * Any attempt to assign (likely invalid) credentials will lead to undefined behavior.
      */
     public synchronized void assignCredentials(AuthorizationCodeCredentials credentials) {
-        var minimum = Math.min(60, credentials.getExpiresIn());
-        accessTokenValidUntilAtLeast = System.currentTimeMillis() + minimum;
-
         if (credentials.getAccessToken() != null)
             api.setAccessToken(credentials.getAccessToken());
 
         if (credentials.getRefreshToken() != null)
             api.setRefreshToken(credentials.getRefreshToken());
+
+        var minimumSeconds = Math.min(300, credentials.getExpiresIn());
+        accessTokenValidUntilAtLeast = System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(minimumSeconds);
     }
 }

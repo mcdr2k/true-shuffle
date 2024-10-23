@@ -34,6 +34,7 @@ public class UserLibrary {
 
     /**
      * Get the URIs of the user's liked tracks.
+     *
      * @return the list of user liked tracks with a maximum of {@link #LIKED_TRACKS_HARD_LIMIT} elements.
      */
     public synchronized List<String> getUserLikedTracksUris() throws FatalRequestResponse {
@@ -42,6 +43,7 @@ public class UserLibrary {
 
     /**
      * Retrieve the most recently played/created playlists.
+     *
      * @param limit The maximum number of playlists to retrieve.
      * @return A shallow copy of the underlying playlists.
      */
@@ -52,6 +54,7 @@ public class UserLibrary {
     /**
      * Retrieve a playlist by its unique identifier. This can be a public, user private or collaborative playlist.
      * Private playlists from other users cannot be retrieved.
+     *
      * @param playlistId The id of the playlist.
      * @return The playlist identified by the provided id.
      */
@@ -75,7 +78,8 @@ public class UserLibrary {
 
     /**
      * Creates a new playlist for the user with provided name and description.
-     * @param name The name of the new playlist.
+     *
+     * @param name        The name of the new playlist.
      * @param description The description of the new playlist.
      * @return The newly created playlist.
      */
@@ -114,7 +118,7 @@ public class UserLibrary {
 
         public void reload() throws FatalRequestResponse {
             clear();
-            this.playlists = api.streamUserPlaylists(128);
+            this.playlists = api.streamUserPlaylists(50);
             for (var simplified : playlists) {
                 var mutable = isOwner(simplified);
                 var shufflePlaylist = new ShufflePlaylist(api, simplified, mutable);
@@ -130,6 +134,7 @@ public class UserLibrary {
 
         /**
          * Retrieve the most recently played/created playlists.
+         *
          * @param limit The maximum number of playlists to retrieve.
          * @return A <b>view</b> of the underlying playlists.
          */

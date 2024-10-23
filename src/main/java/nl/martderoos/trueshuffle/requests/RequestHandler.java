@@ -1,10 +1,9 @@
 package nl.martderoos.trueshuffle.requests;
 
-import nl.martderoos.trueshuffle.requests.exceptions.FatalRequestResponse;
-import nl.martderoos.trueshuffle.requests.exceptions.RefreshTokenException;
-import nl.martderoos.trueshuffle.requests.exceptions.RetryShortlyException;
-import nl.martderoos.trueshuffle.requests.exceptions.SlowDownException;
+import nl.martderoos.trueshuffle.requests.exceptions.*;
 import org.apache.hc.core5.http.ParseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import se.michaelthelin.spotify.exceptions.SpotifyWebApiException;
 import se.michaelthelin.spotify.exceptions.detailed.*;
 import se.michaelthelin.spotify.requests.IRequest;
@@ -13,64 +12,100 @@ import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Simplifies handling errors during Spotify API calls. This class is NOT thread-safe.
- * Use {@link SynchronizedRequestHandler} for a thread-safe implementation. However, if many requests are sent in succession
- * within a single method, it may be better to actually bind an instance of this class to a collection of methods
- * that work with the same handler and then synchronize the methods within the collection.
+ * Thread-safe class that generalizes handling errors during Spotify API calls. It also provides a retry mechanism
+ * for when requests are rejected by Spotify.
  */
 public class RequestHandler {
-    // todo: shared medium upon receiving slowdown responses
-    private int delayRequestCount;
-    private int slowDownCount;
-    private final TokenRefresher refresher;
-    private boolean refreshingToken = false;
+    private static final Logger LOGGER = LoggerFactory.getLogger(RequestHandler.class);
 
-    public RequestHandler(TokenRefresher refresher) {
+    private final AccessTokenRefresher refresher;
+
+    /**
+     * Create a new handler with provided {@link AccessTokenRefresher}.
+     *
+     * @param refresher the refresher to use, can be null. If the access token expires, then this handler will not be
+     *                  able to finish any following requests in the case that it is null. The refresher is guaranteed
+     *                  to never be called concurrently from within the same handler.
+     */
+    public RequestHandler(AccessTokenRefresher refresher) {
         this.refresher = refresher;
     }
 
+    /**
+     * Send the request, retrying it at most 10 times before considering it a lost cause.
+     *
+     * @param request the request to execute.
+     * @param <T>     the type of the returned value.
+     * @return the returned value by the request.
+     * @throws FatalRequestResponse if the request is deemed to never succeed or fails once more after 10 retries.
+     */
     public <T> T handleRequest(IRequest<T> request) throws FatalRequestResponse {
-        try {
-            return request.execute();
-        } catch (IOException e) {
-            // should not happen if we have a proper connection, so if it does just terminate the job
-            throw new FatalRequestResponse(e);
-
-        } catch (SpotifyWebApiException e) {
-            return handleError(request, e);
-
-        } catch (ParseException e) {
-            // should NEVER happen; the only thing that could potentially happen is that the api changes and that we
-            // had not updated the service yet to work with the new api, resulting in malformed data received
-            throw new FatalRequestResponse(e);
-        } finally {
-            delayRequestCount = 0;
-            slowDownCount = 0;
-        }
+        return new ApiRequest<>(request).execute();
     }
 
-    private <T> T handleError(IRequest<T> request, SpotifyWebApiException e) throws FatalRequestResponse {
-        try {
-            rethrow(e);
-            throw new FatalRequestResponse("** IMPOSSIBLE **");
-        } catch (RetryShortlyException ex) {
-            return delayRequest(request, TimeUnit.SECONDS, 10);
-        } catch (SlowDownException ex) {
-            slowDown();
-            return handleRequest(request);
-        } catch (RefreshTokenException ex) {
-            if (this.refresher == null) throw new FatalRequestResponse(e);
-            if (refreshingToken) throw new FatalRequestResponse(e);
+    // sync to prevent concurrent token refresh
+    private synchronized void refreshToken() throws FatalRequestResponse {
+        if (this.refresher == null)
+            throw new FatalRequestResponse("Cannot refresh access token because no token refresher was provided");
+        refresher.refreshAccessToken();
+    }
+
+    private class ApiRequest<T> {
+        private static final int MAX_RETRIES = 10;
+        private static final int MIN_WAIT_TIME_SECONDS = 1;
+        private static final int MAX_WAIT_TIME_SECONDS = 300; // wait 5 minutes at most
+        private final IRequest<T> request;
+        private int retries = 0;
+        private Exception lastException;
+
+        private ApiRequest(IRequest<T> request) {
+            this.request = request;
+        }
+
+        public T execute() throws FatalRequestResponse {
+            while (retries < MAX_RETRIES) {
+                try {
+                    return request.execute();
+                } catch (IOException | ParseException e) {
+                    // IOException should not happen if we have a proper connection, so if it does just terminate the job
+                    // ParseException should NEVER happen unless the api has changed
+                    throw new FatalRequestResponse(e);
+                } catch (SpotifyWebApiException e) {
+                    // handle and then continue
+                    handleError(e);
+                }
+
+                retries++;
+            }
+            throw new FatalRequestResponse("Request exceeded maximum number of retries, cause of last exception was: " + lastException.getMessage());
+        }
+
+        private void handleError(SpotifyWebApiException spotifyException) throws FatalRequestResponse {
+            lastException = spotifyException;
 
             try {
-                // attempt to refresh token once, then retry
-                refreshingToken = true;
-                refresher.refreshToken();
-                return handleRequest(request);
-            } catch (Exception e2) {
-                throw new FatalRequestResponse(e2);
-            } finally {
-                refreshingToken = false;
+                rethrow(spotifyException);
+            } catch (RetryShortlyException e) {
+                // exponential backoff
+                var backoffSeconds = (int) Math.pow(2, retries);
+                sleep(backoffSeconds, TimeUnit.SECONDS);
+            } catch (SlowDownException e) {
+                sleep(e.getSlowdownSeconds(), TimeUnit.SECONDS);
+            } catch (RefreshTokenException e) {
+                refreshToken();
+            }
+        }
+
+        @SuppressWarnings("SameParameterValue")
+        private void sleep(long amount, TimeUnit unit) {
+            try {
+                var millis = unit.toMillis(amount);
+                millis = Math.min(millis, MAX_WAIT_TIME_SECONDS);
+                millis = Math.max(MIN_WAIT_TIME_SECONDS, millis);
+                LOGGER.debug("A request has been delayed for {} milliseconds", millis);
+                Thread.sleep(millis);
+            } catch (InterruptedException e) {
+                // ok
             }
         }
     }
@@ -88,8 +123,7 @@ public class RequestHandler {
             // The server understood the request, but is refusing to fulfill it.
             // note to self: in general http codes this is used to indicate that you are authenticated, but you are not
             // allowed to perform that operation. With Spotify, this could mean that our access was revoked entirely...
-            // todo: possibly remove this user from our database entirely (requires some callback)
-            throw new FatalRequestResponse(e);
+            throw new AuthorizationRevokedException(e.getMessage());
         } else if (e instanceof InternalServerErrorException) {
             // You should never receive this error because our clever coders catch them all ...
             // but if you are unlucky enough to get one, please report it to us
@@ -103,40 +137,17 @@ public class RequestHandler {
             // alleviated after some delay. You can choose to resend the request again.
             // note to self: may decide to wait some arbitrary amount of time and then try again
             throw new RetryShortlyException(e);
-        } else if (e instanceof TooManyRequestsException) {
+        } else if (e instanceof TooManyRequestsException tmr) {
             // rate limiting has been applied
             // note to self: this means we need to slow down the requests accordingly
-            throw new SlowDownException(e);
+            throw new SlowDownException(e, tmr.getRetryAfter());
         } else if (e instanceof UnauthorizedException) {
-            // The request requires user authorization or, if the request included authorization credentials,
-            // authorization has been refused for those credentials
-            // note to self: this could mean that our token expired, so let's refresh it once and try again
+            // The request requires user authentication
+            // note to self: this could mean that our token expired, so let's refresh it and try again
             throw new RefreshTokenException(e);
         }
         // the if-statements should have exhausted all options
         // but in the case they did not, let's just terminate the call
         throw new FatalRequestResponse(e);
-    }
-
-    private <T> T delayRequest(IRequest<T> request, TimeUnit timeUnit, long amount) throws FatalRequestResponse {
-        delayRequestCount++;
-        if (delayRequestCount > 2) {
-            throw new FatalRequestResponse("Two attempts to fulfill the request failed.");
-        }
-        try {
-            Thread.sleep(timeUnit.toMillis(amount * delayRequestCount));
-        } catch (InterruptedException e) {
-            // ok
-        }
-        return handleRequest(request);
-    }
-
-    private void slowDown() {
-        this.slowDownCount++;
-        try {
-            Thread.sleep(Math.min(2000L * this.slowDownCount, 60_000));
-        } catch (InterruptedException e) {
-            // ok
-        }
     }
 }
