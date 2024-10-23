@@ -4,11 +4,14 @@ import se.michaelthelin.spotify.model_objects.miscellaneous.PlaylistTracksInform
 import se.michaelthelin.spotify.model_objects.specification.Playlist;
 import se.michaelthelin.spotify.model_objects.specification.PlaylistSimplified;
 
+/**
+ * utility class for {@link Playlist}.
+ */
 public class PlaylistUtil {
     private PlaylistUtil() {}
 
     /**
-     * Convert a rich {@link Playlist} instance to a {@link PlaylistSimplified} instance
+     * Convert a rich {@link Playlist} instance to a {@link PlaylistSimplified} instance.
      */
     public static PlaylistSimplified toSimplifiedPlaylist(Playlist playlist) {
         return new PlaylistSimplified.Builder()
