@@ -4,8 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f4c9cad5-be35-462f-aaff-ecb9e1d8ea8f" name="Changes" comment="Document ShuffleApi">
-      <change beforePath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/TrueShuffleUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/TrueShuffleUser.java" afterDir="false" />
+    <list default="true" id="f4c9cad5-be35-462f-aaff-ecb9e1d8ea8f" name="Changes" comment="Document ItemCounter">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/paging/PageAggregator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/paging/PageAggregator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/paging/SpotifyFuturePage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/paging/SpotifyFuturePage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/paging/SpotifyPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/paging/SpotifyResultPage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/paging/SpotifyPageConsumer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/paging/SpotifyPageLoader.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -125,7 +129,8 @@
       <workItem from="1729444892876" duration="938000" />
       <workItem from="1729446534708" duration="11079000" />
       <workItem from="1729530061285" duration="2004000" />
-      <workItem from="1729619531008" duration="10216000" />
+      <workItem from="1729619531008" duration="11382000" />
+      <workItem from="1729705922782" duration="3768000" />
     </task>
     <task id="LOCAL-00001" summary="Init">
       <created>1729345895625</created>
@@ -214,7 +219,23 @@
       <option name="project" value="LOCAL" />
       <updated>1729629712376</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="Document TrueShuffleUser partially">
+      <option name="closed" value="true" />
+      <created>1729630322751</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1729630322751</updated>
+    </task>
+    <task id="LOCAL-00013" summary="Document ItemCounter">
+      <option name="closed" value="true" />
+      <created>1729630754415</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1729630754415</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -242,6 +263,8 @@
     <MESSAGE value="Rework exceptions slightly&#10;&#10;Document exceptions&#10;Document TrueShuffleClient" />
     <MESSAGE value="Optimize imports" />
     <MESSAGE value="Document ShuffleApi" />
-    <option name="LAST_COMMIT_MESSAGE" value="Document ShuffleApi" />
+    <MESSAGE value="Document TrueShuffleUser partially" />
+    <MESSAGE value="Document ItemCounter" />
+    <option name="LAST_COMMIT_MESSAGE" value="Document ItemCounter" />
   </component>
 </project>
