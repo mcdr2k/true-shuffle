@@ -1,13 +1,13 @@
 package nl.martderoos.trueshuffle.model;
 
+import nl.martderoos.trueshuffle.adhoc.LazyExpiringApiData;
+import nl.martderoos.trueshuffle.exceptions.ImmutablePlaylistException;
+import nl.martderoos.trueshuffle.requests.exceptions.FatalRequestResponseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.michaelthelin.spotify.model_objects.specification.Image;
 import se.michaelthelin.spotify.model_objects.specification.PlaylistSimplified;
-import nl.martderoos.trueshuffle.adhoc.LazyExpiringApiData;
-import nl.martderoos.trueshuffle.requests.exceptions.FatalRequestResponse;
 
-import java.beans.Transient;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
@@ -17,56 +17,82 @@ import java.util.concurrent.TimeUnit;
  * Thread-safe class for modifying a user's playlist data (if allowed).
  */
 public class ShufflePlaylist {
+    /**
+     * The maximum number of tracks we may retrieve for any playlist. Currently, 2000.
+     */
+    public static final int PLAYLIST_TRACKS_HARD_LIMIT = 2000;
     private static final Logger LOGGER = LoggerFactory.getLogger(ShufflePlaylist.class);
 
     private final ShuffleApi api;
+    private final boolean mutable;
 
     private final String playlistId;
     private final String ownerId;
-    private final LazyPlaylistData playlistData = new LazyPlaylistData();
+
+    private final LazyExpiringApiData<PlaylistSimplified> playlistData;
     private final LazyExpiringApiData<List<String>> playlistTracksUris;
 
-    public ShufflePlaylist(ShuffleApi api, PlaylistSimplified playlist) {
+    /**
+     * Create a new shuffle playlist.
+     *
+     * @param api      the api that the playlist may leverage to get more data for this playlist
+     * @param playlist the initial playlist's data
+     * @param mutable  whether the playlist is mutable
+     */
+    public ShufflePlaylist(ShuffleApi api, PlaylistSimplified playlist, boolean mutable) {
         this.api = Objects.requireNonNull(api);
-        playlistTracksUris = new LazyExpiringApiData<>(() -> api.streamPlaylistTracksUris(getPlaylistId()));
-        playlistData.validateWith(Objects.requireNonNull(playlist));
+        this.mutable = mutable;
+
         this.playlistId = playlist.getId();
         this.ownerId = playlist.getOwner().getId();
+
+        playlistData = new LazyExpiringApiData<>(() -> api.streamPlaylistSimplified(playlistId), true, 10, TimeUnit.MINUTES);
+        playlistData.setData(Objects.requireNonNull(playlist));
+        playlistTracksUris = new LazyExpiringApiData<>(() -> api.streamPlaylistTracksUris(getPlaylistId(), PLAYLIST_TRACKS_HARD_LIMIT));
     }
 
     /**
-     * Function which allows you to add and remove tracks through the Spotify API. Adding and removing tracks has been
+     * Add and remove tracks to this playlist by leveraging the Spotify API. Adding and removing tracks has been
      * merged to better suit the Spotify api. <strong>Due to Spotify's implementation, tracks are first removed and then
      * added.</strong> This method will throw an exception if you are not allowed to make modifications to this playlist.
-     * Check {@link #canModify()} beforehand.
+     * Check {@link #isMutable()} beforehand.
      *
      * @param tracksToAdd    The tracks to add to the playlist (nullable).
      * @param tracksToRemove The tracks to remove from the playlist (nullable)
+     * @throws ImmutablePlaylistException if this playlist is immutable.
      */
-    public synchronized void addAndRemoveTracks(List<String> tracksToAdd, List<String> tracksToRemove) throws FatalRequestResponse {
+    public synchronized void addAndRemoveTracks(List<String> tracksToAdd, List<String> tracksToRemove) throws FatalRequestResponseException, ImmutablePlaylistException {
+        verifyMutable();
+        String playlistId = getPlaylistId();
+        String snapshot = getSnapshotId();
 
         boolean changed = false;
         if (tracksToRemove != null && !tracksToRemove.isEmpty()) {
-            api.removeTracks(this, tracksToRemove);
+            snapshot = api.removeTracks(playlistId, snapshot, tracksToRemove);
             changed = true;
         }
 
         if (tracksToAdd != null && !tracksToAdd.isEmpty()) {
-            api.addTracks(this, tracksToAdd);
+            snapshot = api.addTracks(playlistId, snapshot, tracksToAdd);
             changed = true;
         }
 
-        if (changed)
+        if (changed) {
             playlistData.invalidate();
+            playlistTracksUris.invalidate();
+        }
     }
 
     /**
      * Shuffles the playlist's tracks in-place. Internally this is done by moving songs at random to the front,
      * ensuring that every song is only reordered once. This method will throw an exception if the user of the api this
      * playlist is linked to is not the owner of this playlist. This method will throw an exception if you are not
-     * allowed to make modifications to this playlist. Check {@link #canModify()} beforehand.
+     * allowed to make modifications to this playlist. Check {@link #isMutable()} beforehand.
+     *
+     * @throws ImmutablePlaylistException if this playlist is immutable.
      */
-    public synchronized void shuffleInPlace() throws FatalRequestResponse {
+    public synchronized void shuffleInPlace() throws FatalRequestResponseException, ImmutablePlaylistException {
+        verifyMutable();
         var id = getPlaylistId();
         var playlist = playlistData.getData();
         var snapshot = playlist.getSnapshotId();
@@ -82,79 +108,67 @@ public class ShufflePlaylist {
         }
 
         playlistData.invalidate();
+        playlistTracksUris.invalidate();
+    }
+
+    private void verifyMutable() throws ImmutablePlaylistException {
+        if (!mutable) {
+            throw new ImmutablePlaylistException(String.format("Playlist %s from %s is immutable", getPlaylistId(), getOwnerId()));
+        }
     }
 
     /**
-     * Makes a copy of this playlist in the user's library.
-     *
-     * @param newName        The name of the copy.
-     * @param newDescription The description of the copy.
+     * @return True if modifications can be made to this playlist, false otherwise
      */
-    public synchronized void copyToNewPlaylist(String newName, String newDescription) throws FatalRequestResponse {
-        var tracks = getPlaylistTracksUris();
-        var playlist = getUserLibrary().createPlaylist(newName, newDescription);
-        playlist.addAndRemoveTracks(tracks, null);
+    public boolean isMutable() {
+        return mutable;
     }
 
-    public synchronized List<String> getPlaylistTracksUris() throws FatalRequestResponse {
-        return playlistTracksUris.getData();
-    }
-
-    public synchronized String getSnapshotId() throws FatalRequestResponse {
-        return playlistData.getData().getSnapshotId();
-    }
-
-    public String getOwnerId() {
-        return ownerId;
-    }
-
+    /**
+     * @return the unique identifier of the playlist
+     */
     public String getPlaylistId() {
         return playlistId;
     }
 
     /**
-     * Check whether you are allowed to make modifications to this playlist. Calling a modifying function
-     * on this playlist while not being allowed to modify it will result in exceptions.
-     *
-     * @return True if modifications are allowed, false otherwise.
+     * @return the unique identifier of the owner of this playlist
      */
-    public boolean canModify() {
-        return getUserLibrary().isOwner(this);
+    public String getOwnerId() {
+        return ownerId;
     }
 
-    public synchronized String getName() throws FatalRequestResponse {
-        return playlistData.getData().getName();
-    }
-
-    public UserLibrary getUserLibrary() {
-        return api.getUserLibrary();
-    }
-
-    @Transient
-    public synchronized Image[] getImages() throws FatalRequestResponse {
-        return playlistData.getData().getImages();
+    private synchronized String getSnapshotId() throws FatalRequestResponseException {
+        return playlistData.getData().getSnapshotId();
     }
 
     /**
-     * Private class for playlist data. Because the playlist data is strongly tied to track
-     * data, this class also invalidates or revalidates the tracks whenever a change is made
-     * to this class.
+     * Attempt to retrieve the playlist's tracks
+     *
+     * @return the playlist's tracks
+     * @throws FatalRequestResponseException if an attempt to get the playlist's tracks from the server fails
      */
-    private class LazyPlaylistData extends LazyExpiringApiData<PlaylistSimplified> {
-        public LazyPlaylistData() {
-            super(() -> api.streamPlaylistSimplified(playlistId), true, 10, TimeUnit.MINUTES);
-        }
+    public synchronized List<String> getPlaylistTracksUris() throws FatalRequestResponseException {
+        return playlistTracksUris.getData();
+    }
 
-        @Override
-        public void invalidate() {
-            super.invalidate();
-            playlistTracksUris.invalidate();
-        }
+    /**
+     * Attempt to retrieve the name of the playlist
+     *
+     * @return the name of the playlist
+     * @throws FatalRequestResponseException if an attempt to get the playlist's name from the server fails
+     */
+    public synchronized String getName() throws FatalRequestResponseException {
+        return playlistData.getData().getName();
+    }
 
-        @Override
-        public void validateForAtLeast(long validForAtLeast, TimeUnit timeUnit) {
-            super.validateForAtLeast(validForAtLeast, timeUnit);
-            playlistTracksUris.validateForAtLeast(validForAtLeast, timeUnit);
-        }
+    /**
+     * Attempt to retrieve the set of images for the thumbnail (different resolutions)
+     *
+     * @return the array of images (same image, different resolution)
+     * @throws FatalRequestResponseException if an attempt to get the playlist's thumbnails from the server fails
+     */
+    public synchronized Image[] getImages() throws FatalRequestResponseException {
+        return playlistData.getData().getImages();
     }
 }

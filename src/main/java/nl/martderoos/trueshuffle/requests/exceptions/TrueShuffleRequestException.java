@@ -1,8 +1,13 @@
 package nl.martderoos.trueshuffle.requests.exceptions;
 
+import nl.martderoos.trueshuffle.exceptions.TrueShuffleException;
+
 import java.util.Objects;
 
-public class TrueShuffleRequestException extends Exception {
+/**
+ * Root exception for TrueShuffle http request failures.
+ */
+public class TrueShuffleRequestException extends TrueShuffleException {
     private final Action action;
 
     TrueShuffleRequestException(Exception e, Action action) {
@@ -27,12 +32,13 @@ public class TrueShuffleRequestException extends Exception {
     public enum Action {
         /**
          * Indicates that we should slow down with our requests since we hit the rate limit.
-         * Can be done by only sending a few requests per second.
+         * Can be done by waiting to send new requests for a few seconds.
          */
         SLOW_DOWN,
         /**
          * The request could not be handled at the moment (serverside issues, high load...), try again after a small
-         * amount of time (&lt; 10s).
+         * amount of time (&lt; 10s). Handling this action nay be combined with {@link #SLOW_DOWN} using an exponential
+         * backoff function.
          */
         RETRY_SHORTLY,
         /**
