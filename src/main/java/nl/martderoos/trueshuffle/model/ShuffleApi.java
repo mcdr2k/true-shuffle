@@ -2,6 +2,7 @@ package nl.martderoos.trueshuffle.model;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import nl.martderoos.trueshuffle.TrueShuffleUserCredentials;
 import nl.martderoos.trueshuffle.paging.PageAggregator;
 import nl.martderoos.trueshuffle.paging.SpotifyFuturePage;
 import nl.martderoos.trueshuffle.requests.RequestHandler;
@@ -9,7 +10,6 @@ import nl.martderoos.trueshuffle.requests.exceptions.FatalRequestResponseExcepti
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.michaelthelin.spotify.SpotifyApi;
-import se.michaelthelin.spotify.model_objects.credentials.AuthorizationCodeCredentials;
 import se.michaelthelin.spotify.model_objects.specification.Playlist;
 import se.michaelthelin.spotify.model_objects.specification.PlaylistSimplified;
 import se.michaelthelin.spotify.model_objects.specification.User;
@@ -47,7 +47,8 @@ public class ShuffleApi {
     private final SpotifyApi api;
     private final User user;
     private final RequestHandler requestHandler;
-    private volatile long accessTokenValidUntilAtLeast;
+    private long accessTokenValidUntilAtLeast;
+    private TrueShuffleUserCredentials credentials = null;
 
     public ShuffleApi(final SpotifyApi api, User user) {
         Objects.requireNonNull(api);
@@ -62,7 +63,7 @@ public class ShuffleApi {
      * @param playlistId the unique identifier of the playlist to stream.
      * @return the playlist identified by the provided id, never null.
      * @throws FatalRequestResponseException if the playlist does not exist or if it is not visible to the user (private but
-     *                              owned by other user).
+     *                                       owned by other user).
      */
     public Playlist streamPlaylist(String playlistId) throws FatalRequestResponseException {
         return apiRequest(getApi().getPlaylist(playlistId).build());
@@ -73,7 +74,7 @@ public class ShuffleApi {
      *
      * @return the playlist identified by the provided id, never null.
      * @throws FatalRequestResponseException if the playlist does not exist or if it is not visible to the user (private but
-     *                              owned by other user).
+     *                                       owned by other user).
      */
     public PlaylistSimplified streamPlaylistSimplified(String playlistId) throws FatalRequestResponseException {
         return toSimplifiedPlaylist(streamPlaylist(playlistId));
@@ -296,21 +297,60 @@ public class ShuffleApi {
         }
 
         var credentials = requestHandler.handleRequest(getApi().authorizationCodeRefresh().build());
-        assignCredentials(credentials);
+        assignCredentials(new TrueShuffleUserCredentials(credentials));
     }
 
     /**
-     * Update the credentials of this api. Note that this function should only be called from TrueShuffle.
-     * Any attempt to assign (likely invalid) credentials will lead to undefined behavior.
+     * Update the credentials of this api unless the current credentials are more recent than the provided credentials.
      */
-    public synchronized void assignCredentials(AuthorizationCodeCredentials credentials) {
-        if (credentials.getAccessToken() != null)
-            api.setAccessToken(credentials.getAccessToken());
+    public synchronized void assignCredentials(TrueShuffleUserCredentials newCredentials) {
+        // do not update credentials since the current ones are newer than the provided ones
+        if (getCredentials().isMoreRecentThan(newCredentials)) return;
 
-        if (credentials.getRefreshToken() != null)
-            api.setRefreshToken(credentials.getRefreshToken());
+        if (newCredentials.accessToken() != null)
+            api.setAccessToken(newCredentials.accessToken());
 
-        var minimumSeconds = Math.min(300, credentials.getExpiresIn());
+        if (newCredentials.refreshToken() != null)
+            api.setRefreshToken(newCredentials.refreshToken());
+
+        var minimumSeconds = Math.min(300, newCredentials.expiresInSeconds());
         accessTokenValidUntilAtLeast = System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(minimumSeconds);
+
+        this.credentials = new TrueShuffleUserCredentials(
+                newCredentials.issuedSinceEpoch(),
+                getAccessToken(),
+                getRefreshToken(),
+                newCredentials.expiresInSeconds()
+        );
+    }
+
+    /**
+     * Get the current access token used by this api. This access token may or may not be valid anymore.
+     *
+     * @return the current access token, possibly null.
+     */
+    public synchronized String getAccessToken() {
+        return api.getAccessToken();
+    }
+
+    /**
+     * Get the current refresh token used by this api to get a new access token from Spotify. This refresh token
+     * may or may not be valid anymore, depending on whether the user has revoked authorization of TrueShuffle.
+     *
+     * @return the current refresh token, possibly null.
+     */
+    public synchronized String getRefreshToken() {
+        return api.getRefreshToken();
+    }
+
+    /**
+     * Get the credentials used by the underlying {@link SpotifyApi}.
+     *
+     * @return the credentials, never null.
+     */
+    public synchronized TrueShuffleUserCredentials getCredentials() {
+        if (credentials == null)
+            credentials = new TrueShuffleUserCredentials(0, getAccessToken(), getRefreshToken(), 0);
+        return credentials;
     }
 }

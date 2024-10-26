@@ -42,37 +42,37 @@ public class TrueShuffleUser {
     }
 
     /**
-     * Get the user's library
+     * Get the user's library.
      */
     public UserLibrary getUserLibrary() {
         return userLibrary;
     }
 
     /**
-     * Get the user's unique identifier
+     * Get the user's unique identifier.
      */
     public String getUserId() {
         return userId;
     }
 
     /**
-     * Get the user's birthdate
+     * Get the user's birthdate.
      */
     public String getBirthdate() {
         return birthdate;
     }
 
     /**
-     * Get the user's country code
+     * Get the user's country code.
      *
-     * @return null, TrueShuffle is not authorized to access this information (requires USER_READ_PRIVATE)
+     * @return null, TrueShuffle is not authorized to access this information (requires USER_READ_PRIVATE).
      */
     public CountryCode getCountry() {
         return country;
     }
 
     /**
-     * Get the user's (non-unique) display name
+     * Get the user's (non-unique) display name.
      */
     public String getDisplayName() {
         return displayName;
@@ -81,34 +81,43 @@ public class TrueShuffleUser {
     /**
      * Get the user's email. This email address may or may not be verified by Spotify.
      *
-     * @return null, TrueShuffle is not authorized to access this information (requires USER_READ_EMAIL)
+     * @return null, TrueShuffle is not authorized to access this information (requires USER_READ_EMAIL).
      */
     public String getEmail() {
         return email;
     }
 
     /**
-     * Get the user's profile image
+     * Get the user's profile image.
      *
-     * @return the user's profile images in different resolutions
+     * @return the user's profile images in different resolutions.
      */
     public Image[] getImages() {
         return images;
     }
 
     /**
-     * Get the underlying {@link ShuffleApi} linked to this user. Can be used
+     * Get the underlying {@link ShuffleApi} linked to this user. Can be used.
      *
-     * @return the linked api, never null
+     * @return the linked api, never null.
      */
     public ShuffleApi getApi() {
         return api;
     }
 
     /**
-     * Update credentials of the underlying spotify api
+     * Update credentials of the underlying spotify api.
      */
-    void assignCredentials(AuthorizationCodeCredentials credentials) {
+    void assignCredentials(TrueShuffleUserCredentials credentials) {
         api.assignCredentials(credentials);
+    }
+
+    /**
+     * Get the current credentials used by the underlying {@link ShuffleApi}.
+     *
+     * @return the credentials, never null.
+     */
+    public TrueShuffleUserCredentials getCredentials() {
+        return api.getCredentials();
     }
 }

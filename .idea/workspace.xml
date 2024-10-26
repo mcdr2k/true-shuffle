@@ -4,39 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f4c9cad5-be35-462f-aaff-ecb9e1d8ea8f" name="Changes" comment="rework RequestHandler to be stateless">
-      <change afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/jobs/TrueShuffleJobStatus.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/jobs/TrueShuffleUserResolver.java" afterDir="false" />
+    <list default="true" id="f4c9cad5-be35-462f-aaff-ecb9e1d8ea8f" name="Changes" comment="rework and document jobs package">
+      <change afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/TrueShuffleUserCredentials.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/TrueShuffleClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/TrueShuffleClient.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/TrueShuffleUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/TrueShuffleUser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/adhoc/ApiDataSource.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/adhoc/ApiDataSource.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/adhoc/LazyExpiringApiData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/adhoc/LazyExpiringApiData.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/exceptions/ImmutablePlaylistException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/exceptions/ImmutablePlaylistException.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/exceptions/TrueShuffleAuthorizationException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/exceptions/AuthorizationException.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/exceptions/TrueShuffleException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/exceptions/TrueShuffleException.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/exceptions/TrueShuffleInitializationException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/exceptions/InitializationException.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/exceptions/TrueShuffleRuntimeException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/exceptions/TrueShuffleRuntimeException.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/exceptions/UserNotFoundException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/exceptions/UserNotFoundException.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/jobs/EJobStatus.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/jobs/ETrueShuffleJobStatus.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/jobs/JobStatus.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/jobs/ShuffleJob.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/jobs/TrueShuffleJob.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/jobs/ShuffleJobPlaylistStatus.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/jobs/TrueShuffleJobPlaylistData.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/jobs/ShuffleJobStatus.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/jobs/ShuffleLikedJob.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/jobs/TrueShuffleLikedJob.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/jobs/ShufflePlaylistJob.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/jobs/TrueShufflePlaylistJob.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/model/ShuffleApi.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/model/ShuffleApi.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/model/ShufflePlaylist.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/model/ShufflePlaylist.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/model/UserLibrary.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/model/UserLibrary.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/paging/PageAggregator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/paging/PageAggregator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/paging/SpotifyFuturePage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/paging/SpotifyFuturePage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/paging/SpotifyPageLoader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/paging/SpotifyPageLoader.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/paging/SpotifyResultPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/paging/SpotifyResultPage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/requests/AccessTokenRefresher.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/requests/AccessTokenRefresher.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/requests/RequestHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/requests/RequestHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/requests/exceptions/AuthorizationRevokedException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/requests/exceptions/AuthorizationRevokedException.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/requests/exceptions/FatalRequestResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/requests/exceptions/FatalRequestResponseException.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/utility/ShuffleUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/utility/ShuffleUtil.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -49,8 +22,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Class" />
         <option value="Interface" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -83,7 +56,7 @@
   }
 }</component>
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="CurrentFile" />
+    <option name="selectedTabId" value="ProjectErrors" />
   </component>
   <component name="ProjectCodeStyleSettingsMigration">
     <option name="version" value="2" />
@@ -161,7 +134,8 @@
       <workItem from="1729875466854" duration="10196000" />
       <workItem from="1729887781836" duration="2486000" />
       <workItem from="1729891685848" duration="3890000" />
-      <workItem from="1729939519121" duration="10552000" />
+      <workItem from="1729939519121" duration="15481000" />
+      <workItem from="1729959866676" duration="1860000" />
     </task>
     <task id="LOCAL-00001" summary="Init">
       <created>1729345895625</created>
@@ -298,7 +272,23 @@
       <option name="project" value="LOCAL" />
       <updated>1729718674052</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="rework and document jobs package">
+      <option name="closed" value="true" />
+      <created>1729955276593</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1729955276593</updated>
+    </task>
+    <task id="LOCAL-00019" summary="rework and document jobs package">
+      <option name="closed" value="true" />
+      <created>1729955314377</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1729955314377</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -331,6 +321,7 @@
     <MESSAGE value="Document paging package" />
     <MESSAGE value="format documentation in utility package" />
     <MESSAGE value="rework RequestHandler to be stateless" />
-    <option name="LAST_COMMIT_MESSAGE" value="rework RequestHandler to be stateless" />
+    <MESSAGE value="rework and document jobs package" />
+    <option name="LAST_COMMIT_MESSAGE" value="rework and document jobs package" />
   </component>
 </project>
