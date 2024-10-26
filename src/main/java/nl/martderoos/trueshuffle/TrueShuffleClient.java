@@ -1,12 +1,15 @@
 package nl.martderoos.trueshuffle;
 
-import nl.martderoos.trueshuffle.exceptions.TrueShuffleAuthorizationException;
-import nl.martderoos.trueshuffle.exceptions.TrueShuffleInitializationException;
+import nl.martderoos.trueshuffle.exceptions.AuthorizationException;
+import nl.martderoos.trueshuffle.exceptions.InitializationException;
 import nl.martderoos.trueshuffle.exceptions.UserNotFoundException;
-import nl.martderoos.trueshuffle.jobs.ShuffleJobStatus;
+import nl.martderoos.trueshuffle.jobs.TrueShuffleJobStatus;
+import nl.martderoos.trueshuffle.jobs.TrueShuffleLikedJob;
+import nl.martderoos.trueshuffle.jobs.TrueShufflePlaylistJob;
+import nl.martderoos.trueshuffle.jobs.TrueShuffleUserResolver;
 import nl.martderoos.trueshuffle.model.ShuffleApi;
 import nl.martderoos.trueshuffle.requests.RequestHandler;
-import nl.martderoos.trueshuffle.requests.exceptions.FatalRequestResponse;
+import nl.martderoos.trueshuffle.requests.exceptions.FatalRequestResponseException;
 import se.michaelthelin.spotify.SpotifyApi;
 import se.michaelthelin.spotify.SpotifyHttpManager;
 import se.michaelthelin.spotify.enums.AuthorizationScope;
@@ -18,16 +21,17 @@ import java.util.*;
 import java.util.concurrent.Executor;
 
 /**
- * Thread-safe class for managing TrueShuffle users.
+ * Thread-safe class for managing TrueShuffle users. Additionally, exposes methods for shuffling a user's playlists.
  */
 public class TrueShuffleClient {
     private final URI redirectUri;
     private final String cid;
     private final String secret;
     private final SpotifyApi client;
-    private boolean initialized = false;
+    private volatile boolean initialized = false;
 
     private final RequestHandler handler = new RequestHandler(null);
+    private final TrueShuffleUserResolver resolver = this::getAuthorizedUser;
 
     private final Map<String, TrueShuffleUser> authorizedUsersMap = Collections.synchronizedMap(new HashMap<>());
 
@@ -36,7 +40,7 @@ public class TrueShuffleClient {
      *
      * @param cid         The client-id to use.
      * @param secret      The secret to use.
-     * @param redirectUri The redirect uri (callback) to use for authorisation.
+     * @param redirectUri The redirect uri (callback) to use for authorization.
      */
     public TrueShuffleClient(String cid, String secret, String redirectUri) {
         this.cid = Objects.requireNonNull(cid);
@@ -52,14 +56,14 @@ public class TrueShuffleClient {
     /**
      * Attempts to initialize the client by verifying the client id and secret with Spotify.
      */
-    public synchronized void initialize() throws TrueShuffleInitializationException {
+    public synchronized void initialize() throws InitializationException {
         if (initialized)
             return;
         try {
             refreshClientCredentials();
             initialized = true;
-        } catch (FatalRequestResponse e) {
-            throw new TrueShuffleInitializationException(e);
+        } catch (FatalRequestResponseException e) {
+            throw new InitializationException(e);
         }
     }
 
@@ -68,9 +72,10 @@ public class TrueShuffleClient {
      *
      * @param code The code received from Spotify through the redirect (callback) link upon authorization.
      * @return The ShuffleApi that is bound to this specific user.
-     * @throws TrueShuffleAuthorizationException When the code provided is invalid (or could not be validated).
+     * @throws AuthorizationException When the code provided is invalid (or could not be validated).
      */
-    public synchronized TrueShuffleUser addAuthorizedUser(String code) throws TrueShuffleAuthorizationException {
+    public TrueShuffleUser addAuthorizedUser(String code) throws AuthorizationException {
+        verifyInit();
         Objects.requireNonNull(code);
 
         AuthorizationCodeCredentials credentials;
@@ -85,26 +90,27 @@ public class TrueShuffleClient {
                     .setAccessToken(credentials.getAccessToken())
                     .setRefreshToken(credentials.getRefreshToken())
                     .build();
-        } catch (FatalRequestResponse e) {
-            throw new TrueShuffleAuthorizationException("Could not authorise a user with the provided code.", e);
+        } catch (FatalRequestResponseException e) {
+            throw new AuthorizationException("Could not authorize a user with the provided code.", e);
         }
 
         try {
             var userData = handler.handleRequest(api.getCurrentUsersProfile().build());
             return addOrReuseAuthorizedUser(api, credentials, userData);
-        } catch (FatalRequestResponse e) {
-            throw new TrueShuffleAuthorizationException("Provided code could be validated but the user's data (id, display name) could not be retrieved.", e);
+        } catch (FatalRequestResponseException e) {
+            throw new AuthorizationException("Provided code could be validated but the user's data (id, display name) could not be retrieved.", e);
         }
     }
 
-    private TrueShuffleUser addOrReuseAuthorizedUser(SpotifyApi api, AuthorizationCodeCredentials credentials, User userData) {
+    private synchronized TrueShuffleUser addOrReuseAuthorizedUser(SpotifyApi api, AuthorizationCodeCredentials credentials, User userData) {
+        verifyInit();
         try {
             // user already exists, let's reuse it
             // update credentials (actually, the current credentials used by the api would still be valid until expired)
             // however, it is possible that we get a new refresh token, which in turn invalidates the current refresh token
-            var authorisedUser = getAuthorisedUser(userData.getId());
-            authorisedUser.assignCredentials(credentials);
-            return authorisedUser;
+            var authorizedUser = getAuthorizedUser(userData.getId());
+            authorizedUser.assignCredentials(credentials);
+            return authorizedUser;
         } catch (UserNotFoundException e) {
             // ok
         }
@@ -119,15 +125,17 @@ public class TrueShuffleClient {
     /**
      * Removes an authorized user from the set of authorized users.
      */
-    public synchronized void removeAuthorizedUser(String userId) {
+    public void removeAuthorizedUser(String userId) {
         authorizedUsersMap.remove(userId);
     }
 
     /**
      * @return the complete set of all current authorized users known to this client
      */
-    public synchronized Set<String> getAuthorizedUsers() {
-        return new HashSet<>(authorizedUsersMap.keySet());
+    public Set<String> getAuthorizedUsers() {
+        synchronized (authorizedUsersMap) {
+            return new HashSet<>(authorizedUsersMap.keySet());
+        }
     }
 
     /**
@@ -140,9 +148,12 @@ public class TrueShuffleClient {
      * @return The status of the shuffle job, which is updated continuously until it has finished.
      * @throws UserNotFoundException When no user could be found with the provided user identifier.
      */
-    public ShuffleJobStatus shuffleLikedSongs(String userId, Executor executor) throws UserNotFoundException {
-        var user = getAuthorisedUser(userId);
-        return user.shuffleLikedSongs(executor);
+    public TrueShuffleJobStatus shuffleLikedSongs(String userId, Executor executor) throws UserNotFoundException {
+        verifyInit();
+        Objects.requireNonNull(executor);
+        getAuthorizedUser(userId);
+        var job = new TrueShuffleLikedJob(userId);
+        return job.execute(resolver, executor);
     }
 
     /**
@@ -156,18 +167,22 @@ public class TrueShuffleClient {
      * @return The status of the shuffle job, which is updated continuously until it has finished.
      * @throws UserNotFoundException When no user could be found with the provided user identifier.
      */
-    public ShuffleJobStatus shufflePlaylist(String userId, String playlistId, Executor executor) throws UserNotFoundException {
-        var user = getAuthorisedUser(userId);
-        return user.shufflePlaylist(playlistId, executor);
+    public TrueShuffleJobStatus shufflePlaylist(String userId, String playlistId, Executor executor) throws UserNotFoundException {
+        verifyInit();
+        Objects.requireNonNull(executor);
+        getAuthorizedUser(userId);
+        var job = new TrueShufflePlaylistJob(userId, playlistId);
+        return job.execute(resolver, executor);
     }
 
     /**
-     * Retrieve a shuffle user by means of a unique user identifier
-     * @param userId the user identifier of the user to find
-     * @return the user (never null)
-     * @throws UserNotFoundException if the user could not be found
+     * Retrieve a shuffle user by means of a unique user identifier.
+     *
+     * @param userId the user identifier of the user to find.
+     * @return the user (never null).
+     * @throws UserNotFoundException if the user could not be found.
      */
-    public synchronized TrueShuffleUser getAuthorisedUser(String userId) throws UserNotFoundException {
+    public TrueShuffleUser getAuthorizedUser(String userId) throws UserNotFoundException {
         var user = authorizedUsersMap.get(userId);
         if (user == null)
             throw new UserNotFoundException(userId);
@@ -175,7 +190,7 @@ public class TrueShuffleClient {
     }
 
     /**
-     * Builds the URI for this client which redirects users to the authorisation page of spotify with the appropriate
+     * Builds the URI for this client which redirects users to the authorization page of spotify with the appropriate
      * scopes and state.
      *
      * @param state Optional, but strongly recommended (ignored if blank). The state can be useful for correlating requests and responses.
@@ -185,7 +200,7 @@ public class TrueShuffleClient {
      *              response to additionally ensure that the request and response originated in the same browser. This
      *              provides protection against attacks such as cross-site request forgery.
      */
-    public URI getAuthorisationURI(String state) {
+    public URI getAuthorizationURI(String state) {
         var uriBuilder = client.authorizationCodeUri()
                 .scope(
                         AuthorizationScope.USER_LIBRARY_READ,           // read liked songs
@@ -202,7 +217,7 @@ public class TrueShuffleClient {
     }
 
     /**
-     * @return the redirect uri set during construction of this instance
+     * @return the redirect uri set during construction of this instance.
      */
     public URI getRedirectUri() {
         return redirectUri;
@@ -210,16 +225,20 @@ public class TrueShuffleClient {
 
     /**
      * Generates a random 'state' to be used for security purposes. Note that this generated state should be stored
-     * by the user in their own code as to be able to use it further down the authorisation flow. This program
-     * itself does nothing with it unless provided to some of this instance's functions, like {@link #getAuthorisationURI(String)}.
+     * by the user in their own code as to be able to use it further down the authorization flow. This program
+     * itself does nothing with it unless provided to some of this instance's functions, like {@link #getAuthorizationURI(String)}.
      * The random state generated is produced by a call to {@link UUID#randomUUID()}.
      */
     public static String generateRandomState() {
         return UUID.randomUUID().toString();
     }
 
-    private void refreshClientCredentials() throws FatalRequestResponse {
+    private void refreshClientCredentials() throws FatalRequestResponseException {
         var credentials = handler.handleRequest(client.clientCredentials().build());
         client.setAccessToken(credentials.getAccessToken());
+    }
+
+    private void verifyInit() {
+        if (!initialized) throw new IllegalStateException("Cannot execute this method before initialization");
     }
 }

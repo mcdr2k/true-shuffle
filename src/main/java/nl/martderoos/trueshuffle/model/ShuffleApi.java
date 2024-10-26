@@ -5,7 +5,7 @@ import com.google.gson.JsonObject;
 import nl.martderoos.trueshuffle.paging.PageAggregator;
 import nl.martderoos.trueshuffle.paging.SpotifyFuturePage;
 import nl.martderoos.trueshuffle.requests.RequestHandler;
-import nl.martderoos.trueshuffle.requests.exceptions.FatalRequestResponse;
+import nl.martderoos.trueshuffle.requests.exceptions.FatalRequestResponseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.michaelthelin.spotify.SpotifyApi;
@@ -28,7 +28,7 @@ import static nl.martderoos.trueshuffle.utility.PlaylistUtil.toSimplifiedPlaylis
  * In the case that a new access token is required, this class will make sure to only refresh the access token once
  * when necessary.
  * <br><br>
- * All operations that require leveraging the {@link SpotifyApi} may result in {@link FatalRequestResponse} due to
+ * All operations that require leveraging the {@link SpotifyApi} may result in {@link FatalRequestResponseException} due to
  * unrecoverable errors from Spotify. Some operations require us to send multiple requests to Spotify because
  * they have constraints on the amount of data you can send and receive within a single request.
  */
@@ -57,20 +57,25 @@ public class ShuffleApi {
     }
 
     /**
-     * Stream a uniquely identifiable {@link Playlist} from Spotify
+     * Stream a uniquely identifiable {@link Playlist} from Spotify.
      *
-     * @param playlistId the unique identifier of the playlist to stream
+     * @param playlistId the unique identifier of the playlist to stream.
+     * @return the playlist identified by the provided id, never null.
+     * @throws FatalRequestResponseException if the playlist does not exist or if it is not visible to the user (private but
+     *                              owned by other user).
      */
-    public Playlist streamPlaylist(String playlistId) throws FatalRequestResponse {
+    public Playlist streamPlaylist(String playlistId) throws FatalRequestResponseException {
         return apiRequest(getApi().getPlaylist(playlistId).build());
     }
 
     /**
-     * Stream a uniquely identifiable {@link Playlist} from Spotify and convert it to a {@link PlaylistSimplified}
+     * Stream a uniquely identifiable {@link Playlist} from Spotify and convert it to a {@link PlaylistSimplified}.
      *
-     * @param playlistId the unique identifier of the playlist to stream
+     * @return the playlist identified by the provided id, never null.
+     * @throws FatalRequestResponseException if the playlist does not exist or if it is not visible to the user (private but
+     *                              owned by other user).
      */
-    public PlaylistSimplified streamPlaylistSimplified(String playlistId) throws FatalRequestResponse {
+    public PlaylistSimplified streamPlaylistSimplified(String playlistId) throws FatalRequestResponseException {
         return toSimplifiedPlaylist(streamPlaylist(playlistId));
     }
 
@@ -79,9 +84,9 @@ public class ShuffleApi {
      * is not specified. Note that this operation may require multiple requests if the hard limit exceeds 50 due to
      * Spotify's constraints.
      *
-     * @param hardLimit the hard limit on the amount of playlists to stream
+     * @param hardLimit the hard limit on the amount of playlists to stream.
      */
-    public List<PlaylistSimplified> streamUserPlaylists(int hardLimit) throws FatalRequestResponse {
+    public List<PlaylistSimplified> streamUserPlaylists(int hardLimit) throws FatalRequestResponseException {
         return PageAggregator.aggregate(
                 new SpotifyFuturePage<>(
                         (offset, limit) -> apiRequest(getApi()
@@ -96,11 +101,11 @@ public class ShuffleApi {
     /**
      * Search for a playlist by its exact name.
      *
-     * @param playlistName the exact name of the playlist to search for
-     * @param hardLimit    the hard limit on the amount of search results
-     * @return the search results
+     * @param playlistName the exact name of the playlist to search for.
+     * @param hardLimit    the hard limit on the amount of search results.
+     * @return the search results, never null but may be empty.
      */
-    public List<PlaylistSimplified> searchPlaylistByExactName(String playlistName, int hardLimit) throws FatalRequestResponse {
+    public List<PlaylistSimplified> searchPlaylistByExactName(String playlistName, int hardLimit) throws FatalRequestResponseException {
         return PageAggregator.aggregate(
                 new SpotifyFuturePage<>(
                         (offset, limit) -> apiRequest(getApi()
@@ -117,10 +122,10 @@ public class ShuffleApi {
      * Stream all user's saved (liked) tracks. Note that Spotify has no limit on the maximum number of tracks
      * a user may save.
      *
-     * @param hardLimit the hard limit on the amount of tracks to stream
-     * @return a list of track URIs
+     * @param hardLimit the hard limit on the amount of tracks to stream.
+     * @return a list of track URIs, never null.
      */
-    public List<String> streamUserLikedTracksUris(int hardLimit) throws FatalRequestResponse {
+    public List<String> streamUserLikedTracksUris(int hardLimit) throws FatalRequestResponseException {
         return PageAggregator.aggregate(
                         new SpotifyFuturePage<>(
                                 (offset, limit) -> apiRequest(getApi()
@@ -139,11 +144,11 @@ public class ShuffleApi {
      * Stream a specific playlist's tracks. Note that Spotify imposes a limit on the maximum number of tracks a playlist
      * can have, namely 10_000.
      *
-     * @param playlistId the playlists unique identifier
-     * @param hardLimit  the hard limit on the number of tracks to retrieve for the playlist
-     * @return a list of track URIs
+     * @param playlistId the playlists unique identifier.
+     * @param hardLimit  the hard limit on the number of tracks to retrieve for the playlist.
+     * @return a list of track URIs, never null.
      */
-    public List<String> streamPlaylistTracksUris(String playlistId, int hardLimit) throws FatalRequestResponse {
+    public List<String> streamPlaylistTracksUris(String playlistId, int hardLimit) throws FatalRequestResponseException {
         if (hardLimit > MAXIMUM_PLAYLIST_SIZE) hardLimit = MAXIMUM_PLAYLIST_SIZE;
         return PageAggregator.aggregate(
                         new SpotifyFuturePage<>(
@@ -163,12 +168,12 @@ public class ShuffleApi {
      * Add tracks to a playlist. Note that this method may send multiple requests because Spotify imposes a size limit
      * of 100 on the amount of tracks to add in one request.
      *
-     * @param playlistId the unique identifier of the playlist to add tracks to
-     * @param snapshot   the current snapshot identifier of the playlist
-     * @param tracks     the URIs of the tracks to add
-     * @return the new snapshot identifier
+     * @param playlistId the unique identifier of the playlist to add tracks to.
+     * @param snapshot   the current snapshot identifier of the playlist.
+     * @param tracks     the URIs of the tracks to add.
+     * @return the new snapshot identifier, never null.
      */
-    public String addTracks(String playlistId, String snapshot, List<String> tracks) throws FatalRequestResponse {
+    public String addTracks(String playlistId, String snapshot, List<String> tracks) throws FatalRequestResponseException {
         int consumed = 0;
 
         while (consumed < tracks.size()) {
@@ -193,12 +198,12 @@ public class ShuffleApi {
      * Remove tracks from a playlist. Note that this method may send multiple requests because Spotify imposes a size limit
      * of 100 on the amount of tracks to remove in one request.
      *
-     * @param playlistId the unique identifier of the playlist to remove tracks from
-     * @param snapshot   the current snapshot identifier of the playlist
-     * @param tracks     the URIs of the tracks to remove
-     * @return the new snapshot identifier
+     * @param playlistId the unique identifier of the playlist to remove tracks from.
+     * @param snapshot   the current snapshot identifier of the playlist.
+     * @param tracks     the URIs of the tracks to remove.
+     * @return the new snapshot identifier, never null.
      */
-    public String removeTracks(String playlistId, String snapshot, List<String> tracks) throws FatalRequestResponse {
+    public String removeTracks(String playlistId, String snapshot, List<String> tracks) throws FatalRequestResponseException {
         int removed = 0;
 
         while (removed < tracks.size()) {
@@ -226,13 +231,13 @@ public class ShuffleApi {
      * Reorder a single track. Note that Spotify does not allow multiple single track reorders in a single request, it
      * only allows reordering ranges of tracks.
      *
-     * @param playlistId    The unique identifier of the playlist
-     * @param range_start   the current index of the song you wish to reorder
-     * @param insert_before the new index of the track to reorder
-     * @param snapshot      the current snapshot identifier of the playlist
-     * @return the new snapshot identifier
+     * @param playlistId    The unique identifier of the playlist.
+     * @param range_start   the current index of the song you wish to reorder.
+     * @param insert_before the new index of the track to reorder.
+     * @param snapshot      the current snapshot identifier of the playlist.
+     * @return the new snapshot identifier, never null.
      */
-    public String reorderTrack(String playlistId, int range_start, int insert_before, String snapshot) throws FatalRequestResponse {
+    public String reorderTrack(String playlistId, int range_start, int insert_before, String snapshot) throws FatalRequestResponseException {
         return apiRequest(getApi()
                 .reorderPlaylistsItems(playlistId, range_start, insert_before)
                 .range_length(1)
@@ -245,11 +250,11 @@ public class ShuffleApi {
      * Create a new playlist for the user bound to this {@link ShuffleApi}. The playlist will be public and
      * non-collaborative.
      *
-     * @param playlistName        the name of the new playlist (does not have to be unique)
-     * @param playlistDescription the description of the new playlist
-     * @return the newly created playlist's details
+     * @param playlistName        the name of the new playlist (does not have to be unique).
+     * @param playlistDescription the description of the new playlist.
+     * @return the newly created playlist's details, never null.
      */
-    public Playlist uploadPlaylist(String playlistName, String playlistDescription) throws FatalRequestResponse {
+    public Playlist uploadPlaylist(String playlistName, String playlistDescription) throws FatalRequestResponseException {
         return apiRequest(getApi()
                 .createPlaylist(getUserId(), playlistName)
                 .collaborative(false)
@@ -259,20 +264,20 @@ public class ShuffleApi {
     }
 
     /**
-     * @return the unique user identifier
+     * @return the unique user identifier, never null.
      */
     public String getUserId() {
         return user.getId();
     }
 
     /**
-     * @return the user's display name (non-unique)
+     * @return the user's display name (non-unique), never null.
      */
     public String getDisplayName() {
         return user.getDisplayName();
     }
 
-    private <T> T apiRequest(IRequest<T> request) throws FatalRequestResponse {
+    private <T> T apiRequest(IRequest<T> request) throws FatalRequestResponseException {
         return requestHandler.handleRequest(request);
     }
 
@@ -280,14 +285,14 @@ public class ShuffleApi {
         return api;
     }
 
-    private synchronized void refreshAccessToken() throws FatalRequestResponse {
+    private synchronized void refreshAccessToken() throws FatalRequestResponseException {
         // prevent another refresh if it was recently refreshed
         if (System.currentTimeMillis() < accessTokenValidUntilAtLeast) {
             return;
         }
         if (api.getRefreshToken() == null) {
             LOGGER.error("An attempt was made to refresh credentials for which we do not have a refresh token");
-            throw new FatalRequestResponse(String.format("Could not refresh credentials for '%s', there was no refresh token", user.getDisplayName()));
+            throw new FatalRequestResponseException(String.format("Could not refresh credentials for '%s', there was no refresh token", user.getDisplayName()));
         }
 
         var credentials = requestHandler.handleRequest(getApi().authorizationCodeRefresh().build());

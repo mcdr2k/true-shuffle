@@ -1,6 +1,6 @@
 package nl.martderoos.trueshuffle.paging;
 
-import nl.martderoos.trueshuffle.requests.exceptions.FatalRequestResponse;
+import nl.martderoos.trueshuffle.requests.exceptions.FatalRequestResponseException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,9 +21,9 @@ public class PageAggregator {
      * @param hardLimit   the limit on the total number of items this function may return at most.
      * @param <T>         the type of items we may return
      * @return the list of items, never null but may be empty.
-     * @throws FatalRequestResponse when a page fails to load.
+     * @throws FatalRequestResponseException when a page fails to load.
      */
-    public static <T> List<T> aggregate(SpotifyFuturePage<T> initialPage, int hardLimit) throws FatalRequestResponse {
+    public static <T> List<T> aggregate(SpotifyFuturePage<T> initialPage, int hardLimit) throws FatalRequestResponseException {
         var page = initialPage.load();
         hardLimit = Math.min(page.getTotal(), hardLimit);
 

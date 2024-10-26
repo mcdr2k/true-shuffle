@@ -1,6 +1,6 @@
 package nl.martderoos.trueshuffle.paging;
 
-import nl.martderoos.trueshuffle.requests.exceptions.FatalRequestResponse;
+import nl.martderoos.trueshuffle.requests.exceptions.FatalRequestResponseException;
 
 import java.util.Objects;
 
@@ -55,9 +55,9 @@ public class SpotifyFuturePage<T> {
      * Load this page.
      *
      * @return a result page, never null.
-     * @throws FatalRequestResponse when the page fails to load
+     * @throws FatalRequestResponseException when the page fails to load
      */
-    public SpotifyResultPage<T> load() throws FatalRequestResponse {
+    public SpotifyResultPage<T> load() throws FatalRequestResponseException {
         return new SpotifyResultPage<>(pageLoader.loadPage(offset, limit), pageLoader);
     }
 }

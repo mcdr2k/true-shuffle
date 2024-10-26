@@ -17,7 +17,7 @@ public class SpotifyResultPage<T> {
      * Create a new page (capture) of items.
      *
      * @param paging a page of items.
-     * @param loader the loader to use for the next page of items, which should be same loader that was used to
+     * @param loader the loader to use for the next page of items, which should be the same loader that was used to
      *               load this page's items.
      */
     public SpotifyResultPage(Paging<T> paging, SpotifyPageLoader<T> loader) {

@@ -2,7 +2,7 @@ package nl.martderoos.trueshuffle.model;
 
 import nl.martderoos.trueshuffle.adhoc.LazyExpiringApiData;
 import nl.martderoos.trueshuffle.exceptions.ImmutablePlaylistException;
-import nl.martderoos.trueshuffle.requests.exceptions.FatalRequestResponse;
+import nl.martderoos.trueshuffle.requests.exceptions.FatalRequestResponseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.michaelthelin.spotify.model_objects.specification.Image;
@@ -61,7 +61,7 @@ public class ShufflePlaylist {
      * @param tracksToRemove The tracks to remove from the playlist (nullable)
      * @throws ImmutablePlaylistException if this playlist is immutable.
      */
-    public synchronized void addAndRemoveTracks(List<String> tracksToAdd, List<String> tracksToRemove) throws FatalRequestResponse, ImmutablePlaylistException {
+    public synchronized void addAndRemoveTracks(List<String> tracksToAdd, List<String> tracksToRemove) throws FatalRequestResponseException, ImmutablePlaylistException {
         verifyMutable();
         String playlistId = getPlaylistId();
         String snapshot = getSnapshotId();
@@ -91,7 +91,7 @@ public class ShufflePlaylist {
      *
      * @throws ImmutablePlaylistException if this playlist is immutable.
      */
-    public synchronized void shuffleInPlace() throws FatalRequestResponse, ImmutablePlaylistException {
+    public synchronized void shuffleInPlace() throws FatalRequestResponseException, ImmutablePlaylistException {
         verifyMutable();
         var id = getPlaylistId();
         var playlist = playlistData.getData();
@@ -138,7 +138,7 @@ public class ShufflePlaylist {
         return ownerId;
     }
 
-    private synchronized String getSnapshotId() throws FatalRequestResponse {
+    private synchronized String getSnapshotId() throws FatalRequestResponseException {
         return playlistData.getData().getSnapshotId();
     }
 
@@ -146,9 +146,9 @@ public class ShufflePlaylist {
      * Attempt to retrieve the playlist's tracks
      *
      * @return the playlist's tracks
-     * @throws FatalRequestResponse if an attempt to get the playlist's tracks from the server fails
+     * @throws FatalRequestResponseException if an attempt to get the playlist's tracks from the server fails
      */
-    public synchronized List<String> getPlaylistTracksUris() throws FatalRequestResponse {
+    public synchronized List<String> getPlaylistTracksUris() throws FatalRequestResponseException {
         return playlistTracksUris.getData();
     }
 
@@ -156,9 +156,9 @@ public class ShufflePlaylist {
      * Attempt to retrieve the name of the playlist
      *
      * @return the name of the playlist
-     * @throws FatalRequestResponse if an attempt to get the playlist's name from the server fails
+     * @throws FatalRequestResponseException if an attempt to get the playlist's name from the server fails
      */
-    public synchronized String getName() throws FatalRequestResponse {
+    public synchronized String getName() throws FatalRequestResponseException {
         return playlistData.getData().getName();
     }
 
@@ -166,9 +166,9 @@ public class ShufflePlaylist {
      * Attempt to retrieve the set of images for the thumbnail (different resolutions)
      *
      * @return the array of images (same image, different resolution)
-     * @throws FatalRequestResponse if an attempt to get the playlist's thumbnails from the server fails
+     * @throws FatalRequestResponseException if an attempt to get the playlist's thumbnails from the server fails
      */
-    public synchronized Image[] getImages() throws FatalRequestResponse {
+    public synchronized Image[] getImages() throws FatalRequestResponseException {
         return playlistData.getData().getImages();
     }
 }

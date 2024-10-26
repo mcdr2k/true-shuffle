@@ -1,6 +1,6 @@
 package nl.martderoos.trueshuffle.paging;
 
-import nl.martderoos.trueshuffle.requests.exceptions.FatalRequestResponse;
+import nl.martderoos.trueshuffle.requests.exceptions.FatalRequestResponseException;
 import se.michaelthelin.spotify.model_objects.specification.Paging;
 
 /**
@@ -16,7 +16,7 @@ public interface SpotifyPageLoader<T> {
      * @param offset the offset to start loading data from where an offset of 0 indicates the first item of all data.
      * @param limit  the maximum number of items the page may contain.
      * @return the items captured by the page specification.
-     * @throws FatalRequestResponse when an issue is encountered while leveraging the Spotify API
+     * @throws FatalRequestResponseException when an issue is encountered while leveraging the Spotify API
      */
-    Paging<T> loadPage(int offset, int limit) throws FatalRequestResponse;
+    Paging<T> loadPage(int offset, int limit) throws FatalRequestResponseException;
 }

@@ -2,7 +2,7 @@ package nl.martderoos.trueshuffle.utility;
 
 import nl.martderoos.trueshuffle.model.ShuffleApi;
 import nl.martderoos.trueshuffle.model.ShufflePlaylist;
-import nl.martderoos.trueshuffle.requests.exceptions.FatalRequestResponse;
+import nl.martderoos.trueshuffle.requests.exceptions.FatalRequestResponseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,21 +23,21 @@ public class ShuffleUtil {
      * Shuffles provided list of tracks into target playlist. The provided list of tracks will be diffed with the current
      * tracks to reduce the number of api calls.
      *
-     * @param api       The api.
-     * @param target    The target playlist.
-     * @param newTracks The list of tracks that should be in target playlist.
+     * @param api    the api.
+     * @param target the target playlist.
+     * @param tracks the list of tracks that should be in target playlist.
      */
-    public static void shuffleInto(ShuffleApi api, ShufflePlaylist target, Collection<String> newTracks) throws FatalRequestResponse {
+    public static void shuffleInto(ShuffleApi api, ShufflePlaylist target, Collection<String> tracks) throws FatalRequestResponseException {
         var currentTracks = target.getPlaylistTracksUris();
         var currentTracksCounter = new ItemCounter<>(currentTracks);
 
         List<String> tracksToAdd = new ArrayList<>();
-        for (var newTrack : newTracks) {
+        for (var newTrack : tracks) {
             if (!currentTracksCounter.remove(newTrack))
                 tracksToAdd.add(newTrack);
         }
 
-        var newTracksCounter = new ItemCounter<>(newTracks);
+        var newTracksCounter = new ItemCounter<>(tracks);
 
         List<String> tracksToRemove = new ArrayList<>();
         for (var currentTrack : currentTracks) {

@@ -1,9 +1,9 @@
 package nl.martderoos.trueshuffle.exceptions;
 
 /**
- * Root runtime exception for true shuffle exceptions
+ * Root runtime exception for true shuffle exceptions.
  */
-public class TrueShuffleRuntimeException extends TrueShuffleException {
+public class TrueShuffleRuntimeException extends RuntimeException {
     public TrueShuffleRuntimeException() {
         super();
     }

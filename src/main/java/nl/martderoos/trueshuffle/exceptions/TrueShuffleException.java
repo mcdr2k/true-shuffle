@@ -1,7 +1,7 @@
 package nl.martderoos.trueshuffle.exceptions;
 
 /**
- * Root exception for true shuffle exceptions
+ * Root exception for true shuffle exceptions.
  */
 public class TrueShuffleException extends Exception {
     public TrueShuffleException(Throwable cause) {

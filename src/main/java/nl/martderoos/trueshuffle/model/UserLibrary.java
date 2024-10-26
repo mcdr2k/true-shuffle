@@ -2,7 +2,7 @@ package nl.martderoos.trueshuffle.model;
 
 
 import nl.martderoos.trueshuffle.adhoc.LazyExpiringApiData;
-import nl.martderoos.trueshuffle.requests.exceptions.FatalRequestResponse;
+import nl.martderoos.trueshuffle.requests.exceptions.FatalRequestResponseException;
 import se.michaelthelin.spotify.model_objects.specification.Playlist;
 import se.michaelthelin.spotify.model_objects.specification.PlaylistSimplified;
 
@@ -37,7 +37,7 @@ public class UserLibrary {
      *
      * @return the list of user liked tracks with a maximum of {@link #LIKED_TRACKS_HARD_LIMIT} elements.
      */
-    public synchronized List<String> getUserLikedTracksUris() throws FatalRequestResponse {
+    public synchronized List<String> getUserLikedTracksUris() throws FatalRequestResponseException {
         return userLikedTracksUris.getData();
     }
 
@@ -47,7 +47,7 @@ public class UserLibrary {
      * @param limit The maximum number of playlists to retrieve.
      * @return A shallow copy of the underlying playlists.
      */
-    public synchronized List<PlaylistSimplified> getMostRecentPlaylists(int limit) throws FatalRequestResponse {
+    public synchronized List<PlaylistSimplified> getMostRecentPlaylists(int limit) throws FatalRequestResponseException {
         return new ArrayList<>(this.index.getData().getMostRecentPlaylists(limit));
     }
 
@@ -56,9 +56,10 @@ public class UserLibrary {
      * Private playlists from other users cannot be retrieved.
      *
      * @param playlistId The id of the playlist.
-     * @return The playlist identified by the provided id.
+     * @return the playlist identified by the provided id, never null.
+     * @throws FatalRequestResponseException if the playlist does not exist or is not visible to this user.
      */
-    public synchronized ShufflePlaylist getPlaylistById(String playlistId) throws FatalRequestResponse {
+    public synchronized ShufflePlaylist getPlaylistById(String playlistId) throws FatalRequestResponseException {
         return index.getData().getPlaylistById(playlistId);
     }
 
@@ -68,7 +69,7 @@ public class UserLibrary {
      * @param playlistName The playlist name to search for
      * @param isOwner      Whether we should only include playlists that are owned by the current user
      */
-    public synchronized List<ShufflePlaylist> getPlaylistByName(String playlistName, boolean isOwner) throws FatalRequestResponse {
+    public synchronized List<ShufflePlaylist> getPlaylistByName(String playlistName, boolean isOwner) throws FatalRequestResponseException {
         var result = index.getData().getPlaylistsByName(playlistName);
         if (isOwner) {
             return result.stream().filter(this::isOwner).collect(Collectors.toList());
@@ -83,26 +84,46 @@ public class UserLibrary {
      * @param description The description of the new playlist.
      * @return The newly created playlist.
      */
-    public synchronized ShufflePlaylist createPlaylist(String name, String description) throws FatalRequestResponse {
+    public synchronized ShufflePlaylist createPlaylist(String name, String description) throws FatalRequestResponseException {
         var newPlaylist = api.uploadPlaylist(name, description);
         var simplified = toSimplifiedPlaylist(newPlaylist);
         return index.getData().addPlaylist(simplified);
     }
 
-    private ShufflePlaylistIndex createIndex() throws FatalRequestResponse {
+    private ShufflePlaylistIndex createIndex() throws FatalRequestResponseException {
         var index = new ShufflePlaylistIndex();
         index.reload();
         return index;
     }
 
+    /**
+     * Check if this library owns the provided playlist.
+     *
+     * @param playlist the playlist to check the ownership of.
+     * @return true if this library owns the playlist, false otherwise.
+     */
+
     public boolean isOwner(Playlist playlist) {
         return this.userId.equals(playlist.getOwner().getId());
     }
+
+    /**
+     * Check if this library owns the provided playlist.
+     *
+     * @param playlist the playlist to check the ownership of.
+     * @return true if this library owns the playlist, false otherwise.
+     */
 
     public boolean isOwner(PlaylistSimplified playlist) {
         return this.userId.equals(playlist.getOwner().getId());
     }
 
+    /**
+     * Check if this library owns the provided playlist.
+     *
+     * @param playlist the playlist to check the ownership of.
+     * @return true if this library owns the playlist, false otherwise.
+     */
     public boolean isOwner(ShufflePlaylist playlist) {
         return this.userId.equals(playlist.getOwnerId());
     }
@@ -116,7 +137,7 @@ public class UserLibrary {
         private final Map<String, ShufflePlaylist> pidToPlaylist = new HashMap<>();
         private final Map<String, List<ShufflePlaylist>> nameToPlaylist = new HashMap<>();
 
-        public void reload() throws FatalRequestResponse {
+        public void reload() throws FatalRequestResponseException {
             clear();
             this.playlists = api.streamUserPlaylists(50);
             for (var simplified : playlists) {
@@ -142,7 +163,7 @@ public class UserLibrary {
             return this.playlists.subList(0, Math.min(this.playlists.size(), limit));
         }
 
-        private ShufflePlaylist addPlaylist(PlaylistSimplified playlistSimplified) throws FatalRequestResponse {
+        private ShufflePlaylist addPlaylist(PlaylistSimplified playlistSimplified) throws FatalRequestResponseException {
             if (pidToPlaylist.containsKey(playlistSimplified.getId())) {
                 return pidToPlaylist.get(playlistSimplified.getId());
             }
@@ -152,7 +173,7 @@ public class UserLibrary {
             return playlist;
         }
 
-        private void put(ShufflePlaylist playlist, boolean putFront) throws FatalRequestResponse {
+        private void put(ShufflePlaylist playlist, boolean putFront) throws FatalRequestResponseException {
             pidToPlaylist.put(playlist.getPlaylistId(), playlist);
 
             var list = nameToPlaylist.computeIfAbsent(playlist.getName(), k -> new ArrayList<>());
@@ -163,7 +184,7 @@ public class UserLibrary {
                 list.add(playlist);
         }
 
-        public ShufflePlaylist getPlaylistById(String playlistId) throws FatalRequestResponse {
+        public ShufflePlaylist getPlaylistById(String playlistId) throws FatalRequestResponseException {
             var shufflePlaylist = pidToPlaylist.get(playlistId);
             if (shufflePlaylist == null) {
                 var playlist = api.streamPlaylistSimplified(playlistId);
@@ -173,7 +194,7 @@ public class UserLibrary {
             return shufflePlaylist;
         }
 
-        public List<ShufflePlaylist> getPlaylistsByName(String playlistName) throws FatalRequestResponse {
+        public List<ShufflePlaylist> getPlaylistsByName(String playlistName) throws FatalRequestResponseException {
             // if list is not null, then we will not request playlists anymore which may be inconsistent
             // if some playlists were renamed
             var list = nameToPlaylist.get(playlistName);

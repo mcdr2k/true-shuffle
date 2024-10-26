@@ -1,6 +1,9 @@
 package nl.martderoos.trueshuffle.jobs;
 
-public enum EJobStatus {
+/**
+ * Enumerates the possible states a {@link TrueShuffleJob} can be in.
+ */
+public enum ETrueShuffleJobStatus {
     /**
      * Indicates that the job is waiting to be executed
      */
@@ -23,20 +26,22 @@ public enum EJobStatus {
     TERMINATED;
 
     /**
-     * @return True if the job is still waiting to be executed.
+     * @return true if the job is still waiting to be executed, false otherwise.
      */
     public boolean isWaiting() {
         return this == WAITING;
     }
+
     /**
-     * @return True if the job is currently being executed but has not yet finished.
+     * @return true if the job is currently being executed but has not yet finished, false otherwise.
      */
     public boolean isRunning() {
         return this == EXECUTING;
     }
+
     /**
-     * @return True if the job has finished executing, which can be either {@link #FINISHED}, {@link #SKIPPED} or
-     * {@link #TERMINATED}.
+     * @return true if the job has finished executing, which can be either {@link #FINISHED}, {@link #SKIPPED} or
+     * {@link #TERMINATED}, false otherwise.
      */
     public boolean isDone() {
         return this == FINISHED || this == SKIPPED || this == TERMINATED;
