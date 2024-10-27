@@ -4,12 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f4c9cad5-be35-462f-aaff-ecb9e1d8ea8f" name="Changes" comment="rework and document jobs package">
-      <change afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/TrueShuffleUserCredentials.java" afterDir="false" />
+    <list default="true" id="f4c9cad5-be35-462f-aaff-ecb9e1d8ea8f" name="Changes" comment="add .idea folder to gitignore">
+      <change afterPath="$PROJECT_DIR$/src/test/java/nl/martderoos/trueshuffle/TrueShuffleClientTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/java/nl/martderoos/trueshuffle/paging/PageAggregatorTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/java/nl/martderoos/trueshuffle/paging/SpotifyFuturePageTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/java/nl/martderoos/trueshuffle/utility/ItemCounterTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/java/nl/martderoos/trueshuffle/utility/ShuffleUtilTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/TrueShuffleClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/TrueShuffleClient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/TrueShuffleUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/TrueShuffleUser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/model/ShuffleApi.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/model/ShuffleApi.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TrueShuffle.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/paging/SpotifyFuturePage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/paging/SpotifyFuturePage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/utility/ItemCounter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/utility/ItemCounter.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -70,31 +75,128 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Maven.TrueShuffle [compile].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.TrueShuffle [install].executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;feature/cleanup&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "JUnit.All in TrueShuffle.executor": "Coverage",
+    "JUnit.ItemCounterTest.executor": "Run",
+    "JUnit.PageAggregatorTest.executor": "Run",
+    "JUnit.PageAggregatorTest.testHardLimitZero.executor": "Run",
+    "JUnit.PageAggregatorTest.testPageLimit.executor": "Run",
+    "JUnit.PagingTest.executor": "Run",
+    "JUnit.ShuffleUtilTest.executor": "Run",
+    "JUnit.SpotifyFuturePageTest.executor": "Run",
+    "JUnit.SpotifyResultPageTest.executor": "Run",
+    "JUnit.TrueShuffleClientTest.executor": "Run",
+    "JUnit.java in TrueShuffle.executor": "Coverage",
+    "Maven.TrueShuffle [clean].executor": "Run",
+    "Maven.TrueShuffle [compile].executor": "Run",
+    "Maven.TrueShuffle [install].executor": "Run",
+    "Maven.TrueShuffle [package].executor": "Run",
+    "Maven.TrueShuffle [test].executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "main",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "D:/IdeaProjects/true-shuffle/src/test/resources",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0",
+    "settings.editor.selected.configurable": "reference.settings.project.maven.repository.indices",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\IdeaProjects\true-shuffle\src\test\resources" />
       <recent name="D:\JetBrains\IdeaProjects\TrueShuffle\src\main\java\trueshuffle" />
     </key>
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="nl.martderoos.trueshuffle" />
       <recent name="trueshuffle" />
     </key>
+  </component>
+  <component name="RunManager" selected="JUnit.java in TrueShuffle">
+    <configuration name="ItemCounterTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="TrueShuffle" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="nl.martderoos.trueshuffle.utility.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="nl.martderoos.trueshuffle.utility" />
+      <option name="MAIN_CLASS_NAME" value="nl.martderoos.trueshuffle.utility.ItemCounterTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="PageAggregatorTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="TrueShuffle" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="nl.martderoos.trueshuffle.paging.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="nl.martderoos.trueshuffle.paging" />
+      <option name="MAIN_CLASS_NAME" value="nl.martderoos.trueshuffle.paging.PageAggregatorTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ShuffleUtilTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="TrueShuffle" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="nl.martderoos.trueshuffle.utility.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="nl.martderoos.trueshuffle.utility" />
+      <option name="MAIN_CLASS_NAME" value="nl.martderoos.trueshuffle.utility.ShuffleUtilTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TrueShuffleClientTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="TrueShuffle" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="nl.martderoos.trueshuffle.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="nl.martderoos.trueshuffle" />
+      <option name="MAIN_CLASS_NAME" value="nl.martderoos.trueshuffle.TrueShuffleClientTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="java in TrueShuffle" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="TrueShuffle" />
+      <option name="TEST_OBJECT" value="directory" />
+      <dir value="$PROJECT_DIR$/src/test/java" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JUnit.java in TrueShuffle" />
+        <item itemvalue="JUnit.ShuffleUtilTest" />
+        <item itemvalue="JUnit.ItemCounterTest" />
+        <item itemvalue="JUnit.TrueShuffleClientTest" />
+        <item itemvalue="JUnit.PageAggregatorTest" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
@@ -136,6 +238,9 @@
       <workItem from="1729891685848" duration="3890000" />
       <workItem from="1729939519121" duration="15481000" />
       <workItem from="1729959866676" duration="1860000" />
+      <workItem from="1730034520666" duration="23000" />
+      <workItem from="1730044997828" duration="5605000" />
+      <workItem from="1730052631324" duration="5645000" />
     </task>
     <task id="LOCAL-00001" summary="Init">
       <created>1729345895625</created>
@@ -288,7 +393,15 @@
       <option name="project" value="LOCAL" />
       <updated>1729955314377</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary="add .idea folder to gitignore">
+      <option name="closed" value="true" />
+      <created>1729962255549</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1729962255549</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -322,6 +435,11 @@
     <MESSAGE value="format documentation in utility package" />
     <MESSAGE value="rework RequestHandler to be stateless" />
     <MESSAGE value="rework and document jobs package" />
-    <option name="LAST_COMMIT_MESSAGE" value="rework and document jobs package" />
+    <MESSAGE value="add .idea folder to gitignore" />
+    <option name="LAST_COMMIT_MESSAGE" value="add .idea folder to gitignore" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/true_shuffle$All_in_TrueShuffle.ic" NAME="All in TrueShuffle Coverage Results" MODIFIED="1730052589890" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true" />
+    <SUITE FILE_PATH="coverage/true_shuffle$java_in_TrueShuffle.ic" NAME="java in TrueShuffle Coverage Results" MODIFIED="1730061046589" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true" />
   </component>
 </project>

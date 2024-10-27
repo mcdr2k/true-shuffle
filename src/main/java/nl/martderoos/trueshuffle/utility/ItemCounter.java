@@ -55,6 +55,17 @@ public class ItemCounter<K> {
     }
 
     /**
+     * Get the current count of an item.
+     *
+     * @param item the item to check the count for.
+     * @return the item count, at least 0.
+     */
+    public int getCount(K item) {
+        var count = counter.get(item);
+        return count != null ? count : 0;
+    }
+
+    /**
      * Reduces the count of the associated item by 1 if it exists.
      *
      * @param item The item to remove.
