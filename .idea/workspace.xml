@@ -4,17 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f4c9cad5-be35-462f-aaff-ecb9e1d8ea8f" name="Changes" comment="add .idea folder to gitignore">
-      <change afterPath="$PROJECT_DIR$/src/test/java/nl/martderoos/trueshuffle/TrueShuffleClientTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/nl/martderoos/trueshuffle/paging/PageAggregatorTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/nl/martderoos/trueshuffle/paging/SpotifyFuturePageTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/nl/martderoos/trueshuffle/utility/ItemCounterTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/nl/martderoos/trueshuffle/utility/ShuffleUtilTest.java" afterDir="false" />
+    <list default="true" id="f4c9cad5-be35-462f-aaff-ecb9e1d8ea8f" name="Changes" comment="test utility and paging package">
+      <change afterPath="$PROJECT_DIR$/src/test/java/nl/martderoos/trueshuffle/adhoc/LazyExpiringDataTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TrueShuffle.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/paging/SpotifyFuturePage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/paging/SpotifyFuturePage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/utility/ItemCounter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/utility/ItemCounter.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -79,6 +71,8 @@
   "keyToString": {
     "JUnit.All in TrueShuffle.executor": "Coverage",
     "JUnit.ItemCounterTest.executor": "Run",
+    "JUnit.LazyExpiringDataTest.executor": "Run",
+    "JUnit.LazyExpiringDataTest.testQuickRefreshTimeout.executor": "Run",
     "JUnit.PageAggregatorTest.executor": "Run",
     "JUnit.PageAggregatorTest.testHardLimitZero.executor": "Run",
     "JUnit.PageAggregatorTest.testPageLimit.executor": "Run",
@@ -135,17 +129,33 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="PageAggregatorTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="LazyExpiringDataTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="TrueShuffle" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="nl.martderoos.trueshuffle.paging.*" />
+          <option name="PATTERN" value="nl.martderoos.trueshuffle.adhoc.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <option name="PACKAGE_NAME" value="nl.martderoos.trueshuffle.paging" />
-      <option name="MAIN_CLASS_NAME" value="nl.martderoos.trueshuffle.paging.PageAggregatorTest" />
+      <option name="PACKAGE_NAME" value="nl.martderoos.trueshuffle.adhoc" />
+      <option name="MAIN_CLASS_NAME" value="nl.martderoos.trueshuffle.adhoc.LazyExpiringDataTest" />
       <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="LazyExpiringDataTest.testQuickRefreshTimeout" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="TrueShuffle" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="nl.martderoos.trueshuffle.adhoc.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="nl.martderoos.trueshuffle.adhoc" />
+      <option name="MAIN_CLASS_NAME" value="nl.martderoos.trueshuffle.adhoc.LazyExpiringDataTest" />
+      <option name="METHOD_NAME" value="testQuickRefreshTimeout" />
+      <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -165,21 +175,6 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="TrueShuffleClientTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="TrueShuffle" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="nl.martderoos.trueshuffle.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="nl.martderoos.trueshuffle" />
-      <option name="MAIN_CLASS_NAME" value="nl.martderoos.trueshuffle.TrueShuffleClientTest" />
-      <option name="TEST_OBJECT" value="class" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="java in TrueShuffle" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="TrueShuffle" />
       <option name="TEST_OBJECT" value="directory" />
@@ -191,10 +186,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="JUnit.java in TrueShuffle" />
+        <item itemvalue="JUnit.LazyExpiringDataTest" />
+        <item itemvalue="JUnit.LazyExpiringDataTest.testQuickRefreshTimeout" />
         <item itemvalue="JUnit.ShuffleUtilTest" />
         <item itemvalue="JUnit.ItemCounterTest" />
-        <item itemvalue="JUnit.TrueShuffleClientTest" />
-        <item itemvalue="JUnit.PageAggregatorTest" />
       </list>
     </recent_temporary>
   </component>
@@ -240,7 +235,7 @@
       <workItem from="1729959866676" duration="1860000" />
       <workItem from="1730034520666" duration="23000" />
       <workItem from="1730044997828" duration="5605000" />
-      <workItem from="1730052631324" duration="5645000" />
+      <workItem from="1730052631324" duration="6881000" />
     </task>
     <task id="LOCAL-00001" summary="Init">
       <created>1729345895625</created>
@@ -401,7 +396,15 @@
       <option name="project" value="LOCAL" />
       <updated>1729962255549</updated>
     </task>
-    <option name="localTasksCounter" value="21" />
+    <task id="LOCAL-00021" summary="test utility and paging package">
+      <option name="closed" value="true" />
+      <created>1730062515379</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1730062515379</updated>
+    </task>
+    <option name="localTasksCounter" value="22" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -436,10 +439,22 @@
     <MESSAGE value="rework RequestHandler to be stateless" />
     <MESSAGE value="rework and document jobs package" />
     <MESSAGE value="add .idea folder to gitignore" />
-    <option name="LAST_COMMIT_MESSAGE" value="add .idea folder to gitignore" />
+    <MESSAGE value="test utility and paging package" />
+    <option name="LAST_COMMIT_MESSAGE" value="test utility and paging package" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/nl/martderoos/trueshuffle/adhoc/LazyExpiringData.java</url>
+          <line>38</line>
+          <option name="timeStamp" value="7" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/true_shuffle$All_in_TrueShuffle.ic" NAME="All in TrueShuffle Coverage Results" MODIFIED="1730052589890" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true" />
-    <SUITE FILE_PATH="coverage/true_shuffle$java_in_TrueShuffle.ic" NAME="java in TrueShuffle Coverage Results" MODIFIED="1730061046589" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true" />
+    <SUITE FILE_PATH="coverage/true_shuffle$java_in_TrueShuffle.ic" NAME="java in TrueShuffle Coverage Results" MODIFIED="1730062431873" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true" />
   </component>
 </project>
