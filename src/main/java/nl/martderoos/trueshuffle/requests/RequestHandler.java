@@ -58,7 +58,9 @@ public class RequestHandler {
 
     private class ApiRequest<T> {
         private static final int MIN_WAIT_TIME_SECONDS = 1;
+        private static final long MIN_WAIT_TIME_MILLIS = TimeUnit.SECONDS.toMillis(MIN_WAIT_TIME_SECONDS);
         private static final int MAX_WAIT_TIME_SECONDS = 300; // wait 5 minutes at most
+        private static final long MAX_WAIT_TIME_MILLIS = TimeUnit.SECONDS.toMillis(MAX_WAIT_TIME_SECONDS);
         private final IRequest<T> request;
         private int retries = 0;
         private Exception lastException;
@@ -78,6 +80,10 @@ public class RequestHandler {
                 } catch (SpotifyWebApiException e) {
                     // handle and then continue
                     handleError(e);
+                } catch (Exception e) {
+                    // this should never happen, unless the SpotifyApi library we use is faulty
+                    LOGGER.error("Request threw an unidentified error: {}", e.getMessage());
+                    throw new FatalRequestResponseException(e);
                 }
 
                 retries++;
@@ -105,8 +111,8 @@ public class RequestHandler {
         private void sleep(long amount, TimeUnit unit) {
             try {
                 var millis = unit.toMillis(amount);
-                millis = Math.min(millis, MAX_WAIT_TIME_SECONDS);
-                millis = Math.max(MIN_WAIT_TIME_SECONDS, millis);
+                millis = Math.min(millis, MAX_WAIT_TIME_MILLIS);
+                millis = Math.max(MIN_WAIT_TIME_MILLIS, millis);
                 LOGGER.debug("A request has been delayed for {} milliseconds", millis);
                 Thread.sleep(millis);
             } catch (InterruptedException e) {
