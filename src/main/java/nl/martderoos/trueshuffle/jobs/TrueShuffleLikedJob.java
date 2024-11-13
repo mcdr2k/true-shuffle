@@ -4,10 +4,11 @@ import nl.martderoos.trueshuffle.TrueShuffleUser;
 import nl.martderoos.trueshuffle.model.ShufflePlaylist;
 import nl.martderoos.trueshuffle.requests.exceptions.FatalRequestResponseException;
 import nl.martderoos.trueshuffle.utility.ShuffleUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import static nl.martderoos.trueshuffle.jobs.TrueShuffleJobPlaylistData.*;
+import static nl.martderoos.trueshuffle.jobs.TrueShuffleJobPlaylistData.newLikedSongsData;
+import static nl.martderoos.trueshuffle.jobs.TrueShuffleJobPlaylistData.newPlaylistData;
 
 /**
  * Dedicated thread-safe and immutable class that contains the data required for shuffling any user's liked songs.
@@ -15,7 +16,7 @@ import static nl.martderoos.trueshuffle.jobs.TrueShuffleJobPlaylistData.*;
  * shuffle a user's liked songs. If you wish to shuffle an actual playlist then you need to use {@link TrueShufflePlaylistJob}.
  */
 public final class TrueShuffleLikedJob extends TrueShuffleJob {
-    private static final Logger LOGGER = LoggerFactory.getLogger(TrueShuffleLikedJob.class);
+    private static final Logger LOGGER = LogManager.getLogger(TrueShuffleLikedJob.class);
     private final String targetPlaylistId;
 
     /**
@@ -57,7 +58,7 @@ public final class TrueShuffleLikedJob extends TrueShuffleJob {
                 return;
             }
         } else {
-            target = findOrCreateUniquePlaylistByName(
+            target = findOrCreateUniqueUserOwnedPlaylistByName(
                     library,
                     status,
                     LIKED_SONGS_TRUE_SHUFFLE,

@@ -3,8 +3,8 @@ package nl.martderoos.trueshuffle.utility;
 import nl.martderoos.trueshuffle.model.ShuffleApi;
 import nl.martderoos.trueshuffle.model.ShufflePlaylist;
 import nl.martderoos.trueshuffle.requests.exceptions.FatalRequestResponseException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -14,7 +14,7 @@ import java.util.List;
  * Utility class for shuffling a {@link ShufflePlaylist}.
  */
 public class ShuffleUtil {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ShuffleUtil.class);
+    private static final Logger LOGGER = LogManager.getLogger(ShuffleUtil.class);
 
     private ShuffleUtil() {
     }

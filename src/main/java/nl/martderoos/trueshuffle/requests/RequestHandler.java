@@ -2,8 +2,8 @@ package nl.martderoos.trueshuffle.requests;
 
 import nl.martderoos.trueshuffle.requests.exceptions.*;
 import org.apache.hc.core5.http.ParseException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import se.michaelthelin.spotify.exceptions.SpotifyWebApiException;
 import se.michaelthelin.spotify.exceptions.detailed.*;
 import se.michaelthelin.spotify.requests.IRequest;
@@ -20,7 +20,7 @@ public class RequestHandler {
      * The maximum number of retries before a single request is considered a lost cause.
      */
     public static final int MAX_RETRIES = 8;
-    private static final Logger LOGGER = LoggerFactory.getLogger(RequestHandler.class);
+    private static final Logger LOGGER = LogManager.getLogger(RequestHandler.class);
 
     private final AccessTokenRefresher refresher;
 

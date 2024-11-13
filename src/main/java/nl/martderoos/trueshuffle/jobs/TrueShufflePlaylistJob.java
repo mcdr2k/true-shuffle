@@ -2,8 +2,8 @@ package nl.martderoos.trueshuffle.jobs;
 
 import nl.martderoos.trueshuffle.TrueShuffleUser;
 import nl.martderoos.trueshuffle.requests.exceptions.FatalRequestResponseException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.Objects;
 
@@ -14,7 +14,7 @@ import java.util.Objects;
  * use {@link TrueShuffleLikedJob}.
  */
 public final class TrueShufflePlaylistJob extends TrueShuffleJob {
-    private static final Logger LOGGER = LoggerFactory.getLogger(TrueShufflePlaylistJob.class);
+    private static final Logger LOGGER = LogManager.getLogger(TrueShufflePlaylistJob.class);
     private final String sourcePlaylistId;
     private final String targetPlaylistId;
 

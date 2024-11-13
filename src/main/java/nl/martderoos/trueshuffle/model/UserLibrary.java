@@ -67,11 +67,11 @@ public class UserLibrary {
      * Retrieves a playlist from the index by its name
      *
      * @param playlistName The playlist name to search for
-     * @param isOwner      Whether we should only include playlists that are owned by the current user
+     * @param mustBeOwner      Whether we should only include playlists that are owned by the current user
      */
-    public synchronized List<ShufflePlaylist> getPlaylistByName(String playlistName, boolean isOwner) throws FatalRequestResponseException {
+    public synchronized List<ShufflePlaylist> getPlaylistByName(String playlistName, boolean mustBeOwner) throws FatalRequestResponseException {
         var result = index.getData().getPlaylistsByName(playlistName);
-        if (isOwner) {
+        if (mustBeOwner) {
             return result.stream().filter(this::isOwner).collect(Collectors.toList());
         }
         return result;

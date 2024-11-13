@@ -7,8 +7,8 @@ import nl.martderoos.trueshuffle.model.ShufflePlaylist;
 import nl.martderoos.trueshuffle.model.UserLibrary;
 import nl.martderoos.trueshuffle.requests.exceptions.FatalRequestResponseException;
 import nl.martderoos.trueshuffle.utility.ShuffleUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.Collection;
 import java.util.Objects;
@@ -23,7 +23,7 @@ import static nl.martderoos.trueshuffle.jobs.TrueShuffleJobPlaylistData.newPlayl
  * @see TrueShufflePlaylistJob
  */
 public abstract sealed class TrueShuffleJob permits TrueShuffleLikedJob, TrueShufflePlaylistJob {
-    private static final Logger LOGGER = LoggerFactory.getLogger(TrueShuffleJob.class);
+    private static final Logger LOGGER = LogManager.getLogger(TrueShuffleJob.class);
     public static final String TRUE_SHUFFLE_SUFFIX = " - TrueShuffle";
     public static final String LIKED_SONGS_TRUE_SHUFFLE = "Liked Songs" + TRUE_SHUFFLE_SUFFIX;
 
@@ -62,7 +62,7 @@ public abstract sealed class TrueShuffleJob permits TrueShuffleLikedJob, TrueShu
                 status.setStatusMessage(ETrueShuffleJobStatus.FINISHED, null);
                 LOGGER.info("{} completed appropriately", jobName);
             } else if (status.getStatus() != ETrueShuffleJobStatus.FINISHED) {
-                LOGGER.info("{} completed with status {} and message {}: ", jobName, status.getStatus(), status.getMessage());
+                LOGGER.info("{} completed with status {} and message: {}", jobName, status.getStatus(), status.getMessage());
             }
         } catch (FatalRequestResponseException e) {
             var message = jobName + " could not complete: " + e.getMessage();
@@ -80,10 +80,10 @@ public abstract sealed class TrueShuffleJob permits TrueShuffleLikedJob, TrueShu
     protected abstract void internalExecute(TrueShuffleUser user, TrueShuffleJobStatus status) throws FatalRequestResponseException;
 
     /**
-     * Attempts to find or create a playlist with the given name. If 2 or more playlists already exist with the provided
-     * name, then this function will update the job status to being {@link ETrueShuffleJobStatus#SKIPPED}. If exactly 1 playlist
-     * exists with the provided name, then it will be returned. Otherwise, a new playlist is created with such a name
-     * and returned.
+     * Attempts to find a user owned playlist with the given name or create a new one if it does not exist. If 2 or more
+     * playlists already exist with the provided name, then this function will update the job status to being
+     * {@link ETrueShuffleJobStatus#SKIPPED}. If exactly 1 playlist exists with the provided name, then it will be
+     * returned. Otherwise, a new playlist is created with such a name and returned.
      *
      * @param library     the library to use for search.
      * @param status      the status to update continuously.
@@ -91,7 +91,7 @@ public abstract sealed class TrueShuffleJob permits TrueShuffleLikedJob, TrueShu
      * @param description the description of the returned playlist in the case that we create a new one.
      * @return null if the provided name is not unique for a user's playlists.
      */
-    protected static ShufflePlaylist findOrCreateUniquePlaylistByName(UserLibrary library, TrueShuffleJobStatus status, String name, String description) throws FatalRequestResponseException {
+    protected static ShufflePlaylist findOrCreateUniqueUserOwnedPlaylistByName(UserLibrary library, TrueShuffleJobStatus status, String name, String description) throws FatalRequestResponseException {
         var list = library.getPlaylistByName(name, true);
         if (list == null || list.isEmpty()) {
             return library.createPlaylist(name, description);
@@ -162,7 +162,7 @@ public abstract sealed class TrueShuffleJob permits TrueShuffleLikedJob, TrueShu
         status.setSourcePlaylist(newPlaylistData(source.getPlaylistId(), source.getName(), source.getImages()));
 
         if (target == null) {
-            target = findOrCreateUniquePlaylistByName(
+            target = findOrCreateUniqueUserOwnedPlaylistByName(
                     user.getUserLibrary(),
                     status,
                     name,

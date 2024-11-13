@@ -3,8 +3,8 @@ package nl.martderoos.trueshuffle.model;
 import nl.martderoos.trueshuffle.adhoc.LazyExpiringApiData;
 import nl.martderoos.trueshuffle.exceptions.ImmutablePlaylistException;
 import nl.martderoos.trueshuffle.requests.exceptions.FatalRequestResponseException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import se.michaelthelin.spotify.model_objects.specification.Image;
 import se.michaelthelin.spotify.model_objects.specification.PlaylistSimplified;
 
@@ -21,7 +21,7 @@ public class ShufflePlaylist {
      * The maximum number of tracks we may retrieve for any playlist. Currently, 2000.
      */
     public static final int PLAYLIST_TRACKS_HARD_LIMIT = 2000;
-    private static final Logger LOGGER = LoggerFactory.getLogger(ShufflePlaylist.class);
+    private static final Logger LOGGER = LogManager.getLogger(ShufflePlaylist.class);
 
     private final ShuffleApi api;
     private final boolean mutable;
@@ -48,13 +48,13 @@ public class ShufflePlaylist {
 
         playlistData = new LazyExpiringApiData<>(() -> api.streamPlaylistSimplified(playlistId), true, 10, TimeUnit.MINUTES);
         playlistData.setData(Objects.requireNonNull(playlist));
-        playlistTracksUris = new LazyExpiringApiData<>(() -> api.streamPlaylistTracksUris(getPlaylistId(), PLAYLIST_TRACKS_HARD_LIMIT));
+        playlistTracksUris = new LazyExpiringApiData<>(() -> api.streamPlaylistTracksUris(playlistId, PLAYLIST_TRACKS_HARD_LIMIT));
     }
 
     /**
      * Add and remove tracks to this playlist by leveraging the Spotify API. Adding and removing tracks has been
-     * merged to better suit the Spotify api. <strong>Due to Spotify's implementation, tracks are first removed and then
-     * added.</strong> This method will throw an exception if you are not allowed to make modifications to this playlist.
+     * merged to better suit the Spotify api. <strong>Removal of tracks is always done before adding any tracks.</strong>
+     * This method will throw an exception if you are not allowed to make modifications to this playlist.
      * Check {@link #isMutable()} beforehand.
      *
      * @param tracksToAdd    The tracks to add to the playlist (nullable).

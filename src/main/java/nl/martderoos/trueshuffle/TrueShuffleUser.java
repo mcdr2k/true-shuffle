@@ -5,7 +5,6 @@ import nl.martderoos.trueshuffle.jobs.TrueShuffleLikedJob;
 import nl.martderoos.trueshuffle.jobs.TrueShufflePlaylistJob;
 import nl.martderoos.trueshuffle.model.ShuffleApi;
 import nl.martderoos.trueshuffle.model.UserLibrary;
-import se.michaelthelin.spotify.model_objects.credentials.AuthorizationCodeCredentials;
 import se.michaelthelin.spotify.model_objects.specification.Image;
 import se.michaelthelin.spotify.model_objects.specification.User;
 

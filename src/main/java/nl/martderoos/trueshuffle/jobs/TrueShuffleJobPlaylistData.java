@@ -26,22 +26,27 @@ public final class TrueShuffleJobPlaylistData {
      * @param images     the images (thumbnails) of this playlist (nullable).
      * @return a new instance.
      * @throws NullPointerException if either playlistId or name is null.
+     * @throws IllegalArgumentException if either playlistId or name is blank.
      */
     public static TrueShuffleJobPlaylistData newPlaylistData(String playlistId, String name, Image[] images) {
         Objects.requireNonNull(playlistId);
         Objects.requireNonNull(name);
+        if (playlistId.isBlank()) throw new IllegalArgumentException("playlistId is blank");
+        if (name.isBlank()) throw new IllegalArgumentException("name is blank");
         return new TrueShuffleJobPlaylistData(playlistId, name, images);
     }
 
     /**
      * Factory method for creating playlist data that references a user's liked songs pseudo playlist.
      *
-     * @param name the name of the playlists (not nullable).
+     * @param name the name of the liked songs pseudo playlist (not nullable).
      * @return a new instance.
      * @throws NullPointerException if the argument is null.
+     * @throws IllegalArgumentException if name is blank.
      */
     public static TrueShuffleJobPlaylistData newLikedSongsData(String name) {
         Objects.requireNonNull(name);
+        if (name.isBlank()) throw new IllegalArgumentException("name is blank");
         return new TrueShuffleJobPlaylistData(null, name, null);
     }
 
@@ -66,8 +71,8 @@ public final class TrueShuffleJobPlaylistData {
     /**
      * Get the images (thumbnails) of this playlist in different resolutions.
      *
-     * @return the playlist's images, or null if this instance is referencing the liked songs pseudo playlist.
-     * Keep in mind that the returned array may be empty.
+     * @return the playlist's images, possibly null. If this instance is referencing the liked songs pseudo playlist,
+     * then this method will always return null. The returned array may be empty.
      */
     public Image[] getImages() {
         return images;

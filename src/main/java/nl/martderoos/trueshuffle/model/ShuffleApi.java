@@ -7,8 +7,8 @@ import nl.martderoos.trueshuffle.paging.PageAggregator;
 import nl.martderoos.trueshuffle.paging.SpotifyFuturePage;
 import nl.martderoos.trueshuffle.requests.RequestHandler;
 import nl.martderoos.trueshuffle.requests.exceptions.FatalRequestResponseException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import se.michaelthelin.spotify.SpotifyApi;
 import se.michaelthelin.spotify.model_objects.specification.Playlist;
 import se.michaelthelin.spotify.model_objects.specification.PlaylistSimplified;
@@ -42,7 +42,7 @@ public class ShuffleApi {
      */
     public static final int MAXIMUM_LIKED_SONGS_SIZE = Integer.MAX_VALUE;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ShuffleApi.class);
+    private static final Logger LOGGER = LogManager.getLogger(ShuffleApi.class);
 
     private final SpotifyApi api;
     private final User user;
