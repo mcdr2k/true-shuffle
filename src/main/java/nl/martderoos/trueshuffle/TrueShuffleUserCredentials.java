@@ -32,13 +32,10 @@ public record TrueShuffleUserCredentials(
     }
 
     /**
-     * Construct an instance of this class using the value returned by {@link System#currentTimeMillis()} for the
-     * {@link #issuedSinceEpoch} field.
-     *
      * @param credentials the credentials that contains the access token, refresh token and expires in seconds.
      */
-    public TrueShuffleUserCredentials(AuthorizationCodeCredentials credentials) {
-        this(System.currentTimeMillis(), credentials.getAccessToken(), credentials.getRefreshToken(), credentials.getExpiresIn());
+    public TrueShuffleUserCredentials(long issuedSinceEpoch, AuthorizationCodeCredentials credentials) {
+        this(issuedSinceEpoch, credentials.getAccessToken(), credentials.getRefreshToken(), credentials.getExpiresIn());
     }
 
     /**

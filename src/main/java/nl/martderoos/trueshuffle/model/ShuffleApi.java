@@ -296,8 +296,9 @@ public class ShuffleApi {
             throw new FatalRequestResponseException(String.format("Could not refresh credentials for '%s', there was no refresh token", user.getDisplayName()));
         }
 
+        long issuedSince = System.currentTimeMillis();
         var credentials = requestHandler.handleRequest(getApi().authorizationCodeRefresh().build());
-        assignCredentials(new TrueShuffleUserCredentials(credentials));
+        assignCredentials(new TrueShuffleUserCredentials(issuedSince, credentials));
     }
 
     /**

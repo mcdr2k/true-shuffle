@@ -132,6 +132,7 @@ public class TrueShuffleClient {
         SpotifyApi api;
 
         // first retrieve access and refresh tokens with the code
+        var issuedSinceEpoch = System.currentTimeMillis();
         try {
             credentials = handler.handleRequest(client.authorizationCode(code).build());
             api = SpotifyApi.builder()
@@ -146,7 +147,7 @@ public class TrueShuffleClient {
 
         try {
             var userData = handler.handleRequest(api.getCurrentUsersProfile().build());
-            return addOrReuseAuthorizedUser(api, new TrueShuffleUserCredentials(credentials), userData);
+            return addOrReuseAuthorizedUser(api, new TrueShuffleUserCredentials(issuedSinceEpoch, credentials), userData);
         } catch (FatalRequestResponseException e) {
             throw new AuthorizationException("Provided code could be validated but the user's data (id, display name) could not be retrieved.", e);
         }
