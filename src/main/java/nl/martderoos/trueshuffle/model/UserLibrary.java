@@ -103,17 +103,6 @@ public class UserLibrary {
      * @return true if this library owns the playlist, false otherwise.
      */
 
-    public boolean isOwner(Playlist playlist) {
-        return this.userId.equals(playlist.getOwner().getId());
-    }
-
-    /**
-     * Check if this library owns the provided playlist.
-     *
-     * @param playlist the playlist to check the ownership of.
-     * @return true if this library owns the playlist, false otherwise.
-     */
-
     public boolean isOwner(PlaylistSimplified playlist) {
         return this.userId.equals(playlist.getOwner().getId());
     }
