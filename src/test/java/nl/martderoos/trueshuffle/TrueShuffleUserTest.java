@@ -6,8 +6,7 @@ import org.junit.jupiter.api.Test;
 import se.michaelthelin.spotify.model_objects.specification.Image;
 import se.michaelthelin.spotify.model_objects.specification.User;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 public class TrueShuffleUserTest {
@@ -39,10 +38,11 @@ public class TrueShuffleUserTest {
         var api = mock(ShuffleApi.class);
         var trueShuffleUser = new TrueShuffleUser(user, api);
 
-        trueShuffleUser.getCredentials();
+        var currentCredentials = trueShuffleUser.getCredentials();
         var credentials = new TrueShuffleUserCredentials(10, "access", "refresh", 4);
         trueShuffleUser.assignCredentials(credentials);
 
+        assertTrue(credentials.isMoreRecentThan(currentCredentials));
         verify(api, times(1)).getCredentials();
         verify(api).assignCredentials(eq(credentials));
     }

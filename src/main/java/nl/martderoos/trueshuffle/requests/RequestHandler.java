@@ -76,14 +76,14 @@ public class RequestHandler {
                 } catch (IOException | ParseException e) {
                     // IOException should not happen if we have a proper connection, so if it does just terminate the job
                     // ParseException should NEVER happen unless the api has changed
-                    throw new FatalRequestResponseException(e);
+                    throw new FatalRequestResponseException(e.getMessage());
                 } catch (SpotifyWebApiException e) {
                     // handle and then continue
                     handleError(e);
                 } catch (Exception e) {
                     // this should never happen, unless the SpotifyApi library we use is faulty
                     LOGGER.error("Request threw an unidentified error: {}", e.getMessage());
-                    throw new FatalRequestResponseException(e);
+                    throw new FatalRequestResponseException(e.getMessage());
                 }
 
                 retries++;
@@ -125,11 +125,11 @@ public class RequestHandler {
         if (e instanceof BadGatewayException) {
             // The server was acting as a gateway or proxy and received an invalid response from the upstream server
             // note to self: could be just unlucky here, so let us just try again in a bit
-            throw new RetryShortlyException(e);
+            throw new RetryShortlyException(e.getMessage());
         } else if (e instanceof BadRequestException) {
             // The request could not be understood by the server due to malformed syntax
             // note to self: this should never happen, assuming that the api we use is correct
-            throw new FatalRequestResponseException(e);
+            throw new FatalRequestResponseException(e.getMessage());
         } else if (e instanceof ForbiddenException) {
             // The server understood the request, but is refusing to fulfill it.
             // note to self: in general http codes this is used to indicate that you are authenticated, but you are not
@@ -138,27 +138,27 @@ public class RequestHandler {
         } else if (e instanceof InternalServerErrorException) {
             // You should never receive this error because our clever coders catch them all ...
             // but if you are unlucky enough to get one, please report it to us
-            throw new FatalRequestResponseException(e);
+            throw new FatalRequestResponseException(e.getMessage());
         } else if (e instanceof NotFoundException) {
             // The requested resource could not be found. This error can be due to a temporary or permanent condition
             // note to self: this may happen during concurrent modifications or when we try to access inaccessible resources like private playlists
-            throw new FatalRequestResponseException(e);
+            throw new FatalRequestResponseException(e.getMessage());
         } else if (e instanceof ServiceUnavailableException) {
             // The server is currently unable to handle the request due to a temporary condition which will be
             // alleviated after some delay. You can choose to resend the request again.
             // note to self: may decide to wait some arbitrary amount of time and then try again
-            throw new RetryShortlyException(e);
+            throw new RetryShortlyException(e.getMessage());
         } else if (e instanceof TooManyRequestsException tmr) {
             // rate limiting has been applied
             // note to self: this means we need to slow down the requests accordingly
-            throw new SlowDownException(e, tmr.getRetryAfter());
+            throw new SlowDownException(tmr);
         } else if (e instanceof UnauthorizedException) {
             // The request requires user authentication
             // note to self: this could mean that our token expired, so let's refresh it and try again
-            throw new RefreshTokenException(e);
+            throw new RefreshTokenException(e.getMessage());
         }
         // the if-statements should have exhausted all options
         // but in the case they did not, let's just terminate the call
-        throw new FatalRequestResponseException(e);
+        throw new FatalRequestResponseException(e.getMessage());
     }
 }

@@ -5,23 +5,23 @@ package nl.martderoos.trueshuffle.jobs;
  */
 public enum ETrueShuffleJobStatus {
     /**
-     * Indicates that the job is waiting to be executed
+     * Indicates that the job is waiting to be executed.
      */
     WAITING,
     /**
-     * Indicates that the job is being executed
+     * Indicates that the job is being executed.
      */
     EXECUTING,
     /**
-     * Indicates that the job finished appropriately
+     * Indicates that the job finished appropriately.
      */
     FINISHED,
     /**
-     * Indicates that the job was skipped for some specific reason
+     * Indicates that the job was skipped for some specific reason.
      */
     SKIPPED,
     /**
-     * Indicates that the job terminated inappropriately
+     * Indicates that the job terminated inappropriately.
      */
     TERMINATED;
 

@@ -5,15 +5,7 @@ package nl.martderoos.trueshuffle.requests.exceptions;
  * request will likely fail.
  */
 public class FatalRequestResponseException extends TrueShuffleRequestException {
-    public FatalRequestResponseException(Exception e) {
-        super(e, Action.TERMINATE);
-    }
-
-    public FatalRequestResponseException(String message, Exception e) {
-        super(message, e, Action.TERMINATE);
-    }
-
     public FatalRequestResponseException(String message) {
-        super(message, Action.TERMINATE);
+        super(message);
     }
 }

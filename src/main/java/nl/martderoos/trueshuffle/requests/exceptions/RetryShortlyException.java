@@ -5,7 +5,7 @@ package nl.martderoos.trueshuffle.requests.exceptions;
  * due to server-side issues or high load.
  */
 public class RetryShortlyException extends TrueShuffleRequestException {
-    public RetryShortlyException(Exception e) {
-        super(e, Action.RETRY_SHORTLY);
+    public RetryShortlyException(String message) {
+        super(message);
     }
 }
