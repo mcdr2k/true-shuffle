@@ -51,10 +51,9 @@ public class ShuffleApi {
     private TrueShuffleUserCredentials credentials = null;
 
     public ShuffleApi(final SpotifyApi api, User user) {
-        Objects.requireNonNull(api);
         this.api = Objects.requireNonNull(api);
-        this.requestHandler = new RequestHandler(this::refreshAccessToken);
         this.user = Objects.requireNonNull(user);
+        this.requestHandler = new RequestHandler(this::refreshAccessToken);
     }
 
     /**
@@ -307,6 +306,7 @@ public class ShuffleApi {
     public synchronized void assignCredentials(TrueShuffleUserCredentials newCredentials) {
         // do not update credentials since the current ones are newer than the provided ones
         if (getCredentials().isMoreRecentThan(newCredentials)) return;
+        if (newCredentials.accessToken() == null && newCredentials.refreshToken() == null) return;
 
         if (newCredentials.accessToken() != null)
             api.setAccessToken(newCredentials.accessToken());
