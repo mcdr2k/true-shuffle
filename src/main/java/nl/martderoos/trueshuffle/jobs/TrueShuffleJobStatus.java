@@ -10,6 +10,11 @@ public class TrueShuffleJobStatus {
     private TrueShuffleJobPlaylistData sourcePlaylist;
     private TrueShuffleJobPlaylistData targetPlaylist;
 
+    public TrueShuffleJobStatus(ETrueShuffleJobStatus status, String message) {
+        this.status = status;
+        this.message = message;
+    }
+
     /**
      * Create a new instance with default status {@link ETrueShuffleJobStatus#WAITING} and all other fields null.
      */

@@ -95,7 +95,9 @@ public class ShuffleApi {
                                 .limit(limit)
                                 .build()
                         )),
-                hardLimit);
+                hardLimit,
+                true
+        );
     }
 
     /**
@@ -114,7 +116,8 @@ public class ShuffleApi {
                                 .limit(limit)
                                 .build()
                         )),
-                hardLimit
+                hardLimit,
+                true
         );
     }
 
@@ -134,7 +137,8 @@ public class ShuffleApi {
                                         .limit(limit)
                                         .build()
                                 )),
-                        hardLimit
+                        hardLimit,
+                        true
                 ).stream()
                 .map(x -> x.getTrack().getUri())
                 .collect(Collectors.toList());
@@ -158,7 +162,8 @@ public class ShuffleApi {
                                         .limit(limit)
                                         .build()
                                 )),
-                        hardLimit
+                        hardLimit,
+                        true
                 ).stream()
                 .map(x -> x.getTrack().getUri())
                 .collect(Collectors.toList());

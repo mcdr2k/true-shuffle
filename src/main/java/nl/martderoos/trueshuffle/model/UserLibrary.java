@@ -3,7 +3,6 @@ package nl.martderoos.trueshuffle.model;
 
 import nl.martderoos.trueshuffle.adhoc.LazyExpiringApiData;
 import nl.martderoos.trueshuffle.requests.exceptions.FatalRequestResponseException;
-import se.michaelthelin.spotify.model_objects.specification.Playlist;
 import se.michaelthelin.spotify.model_objects.specification.PlaylistSimplified;
 
 import java.util.*;

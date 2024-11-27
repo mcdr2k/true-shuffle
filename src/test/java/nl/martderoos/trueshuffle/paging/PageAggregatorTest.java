@@ -7,6 +7,7 @@ import se.michaelthelin.spotify.model_objects.specification.Paging;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 public class PageAggregatorTest {
@@ -14,7 +15,7 @@ public class PageAggregatorTest {
     public void testNoData() throws FatalRequestResponseException {
         var spyLoader = spy(new IntLoader());
         var future = new SpotifyFuturePage<>(spyLoader, 0, 100);
-        var result = PageAggregator.aggregate(future, 5);
+        var result = PageAggregator.aggregate(future, 5, false);
         assertEquals(List.of(), result);
         verify(spyLoader, times(1)).loadPage(eq(0), anyInt());
     }
@@ -23,7 +24,7 @@ public class PageAggregatorTest {
     public void testHardLimit5() throws FatalRequestResponseException {
         var spyLoader = spy(new IntLoader(1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
         var future = new SpotifyFuturePage<>(spyLoader, 0, 100);
-        var result = PageAggregator.aggregate(future, 5);
+        var result = PageAggregator.aggregate(future, 5, false);
         assertEquals(List.of(1, 2, 3, 4, 5), result);
         verify(spyLoader, times(1)).loadPage(eq(0), anyInt());
     }
@@ -32,7 +33,7 @@ public class PageAggregatorTest {
     public void testHardLimitZero() throws FatalRequestResponseException {
         var spyLoader = spy(new IntLoader(1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
         var future = new SpotifyFuturePage<>(spyLoader, 0, 100);
-        var result = PageAggregator.aggregate(future, 0);
+        var result = PageAggregator.aggregate(future, 0, false);
         assertEquals(List.of(), result);
         verify(spyLoader, times(1)).loadPage(eq(0), anyInt());
     }
@@ -41,7 +42,7 @@ public class PageAggregatorTest {
     public void testHardLimitEnd() throws FatalRequestResponseException {
         var spyLoader = spy(new IntLoader(1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
         var future = new SpotifyFuturePage<>(spyLoader, 0, 100);
-        var result = PageAggregator.aggregate(future, 10);
+        var result = PageAggregator.aggregate(future, 10, false);
         assertEquals(List.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10), result);
         verify(spyLoader, times(1)).loadPage(eq(0), anyInt());
     }
@@ -50,7 +51,7 @@ public class PageAggregatorTest {
     public void testHardLimitExceedingDataSize() throws FatalRequestResponseException {
         var spyLoader = spy(new IntLoader(1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
         var future = new SpotifyFuturePage<>(spyLoader, 0, 100);
-        var result = PageAggregator.aggregate(future, 333);
+        var result = PageAggregator.aggregate(future, 333, false);
         assertEquals(List.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10), result);
         verify(spyLoader, times(1)).loadPage(eq(0), anyInt());
     }
@@ -59,7 +60,7 @@ public class PageAggregatorTest {
     public void testPageLimitWithoutHardLimit() throws FatalRequestResponseException {
         var spyLoader = spy(new IntLoader(1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
         var future = new SpotifyFuturePage<>(spyLoader, 0, 3);
-        var result = PageAggregator.aggregate(future, Integer.MAX_VALUE);
+        var result = PageAggregator.aggregate(future, Integer.MAX_VALUE, false);
         assertEquals(List.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10), result);
         verify(spyLoader, times(4)).loadPage(anyInt(), anyInt());
     }
@@ -68,7 +69,7 @@ public class PageAggregatorTest {
     public void testPageLimitWithHardLimitOf8() throws FatalRequestResponseException {
         var spyLoader = spy(new IntLoader(1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
         var future = new SpotifyFuturePage<>(spyLoader, 0, 3);
-        var result = PageAggregator.aggregate(future, 8);
+        var result = PageAggregator.aggregate(future, 8, false);
         assertEquals(List.of(1, 2, 3, 4, 5, 6, 7, 8), result);
         // loads 2 pages with 3 items and 1 page with just 2 items
         verify(spyLoader, times(3)).loadPage(anyInt(), anyInt());
@@ -78,7 +79,7 @@ public class PageAggregatorTest {
     public void testRetrieval1By1WithHardLimit7() throws FatalRequestResponseException {
         var spyLoader = spy(new IntLoader(1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
         var future = new SpotifyFuturePage<>(spyLoader, 0, 1);
-        var result = PageAggregator.aggregate(future, 7);
+        var result = PageAggregator.aggregate(future, 7, false);
         assertEquals(List.of(1, 2, 3, 4, 5, 6, 7), result);
         verify(spyLoader, times(7)).loadPage(anyInt(), anyInt());
     }
@@ -87,9 +88,26 @@ public class PageAggregatorTest {
     public void testRetrieval1By1WithHardLimit5AndOffset4() throws FatalRequestResponseException {
         var spyLoader = spy(new IntLoader(1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
         var future = new SpotifyFuturePage<>(spyLoader, 4, 1);
-        var result = PageAggregator.aggregate(future, 5);
+        var result = PageAggregator.aggregate(future, 5, false);
         assertEquals(List.of(5, 6, 7, 8, 9), result);
         verify(spyLoader, times(5)).loadPage(anyInt(), anyInt());
+    }
+
+    @Test
+    public void testThrowOnDisallowNull() throws FatalRequestResponseException {
+        var spyLoader = spy(new IntLoader(1, 2, 3, 4, 5, 6, null, 8, 9, 10));
+        var future = new SpotifyFuturePage<>(spyLoader, 0, 100);
+        assertThrows(FatalRequestResponseException.class, () -> PageAggregator.aggregate(future, 100, false));
+        verify(spyLoader, times(1)).loadPage(eq(0), anyInt());
+    }
+
+    @Test
+    public void testFilterOnAllowNull() throws FatalRequestResponseException {
+        var spyLoader = spy(new IntLoader(1, null, 3, null, null, null, 7, 8, 9, null));
+        var future = new SpotifyFuturePage<>(spyLoader, 0, 3);
+        var result = PageAggregator.aggregate(future, 100, true);
+        assertEquals(List.of(1, 3, 7, 8, 9), result);
+        verify(spyLoader, times(4)).loadPage(anyInt(), anyInt());
     }
 
     private static class IntLoader implements SpotifyPageLoader<Integer> {
