@@ -68,6 +68,9 @@ public abstract sealed class TrueShuffleJob permits TrueShuffleLikedJob, TrueShu
             var message = jobName + " could not complete: " + e.getMessage();
             LOGGER.error(message);
             status.setStatusMessage(ETrueShuffleJobStatus.TERMINATED, message);
+        } catch (Throwable t) {
+            status.setStatusMessage(ETrueShuffleJobStatus.TERMINATED, "Encountered an unexpected issue");
+            throw t;
         }
     }
 
