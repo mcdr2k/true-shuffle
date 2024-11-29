@@ -101,7 +101,8 @@ public class ShuffleApi {
     }
 
     /**
-     * Search for a playlist by its exact name.
+     * Search for a playlist by its exact name. Actually Spotify does not allow exact searches, so this is a best effort
+     * method. This method, however, will guarantee to only return exact matches.
      *
      * @param playlistName the exact name of the playlist to search for.
      * @param hardLimit    the hard limit on the amount of search results.
@@ -118,7 +119,10 @@ public class ShuffleApi {
                         )),
                 hardLimit,
                 true
-        );
+        )
+                .stream()
+                .filter((p) -> playlistName.equals(p.getName()))
+                .collect(Collectors.toList());
     }
 
     /**

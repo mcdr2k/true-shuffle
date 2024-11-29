@@ -187,7 +187,7 @@ public class UserLibrary {
             // if some playlists were renamed
             var list = nameToPlaylist.get(playlistName);
             if (list == null) {
-                var simplifiedPlaylists = api.searchPlaylistByExactName(playlistName, 4);
+                var simplifiedPlaylists = api.searchPlaylistByExactName(playlistName, 5);
                 for (var playlist : simplifiedPlaylists)
                     addPlaylist(playlist);
                 list = simplifiedPlaylists.stream().map((p) -> new ShufflePlaylist(api, p, isOwner(p))).collect(Collectors.toList());
