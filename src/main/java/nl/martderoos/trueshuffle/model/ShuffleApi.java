@@ -10,9 +10,8 @@ import nl.martderoos.trueshuffle.requests.exceptions.FatalRequestResponseExcepti
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import se.michaelthelin.spotify.SpotifyApi;
-import se.michaelthelin.spotify.model_objects.specification.Playlist;
-import se.michaelthelin.spotify.model_objects.specification.PlaylistSimplified;
-import se.michaelthelin.spotify.model_objects.specification.User;
+import se.michaelthelin.spotify.model_objects.IPlaylistItem;
+import se.michaelthelin.spotify.model_objects.specification.*;
 import se.michaelthelin.spotify.requests.IRequest;
 
 import java.util.List;
@@ -144,7 +143,9 @@ public class ShuffleApi {
                         hardLimit,
                         true
                 ).stream()
-                .map(x -> x.getTrack().getUri())
+                .map(SavedTrack::getTrack)
+                .filter(Objects::nonNull)
+                .map(IPlaylistItem::getUri)
                 .collect(Collectors.toList());
     }
 
@@ -169,7 +170,9 @@ public class ShuffleApi {
                         hardLimit,
                         true
                 ).stream()
-                .map(x -> x.getTrack().getUri())
+                .map(PlaylistTrack::getTrack)
+                .filter(Objects::nonNull)
+                .map(IPlaylistItem::getUri)
                 .collect(Collectors.toList());
     }
 
