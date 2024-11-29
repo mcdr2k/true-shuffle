@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * Utility class for aggregating pages of data into a single list
@@ -46,7 +47,7 @@ public class PageAggregator {
             next = page.getNext();
         }
 
-        var nonNullableResult = result.stream().filter(Objects::nonNull).toList();
+        var nonNullableResult = result.stream().filter(Objects::nonNull).collect(Collectors.toList());
         if (nonNullableResult.size() != result.size()) {
             int nullCount = result.size() - nonNullableResult.size();
             if (!allowAndFilterNulls) {

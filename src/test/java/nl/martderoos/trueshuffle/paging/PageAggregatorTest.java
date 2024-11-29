@@ -6,8 +6,7 @@ import se.michaelthelin.spotify.model_objects.specification.Paging;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 public class PageAggregatorTest {
@@ -44,6 +43,16 @@ public class PageAggregatorTest {
         var future = new SpotifyFuturePage<>(spyLoader, 0, 100);
         var result = PageAggregator.aggregate(future, 10, false);
         assertEquals(List.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10), result);
+        verify(spyLoader, times(1)).loadPage(eq(0), anyInt());
+    }
+
+    @Test
+    public void testMutableList() throws FatalRequestResponseException {
+        var spyLoader = spy(new IntLoader(1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
+        var future = new SpotifyFuturePage<>(spyLoader, 0, 100);
+        var result = PageAggregator.aggregate(future, 10, false);
+        assertDoesNotThrow(() -> result.add(30));
+        assertEquals(List.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 30), result);
         verify(spyLoader, times(1)).loadPage(eq(0), anyInt());
     }
 
