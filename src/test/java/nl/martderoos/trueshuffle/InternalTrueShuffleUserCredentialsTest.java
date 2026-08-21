@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TrueShuffleUserCredentialsTest {
+public class InternalTrueShuffleUserCredentialsTest {
     @Test
     public void testIllegalArgument() {
         assertThrows(IllegalArgumentException.class, () -> {

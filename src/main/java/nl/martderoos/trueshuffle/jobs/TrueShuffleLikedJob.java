@@ -1,6 +1,6 @@
 package nl.martderoos.trueshuffle.jobs;
 
-import nl.martderoos.trueshuffle.TrueShuffleUser;
+import nl.martderoos.trueshuffle.InternalTrueShuffleUser;
 import nl.martderoos.trueshuffle.model.ShufflePlaylist;
 import nl.martderoos.trueshuffle.requests.exceptions.FatalRequestResponseException;
 import nl.martderoos.trueshuffle.utility.ShuffleUtil;
@@ -41,7 +41,7 @@ public final class TrueShuffleLikedJob extends TrueShuffleJob {
     }
 
     @Override
-    protected void internalExecute(TrueShuffleUser user, TrueShuffleJobStatus status) throws FatalRequestResponseException {
+    protected void internalExecute(InternalTrueShuffleUser user, TrueShuffleJobStatus status) throws FatalRequestResponseException {
         LOGGER.info("Executing liked songs shuffle for user: {} with target playlist id: {}", getUserId(), targetPlaylistId);
         var api = user.getApi();
         var library = user.getUserLibrary();
@@ -50,7 +50,7 @@ public final class TrueShuffleLikedJob extends TrueShuffleJob {
 
         ShufflePlaylist target;
         if (targetPlaylistId != null) {
-            target = library.getPlaylistById(targetPlaylistId);
+            target = (ShufflePlaylist) library.getPlaylistById(targetPlaylistId);
             if (!user.getUserLibrary().isOwner(target)) {
                 status.setStatusMessage(ETrueShuffleJobStatus.TERMINATED,
                         String.format("Could not shuffle liked songs into %s because we are not the owner of the target playlist", target.getName())

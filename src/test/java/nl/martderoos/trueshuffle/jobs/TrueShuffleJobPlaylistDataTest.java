@@ -1,7 +1,10 @@
 package nl.martderoos.trueshuffle.jobs;
 
 import org.junit.jupiter.api.Test;
-import se.michaelthelin.spotify.model_objects.specification.Image;
+import nl.martderoos.trueshuffle.model.TrueShuffleImage;
+
+import java.util.Arrays;
+import java.util.List;
 
 import static nl.martderoos.trueshuffle.jobs.TrueShuffleJobPlaylistData.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -15,12 +18,12 @@ public class TrueShuffleJobPlaylistDataTest {
         var data = newLikedSongsData("MyLikedSongs");
         assertNull(data.getPlaylistId());
         assertEquals("MyLikedSongs", data.getName());
-        assertNull(data.getImages());
+        assertEquals(List.of(), data.getImages());
     }
 
     @Test
     public void testRealPlaylistFactoryMethod() {
-        var empty = new Image[0];
+        var empty = List.<TrueShuffleImage>of();
         assertThrows(NullPointerException.class, () -> newPlaylistData(null, "playlist", empty));
         assertThrows(IllegalArgumentException.class, () -> newPlaylistData("", "playlist", empty));
         assertThrows(IllegalArgumentException.class, () -> newPlaylistData(" ", "playlist", empty));
@@ -31,9 +34,10 @@ public class TrueShuffleJobPlaylistDataTest {
 
         assertDoesNotThrow(() -> newPlaylistData("pid", "playlist", null)); // allow no images
 
-        var data = newPlaylistData("pid", "playlist", new Image[]{null});
+        var image = new TrueShuffleImage("url", 0, 0);
+        var data = newPlaylistData("pid", "playlist", List.of(image));
         assertEquals("pid", data.getPlaylistId());
         assertEquals("playlist", data.getName());
-        assertArrayEquals(new Image[]{null}, data.getImages());
+        assertEquals(List.of(image), data.getImages());
     }
 }

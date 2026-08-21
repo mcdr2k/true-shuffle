@@ -7,6 +7,7 @@ import nl.martderoos.trueshuffle.paging.PageAggregator;
 import nl.martderoos.trueshuffle.paging.SpotifyFuturePage;
 import nl.martderoos.trueshuffle.requests.RequestHandler;
 import nl.martderoos.trueshuffle.requests.exceptions.FatalRequestResponseException;
+import nl.martderoos.trueshuffle.utility.PlaylistUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import se.michaelthelin.spotify.SpotifyApi;
@@ -19,7 +20,7 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import static nl.martderoos.trueshuffle.utility.PlaylistUtil.toSimplifiedPlaylist;
+import static nl.martderoos.trueshuffle.utility.PlaylistUtil.toPlaylistData;
 
 /**
  * Encapsulates the {@link SpotifyApi} to supply functions necessary for TrueShuffle operations. This class is
@@ -31,7 +32,7 @@ import static nl.martderoos.trueshuffle.utility.PlaylistUtil.toSimplifiedPlaylis
  * unrecoverable errors from Spotify. Some operations require us to send multiple requests to Spotify because
  * they have constraints on the amount of data you can send and receive within a single request.
  */
-public class ShuffleApi {
+public class TrueShuffleApi {
     /**
      * The maximum number of tracks a regular Spotify playlist can have. It is currently 10_000.
      */
@@ -41,7 +42,7 @@ public class ShuffleApi {
      */
     public static final int MAXIMUM_LIKED_SONGS_SIZE = Integer.MAX_VALUE;
 
-    private static final Logger LOGGER = LogManager.getLogger(ShuffleApi.class);
+    private static final Logger LOGGER = LogManager.getLogger(TrueShuffleApi.class);
 
     private final SpotifyApi api;
     private final User user;
@@ -49,7 +50,7 @@ public class ShuffleApi {
     private long accessTokenValidUntilAtLeast;
     private TrueShuffleUserCredentials credentials = null;
 
-    public ShuffleApi(final SpotifyApi api, User user) {
+    public TrueShuffleApi(final SpotifyApi api, User user) {
         this.api = Objects.requireNonNull(api);
         this.user = Objects.requireNonNull(user);
         this.requestHandler = new RequestHandler(this::refreshAccessToken);
@@ -63,8 +64,8 @@ public class ShuffleApi {
      * @throws FatalRequestResponseException if the playlist does not exist or if it is not visible to the user (private but
      *                                       owned by other user).
      */
-    public Playlist streamPlaylist(String playlistId) throws FatalRequestResponseException {
-        return apiRequest(getApi().getPlaylist(playlistId).build());
+    public TrueShufflePlaylistData streamPlaylist(String playlistId) throws FatalRequestResponseException {
+        return toPlaylistData(apiRequest(getApi().getPlaylist(playlistId).build()));
     }
 
     /**
@@ -74,8 +75,8 @@ public class ShuffleApi {
      * @throws FatalRequestResponseException if the playlist does not exist or if it is not visible to the user (private but
      *                                       owned by other user).
      */
-    public PlaylistSimplified streamPlaylistSimplified(String playlistId) throws FatalRequestResponseException {
-        return toSimplifiedPlaylist(streamPlaylist(playlistId));
+    public TrueShufflePlaylistData streamPlaylistSimplified(String playlistId) throws FatalRequestResponseException {
+        return streamPlaylist(playlistId);
     }
 
     /**
@@ -85,7 +86,7 @@ public class ShuffleApi {
      *
      * @param hardLimit the hard limit on the amount of playlists to stream.
      */
-    public List<PlaylistSimplified> streamUserPlaylists(int hardLimit) throws FatalRequestResponseException {
+    public List<TrueShufflePlaylistData> streamUserPlaylists(int hardLimit) throws FatalRequestResponseException {
         return PageAggregator.aggregate(
                 new SpotifyFuturePage<>(
                         (offset, limit) -> apiRequest(getApi()
@@ -96,7 +97,7 @@ public class ShuffleApi {
                         )),
                 hardLimit,
                 true
-        );
+        ).stream().map(PlaylistUtil::toPlaylistData).toList();
     }
 
     /**
@@ -107,7 +108,7 @@ public class ShuffleApi {
      * @param hardLimit    the hard limit on the amount of search results.
      * @return the search results, never null but may be empty.
      */
-    public List<PlaylistSimplified> searchPlaylistByExactName(String playlistName, int hardLimit) throws FatalRequestResponseException {
+    public List<TrueShufflePlaylistData> searchPlaylistByExactName(String playlistName, int hardLimit) throws FatalRequestResponseException {
         return PageAggregator.aggregate(
                 new SpotifyFuturePage<>(
                         (offset, limit) -> apiRequest(getApi()
@@ -120,7 +121,8 @@ public class ShuffleApi {
                 true
         )
                 .stream()
-                .filter((p) -> playlistName.equals(p.getName()))
+                .map(PlaylistUtil::toPlaylistData)
+                .filter((p) -> playlistName.equals(p.name()))
                 .collect(Collectors.toList());
     }
 
@@ -259,20 +261,20 @@ public class ShuffleApi {
     }
 
     /**
-     * Create a new playlist for the user bound to this {@link ShuffleApi}. The playlist will be public and
+     * Create a new playlist for the user bound to this {@link TrueShuffleApi}. The playlist will be public and
      * non-collaborative.
      *
      * @param playlistName        the name of the new playlist (does not have to be unique).
      * @param playlistDescription the description of the new playlist.
      * @return the newly created playlist's details, never null.
      */
-    public Playlist uploadPlaylist(String playlistName, String playlistDescription) throws FatalRequestResponseException {
-        return apiRequest(getApi()
+    public TrueShufflePlaylistData uploadPlaylist(String playlistName, String playlistDescription) throws FatalRequestResponseException {
+        return toPlaylistData(apiRequest(getApi()
                 .createPlaylist(getUserId(), playlistName)
                 .collaborative(false)
                 .public_(true)
                 .description(playlistDescription)
-                .build());
+                .build()));
     }
 
     /**

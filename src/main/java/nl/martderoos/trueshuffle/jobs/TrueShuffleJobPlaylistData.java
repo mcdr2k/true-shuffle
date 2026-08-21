@@ -1,7 +1,10 @@
 package nl.martderoos.trueshuffle.jobs;
 
-import se.michaelthelin.spotify.model_objects.specification.Image;
+import nl.martderoos.trueshuffle.model.TrueShuffleImage;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -10,9 +13,9 @@ import java.util.Objects;
 public final class TrueShuffleJobPlaylistData {
     private final String playlistId;
     private final String name;
-    private final Image[] images;
+    private final List<TrueShuffleImage> images;
 
-    private TrueShuffleJobPlaylistData(String playlistId, String name, Image[] images) {
+    private TrueShuffleJobPlaylistData(String playlistId, String name, List<TrueShuffleImage> images) {
         this.playlistId = playlistId;
         this.name = name;
         this.images = images;
@@ -28,12 +31,12 @@ public final class TrueShuffleJobPlaylistData {
      * @throws NullPointerException if either playlistId or name is null.
      * @throws IllegalArgumentException if either playlistId or name is blank.
      */
-    public static TrueShuffleJobPlaylistData newPlaylistData(String playlistId, String name, Image[] images) {
+    public static TrueShuffleJobPlaylistData newPlaylistData(String playlistId, String name, List<TrueShuffleImage> images) {
         Objects.requireNonNull(playlistId);
         Objects.requireNonNull(name);
         if (playlistId.isBlank()) throw new IllegalArgumentException("playlistId is blank");
         if (name.isBlank()) throw new IllegalArgumentException("name is blank");
-        return new TrueShuffleJobPlaylistData(playlistId, name, images);
+        return new TrueShuffleJobPlaylistData(playlistId, name, copyImages(images));
     }
 
     /**
@@ -47,7 +50,7 @@ public final class TrueShuffleJobPlaylistData {
     public static TrueShuffleJobPlaylistData newLikedSongsData(String name) {
         Objects.requireNonNull(name);
         if (name.isBlank()) throw new IllegalArgumentException("name is blank");
-        return new TrueShuffleJobPlaylistData(null, name, null);
+        return new TrueShuffleJobPlaylistData(null, name, List.of());
     }
 
     /**
@@ -71,10 +74,10 @@ public final class TrueShuffleJobPlaylistData {
     /**
      * Get the images (thumbnails) of this playlist in different resolutions.
      *
-     * @return the playlist's images, possibly null. If this instance is referencing the liked songs pseudo playlist,
-     * then this method will always return null. The returned array may be empty.
+     * @return the playlist's images, never null. The list is empty when this instance references the liked songs
+     * pseudo playlist or when the playlist has no images.
      */
-    public Image[] getImages() {
+    public List<TrueShuffleImage> getImages() {
         return images;
     }
 
@@ -83,5 +86,11 @@ public final class TrueShuffleJobPlaylistData {
      */
     public boolean isLikedSongsPlaylist() {
         return playlistId == null;
+    }
+
+    private static List<TrueShuffleImage> copyImages(List<TrueShuffleImage> images) {
+        if (images == null || images.isEmpty())
+            return List.of();
+        return List.copyOf(images);
     }
 }

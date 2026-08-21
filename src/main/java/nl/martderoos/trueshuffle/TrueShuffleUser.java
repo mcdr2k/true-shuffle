@@ -1,122 +1,57 @@
 package nl.martderoos.trueshuffle;
 
-import com.neovisionaries.i18n.CountryCode;
-import nl.martderoos.trueshuffle.jobs.TrueShuffleLikedJob;
-import nl.martderoos.trueshuffle.jobs.TrueShufflePlaylistJob;
-import nl.martderoos.trueshuffle.model.ShuffleApi;
-import nl.martderoos.trueshuffle.model.UserLibrary;
-import se.michaelthelin.spotify.model_objects.specification.Image;
-import se.michaelthelin.spotify.model_objects.specification.User;
+import nl.martderoos.trueshuffle.model.TrueShuffleApi;
+import nl.martderoos.trueshuffle.model.TrueShuffleImage;
+import nl.martderoos.trueshuffle.model.TrueShuffleUserLibrary;
 
-import java.util.Objects;
+import java.util.List;
 
-/**
- * Class that encapsulates a Spotify user and provides raw TrueShuffle functionalities hidden behind
- * {@link #getApi()} and {@link #getUserLibrary()}. Note that TrueShuffle jobs ({@link TrueShuffleLikedJob} and
- * {@link TrueShufflePlaylistJob}) glue multiple operations across playlists together as if they were a single operation.
- */
-public class TrueShuffleUser {
-    private final ShuffleApi api;
-    private final UserLibrary userLibrary;
-
-    private final String userId;
-    private final String birthdate;
-    private final CountryCode country;
-    private final String displayName;
-    private final String email;
-    private final Image[] images;
-
-    public TrueShuffleUser(User user, ShuffleApi api) {
-        this.api = Objects.requireNonNull(api);
-
-        Objects.requireNonNull(user);
-        this.userId = user.getId();
-        this.birthdate = user.getBirthdate();
-        this.country = user.getCountry();
-        this.displayName = user.getDisplayName();
-        this.email = user.getEmail();
-        this.images = user.getImages();
-
-        this.userLibrary = new UserLibrary(api);
-    }
-
+public interface TrueShuffleUser {
     /**
      * Get the user's library.
      */
-    public UserLibrary getUserLibrary() {
-        return userLibrary;
-    }
+    TrueShuffleUserLibrary getUserLibrary();
 
     /**
      * Get the user's unique identifier.
      */
-    public String getUserId() {
-        return userId;
-    }
+    String getUserId();
 
     /**
      * Get the user's birthdate.
      */
-    public String getBirthdate() {
-        return birthdate;
-    }
-
-    /**
-     * Get the user's country code.
-     *
-     * @return null, TrueShuffle is not authorized to access this information (requires USER_READ_PRIVATE).
-     */
-    public CountryCode getCountry() {
-        return country;
-    }
+    String getBirthdate();
 
     /**
      * Get the user's (non-unique) display name.
      */
-    public String getDisplayName() {
-        return displayName;
-    }
+    String getDisplayName();
 
     /**
      * Get the user's email. This email address may or may not be verified by Spotify.
      *
      * @return null, TrueShuffle is not authorized to access this information (requires USER_READ_EMAIL).
      */
-    public String getEmail() {
-        return email;
-    }
+    String getEmail();
 
     /**
      * Get the user's profile image.
      *
      * @return the user's profile images in different resolutions.
      */
-    public Image[] getImages() {
-        return images;
-    }
+    List<TrueShuffleImage> getImages();
 
     /**
-     * Get the underlying {@link ShuffleApi} linked to this user. Can be used.
+     * Get the underlying {@link TrueShuffleApi} linked to this user. Can be used.
      *
      * @return the linked api, never null.
      */
-    public ShuffleApi getApi() {
-        return api;
-    }
+    TrueShuffleApi getApi();
 
     /**
-     * Update credentials of the underlying spotify api.
-     */
-    void assignCredentials(TrueShuffleUserCredentials credentials) {
-        api.assignCredentials(credentials);
-    }
-
-    /**
-     * Get the current credentials used by the underlying {@link ShuffleApi}.
+     * Get the current credentials used by the underlying {@link TrueShuffleApi}.
      *
      * @return the credentials, never null.
      */
-    public TrueShuffleUserCredentials getCredentials() {
-        return api.getCredentials();
-    }
+    TrueShuffleUserCredentials getCredentials();
 }

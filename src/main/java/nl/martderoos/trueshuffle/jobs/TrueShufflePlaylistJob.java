@@ -1,6 +1,6 @@
 package nl.martderoos.trueshuffle.jobs;
 
-import nl.martderoos.trueshuffle.TrueShuffleUser;
+import nl.martderoos.trueshuffle.InternalTrueShuffleUser;
 import nl.martderoos.trueshuffle.requests.exceptions.FatalRequestResponseException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -47,7 +47,7 @@ public final class TrueShufflePlaylistJob extends TrueShuffleJob {
     }
 
     @Override
-    protected void internalExecute(TrueShuffleUser user, TrueShuffleJobStatus status) throws FatalRequestResponseException {
+    protected void internalExecute(InternalTrueShuffleUser user, TrueShuffleJobStatus status) throws FatalRequestResponseException {
         LOGGER.info("Executing playlist shuffle for user: {} with source playlist id: {} and target playlist id: {}", getUserId(), sourcePlaylistId, targetPlaylistId);
         var library = user.getUserLibrary();
         var sourcePlaylist = library.getPlaylistById(sourcePlaylistId);

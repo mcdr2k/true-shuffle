@@ -7,7 +7,7 @@ import nl.martderoos.trueshuffle.jobs.TrueShuffleJobStatus;
 import nl.martderoos.trueshuffle.jobs.TrueShuffleLikedJob;
 import nl.martderoos.trueshuffle.jobs.TrueShufflePlaylistJob;
 import nl.martderoos.trueshuffle.jobs.TrueShuffleUserResolver;
-import nl.martderoos.trueshuffle.model.ShuffleApi;
+import nl.martderoos.trueshuffle.model.TrueShuffleApi;
 import nl.martderoos.trueshuffle.requests.RequestHandler;
 import nl.martderoos.trueshuffle.requests.exceptions.FatalRequestResponseException;
 import se.michaelthelin.spotify.SpotifyApi;
@@ -31,9 +31,9 @@ public class TrueShuffleClient {
     private volatile boolean initialized = false;
 
     private final RequestHandler handler = new RequestHandler(null);
-    private final TrueShuffleUserResolver resolver = this::getAuthorizedUser;
+    private final TrueShuffleUserResolver resolver = this::getInternalAuthorizedUser;
 
-    private final Map<String, TrueShuffleUser> authorizedUsersMap = Collections.synchronizedMap(new HashMap<>());
+    private final Map<String, InternalTrueShuffleUser> authorizedUsersMap = Collections.synchronizedMap(new HashMap<>());
 
     /**
      * Creates a new client from provided client-id, secret and redirect uri (callback). Note that this client must
@@ -95,7 +95,7 @@ public class TrueShuffleClient {
         }
 
         try {
-            var user = getAuthorizedUser(userId);
+            var user = getInternalAuthorizedUser(userId);
             user.assignCredentials(credentials);
             return user;
         } catch (UserNotFoundException e) {
@@ -153,13 +153,13 @@ public class TrueShuffleClient {
         }
     }
 
-    private synchronized TrueShuffleUser addOrReuseAuthorizedUser(SpotifyApi api, TrueShuffleUserCredentials credentials, User userData) {
+    private synchronized InternalTrueShuffleUser addOrReuseAuthorizedUser(SpotifyApi api, TrueShuffleUserCredentials credentials, User userData) {
         verifyInit();
         try {
             // if user already exists, let's reuse it
             // update credentials (actually, the current credentials used by the api would still be valid until expired)
             // however, it is possible that we get a new refresh token, which in turn invalidates the current refresh token
-            var authorizedUser = getAuthorizedUser(userData.getId());
+            var authorizedUser = getInternalAuthorizedUser(userData.getId());
             authorizedUser.assignCredentials(credentials);
             return authorizedUser;
         } catch (UserNotFoundException e) {
@@ -167,8 +167,8 @@ public class TrueShuffleClient {
         }
 
         // new user
-        var shuffleApi = new ShuffleApi(api, userData);
-        var trueShuffleUser = new TrueShuffleUser(userData, shuffleApi);
+        var shuffleApi = new TrueShuffleApi(api, userData);
+        var trueShuffleUser = new InternalTrueShuffleUser(userData, shuffleApi);
         authorizedUsersMap.put(trueShuffleUser.getUserId(), trueShuffleUser);
         return trueShuffleUser;
     }
@@ -189,6 +189,13 @@ public class TrueShuffleClient {
         }
     }
 
+    private InternalTrueShuffleUser getInternalAuthorizedUser(String userId) throws UserNotFoundException {
+        var user = authorizedUsersMap.get(userId);
+        if (user == null)
+            throw new UserNotFoundException(userId);
+        return user;
+    }
+
     /**
      * Retrieve a shuffle user by means of a unique user identifier.
      *
@@ -197,10 +204,7 @@ public class TrueShuffleClient {
      * @throws UserNotFoundException if the user could not be found.
      */
     public TrueShuffleUser getAuthorizedUser(String userId) throws UserNotFoundException {
-        var user = authorizedUsersMap.get(userId);
-        if (user == null)
-            throw new UserNotFoundException(userId);
-        return user;
+        return getInternalAuthorizedUser(userId);
     }
 
     /**
@@ -217,7 +221,7 @@ public class TrueShuffleClient {
     public TrueShuffleJobStatus shuffleLikedSongs(String userId, Executor executor) throws UserNotFoundException {
         verifyInit();
         Objects.requireNonNull(executor);
-        getAuthorizedUser(userId);
+        getInternalAuthorizedUser(userId);
         var job = new TrueShuffleLikedJob(userId);
         return job.execute(resolver, executor);
     }
@@ -237,7 +241,7 @@ public class TrueShuffleClient {
     public TrueShuffleJobStatus shufflePlaylist(String userId, String playlistId, Executor executor) throws UserNotFoundException {
         verifyInit();
         Objects.requireNonNull(executor);
-        getAuthorizedUser(userId);
+        getInternalAuthorizedUser(userId);
         var job = new TrueShufflePlaylistJob(userId, playlistId);
         return job.execute(resolver, executor);
     }

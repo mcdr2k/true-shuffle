@@ -3,8 +3,7 @@ package nl.martderoos.trueshuffle;
 import se.michaelthelin.spotify.model_objects.credentials.AuthorizationCodeCredentials;
 
 /**
- * Class encapsulating credentials of a TrueShuffle user that is used for leveraging the
- * {@link se.michaelthelin.spotify.SpotifyApi SpotifyApi}.
+ * Class encapsulating credentials of a TrueShuffle user that is used to authenticate with the Spotify API.
  *
  * @param issuedSinceEpoch the time in milliseconds (offset from UNIX epoch) at which the access token was issued. Use
  *                         {@link System#currentTimeMillis()} to get the current time in millis since the UNIX epoch.

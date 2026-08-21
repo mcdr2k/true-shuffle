@@ -5,7 +5,6 @@ import nl.martderoos.trueshuffle.exceptions.ImmutablePlaylistException;
 import nl.martderoos.trueshuffle.requests.exceptions.FatalRequestResponseException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import se.michaelthelin.spotify.model_objects.specification.Image;
 import se.michaelthelin.spotify.model_objects.specification.PlaylistSimplified;
 
 import java.util.List;
@@ -16,20 +15,20 @@ import java.util.concurrent.TimeUnit;
 /**
  * Thread-safe class for modifying a user's playlist data (if allowed).
  */
-public class ShufflePlaylist {
+public class ShufflePlaylist implements TrueShufflePlaylist {
     /**
      * The maximum number of tracks we may retrieve for any playlist. Currently, 2000.
      */
     public static final int PLAYLIST_TRACKS_HARD_LIMIT = 2000;
     private static final Logger LOGGER = LogManager.getLogger(ShufflePlaylist.class);
 
-    private final ShuffleApi api;
+    private final TrueShuffleApi api;
     private final boolean mutable;
 
     private final String playlistId;
     private final String ownerId;
 
-    private final LazyExpiringApiData<PlaylistSimplified> playlistData;
+    private final LazyExpiringApiData<TrueShufflePlaylistData> playlistData;
     private final LazyExpiringApiData<List<String>> playlistTracksUris;
 
     /**
@@ -39,12 +38,16 @@ public class ShufflePlaylist {
      * @param playlist the initial playlist's data
      * @param mutable  whether the playlist is mutable
      */
-    public ShufflePlaylist(ShuffleApi api, PlaylistSimplified playlist, boolean mutable) {
+    public ShufflePlaylist(TrueShuffleApi api, PlaylistSimplified playlist, boolean mutable) {
+        this(api, nl.martderoos.trueshuffle.utility.PlaylistUtil.toPlaylistData(playlist), mutable);
+    }
+
+    public ShufflePlaylist(TrueShuffleApi api, TrueShufflePlaylistData playlist, boolean mutable) {
         this.api = Objects.requireNonNull(api);
         this.mutable = mutable;
 
-        this.playlistId = playlist.getId();
-        this.ownerId = playlist.getOwner().getId();
+        this.playlistId = playlist.id();
+        this.ownerId = playlist.owner().id();
 
         playlistData = new LazyExpiringApiData<>(() -> api.streamPlaylistSimplified(playlistId), true, 10, TimeUnit.MINUTES);
         playlistData.setData(Objects.requireNonNull(playlist));
@@ -73,7 +76,7 @@ public class ShufflePlaylist {
         }
 
         if (tracksToAdd != null && !tracksToAdd.isEmpty()) {
-            snapshot = api.addTracks(playlistId, snapshot, tracksToAdd);
+            api.addTracks(playlistId, snapshot, tracksToAdd);
             changed = true;
         }
 
@@ -95,10 +98,10 @@ public class ShufflePlaylist {
         verifyMutable();
         var id = getPlaylistId();
         var playlist = playlistData.getData();
-        var snapshot = playlist.getSnapshotId();
-        int total = playlist.getTracks().getTotal();
+        var snapshot = playlist.snapshotId();
+        int total = playlist.trackCount();
 
-        LOGGER.info("Shuffling {} in-place by reordering {} tracks", playlist.getName(), total);
+        LOGGER.info("Shuffling {} in-place by reordering {} tracks", playlist.name(), total);
 
         Random random = new Random();
 
@@ -139,7 +142,7 @@ public class ShufflePlaylist {
     }
 
     private synchronized String getSnapshotId() throws FatalRequestResponseException {
-        return playlistData.getData().getSnapshotId();
+        return playlistData.getData().snapshotId();
     }
 
     /**
@@ -149,7 +152,7 @@ public class ShufflePlaylist {
      * @throws FatalRequestResponseException if an attempt to get the playlist's tracks from the server fails
      */
     public synchronized List<String> getPlaylistTracksUris() throws FatalRequestResponseException {
-        return playlistTracksUris.getData();
+        return List.copyOf(playlistTracksUris.getData());
     }
 
     /**
@@ -159,16 +162,16 @@ public class ShufflePlaylist {
      * @throws FatalRequestResponseException if an attempt to get the playlist's name from the server fails
      */
     public synchronized String getName() throws FatalRequestResponseException {
-        return playlistData.getData().getName();
+        return playlistData.getData().name();
     }
 
     /**
-     * Attempt to retrieve the set of images for the thumbnail (different resolutions)
+     * Attempt to retrieve the set of images for the thumbnail (different dimensions)
      *
-     * @return the array of images (same image, different resolution)
+     * @return the images (same image, different dimension), never null
      * @throws FatalRequestResponseException if an attempt to get the playlist's thumbnails from the server fails
      */
-    public synchronized Image[] getImages() throws FatalRequestResponseException {
-        return playlistData.getData().getImages();
+    public synchronized List<TrueShuffleImage> getImages() throws FatalRequestResponseException {
+        return List.copyOf(playlistData.getData().images());
     }
 }

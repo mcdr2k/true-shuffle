@@ -1,10 +1,11 @@
 package nl.martderoos.trueshuffle.jobs;
 
-import nl.martderoos.trueshuffle.TrueShuffleUser;
+import nl.martderoos.trueshuffle.InternalTrueShuffleUser;
 import nl.martderoos.trueshuffle.exceptions.UserNotFoundException;
-import nl.martderoos.trueshuffle.model.ShuffleApi;
+import nl.martderoos.trueshuffle.model.TrueShuffleApi;
 import nl.martderoos.trueshuffle.model.ShufflePlaylist;
-import nl.martderoos.trueshuffle.model.UserLibrary;
+import nl.martderoos.trueshuffle.model.TrueShufflePlaylist;
+import nl.martderoos.trueshuffle.model.TrueShuffleUserLibrary;
 import nl.martderoos.trueshuffle.requests.exceptions.FatalRequestResponseException;
 import nl.martderoos.trueshuffle.utility.ShuffleUtil;
 import org.apache.logging.log4j.LogManager;
@@ -47,7 +48,7 @@ public abstract sealed class TrueShuffleJob permits TrueShuffleLikedJob, TrueShu
 
     private void execute(TrueShuffleUserResolver resolver, TrueShuffleJobStatus status) {
         final var jobName = getClass().getSimpleName() + "-" + userId;
-        TrueShuffleUser user;
+        InternalTrueShuffleUser user;
         try {
             user = resolver.resolve(userId);
         } catch (UserNotFoundException e) {
@@ -80,7 +81,7 @@ public abstract sealed class TrueShuffleJob permits TrueShuffleLikedJob, TrueShu
      * @param user   the user for which to execute the job, never null.
      * @param status the status that may be updated continuously throughout the job, never null.
      */
-    protected abstract void internalExecute(TrueShuffleUser user, TrueShuffleJobStatus status) throws FatalRequestResponseException;
+    protected abstract void internalExecute(InternalTrueShuffleUser user, TrueShuffleJobStatus status) throws FatalRequestResponseException;
 
     /**
      * Attempts to find a user owned playlist with the given name or create a new one if it does not exist. If 2 or more
@@ -94,14 +95,14 @@ public abstract sealed class TrueShuffleJob permits TrueShuffleLikedJob, TrueShu
      * @param description the description of the returned playlist in the case that we create a new one.
      * @return null if the provided name is not unique for a user's playlists.
      */
-    protected static ShufflePlaylist findOrCreateUniqueUserOwnedPlaylistByName(UserLibrary library, TrueShuffleJobStatus status, String name, String description) throws FatalRequestResponseException {
+    protected static ShufflePlaylist findOrCreateUniqueUserOwnedPlaylistByName(TrueShuffleUserLibrary library, TrueShuffleJobStatus status, String name, String description) throws FatalRequestResponseException {
         var list = library.getPlaylistByName(name, true);
         if (list == null || list.isEmpty()) {
-            return library.createPlaylist(name, description);
+            return asInternal(library.createPlaylist(name, description));
         }
 
         if (list.size() == 1) {
-            return list.get(0);
+            return asInternal(list.get(0));
         }
 
         status.setStatusMessage(ETrueShuffleJobStatus.SKIPPED, String.format("Multiple playlists exist already with the name '%s'", name));
@@ -115,7 +116,7 @@ public abstract sealed class TrueShuffleJob permits TrueShuffleLikedJob, TrueShu
      * @param status the status to update continuously.
      * @param source the playlist to shuffle in-place.
      */
-    protected static void shuffleInPlace(TrueShuffleUser user, TrueShuffleJobStatus status, ShufflePlaylist source) throws FatalRequestResponseException {
+    protected static void shuffleInPlace(InternalTrueShuffleUser user, TrueShuffleJobStatus status, ShufflePlaylist source) throws FatalRequestResponseException {
         var library = user.getUserLibrary();
         if (!library.isOwner(source)) {
             status.setStatusMessage(ETrueShuffleJobStatus.TERMINATED,
@@ -136,7 +137,7 @@ public abstract sealed class TrueShuffleJob permits TrueShuffleLikedJob, TrueShu
      * the target playlist's tracks. Once the tracks have been transferred, the target playlist is shuffled in-place.
      * If the target playlist is null, then a new playlist will be created for the user. If the target playlist is not
      * null but the provided user is not the owner of the playlist, then this method will update the status and return early.
-     * This operation makes use of {@link ShuffleUtil#shuffleInto(ShuffleApi, ShufflePlaylist, Collection)} to perform
+     * This operation makes use of {@link ShuffleUtil#shuffleInto(TrueShuffleApi, ShufflePlaylist, Collection)} to perform
      * the shuffle.
      *
      * @param user   the user to perform the shuffle for.
@@ -145,7 +146,7 @@ public abstract sealed class TrueShuffleJob permits TrueShuffleLikedJob, TrueShu
      * @param target the target playlist that will contain the tracks of the source playlist and is then shuffled
      *               afterward (nullable).
      */
-    protected static void shuffleAfterCopy(TrueShuffleUser user, TrueShuffleJobStatus status, ShufflePlaylist source, ShufflePlaylist target) throws FatalRequestResponseException {
+    protected static void shuffleAfterCopy(InternalTrueShuffleUser user, TrueShuffleJobStatus status, ShufflePlaylist source, ShufflePlaylist target) throws FatalRequestResponseException {
         String name;
         if (target != null) {
             name = target.getName();
@@ -187,5 +188,12 @@ public abstract sealed class TrueShuffleJob permits TrueShuffleLikedJob, TrueShu
      */
     public String getUserId() {
         return userId;
+    }
+
+    private static ShufflePlaylist asInternal(TrueShufflePlaylist playlist) {
+        if (!(playlist instanceof ShufflePlaylist internalPlaylist)) {
+            throw new IllegalArgumentException("TrueShufflePlaylist must be managed by TrueShuffle");
+        }
+        return internalPlaylist;
     }
 }

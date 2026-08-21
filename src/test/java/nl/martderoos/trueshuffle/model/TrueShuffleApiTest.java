@@ -8,13 +8,13 @@ import se.michaelthelin.spotify.model_objects.specification.User;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
-public class ShuffleApiTest {
+public class TrueShuffleApiTest {
     @Test
     public void testInitialCredentials() {
         var spotifyApi = mock(SpotifyApi.class);
         when(spotifyApi.getAccessToken()).thenReturn("a-token");
         when(spotifyApi.getRefreshToken()).thenReturn("r-token");
-        var api = new ShuffleApi(spotifyApi, createUser());
+        var api = new TrueShuffleApi(spotifyApi, createUser());
 
         assertEquals("a-token", api.getAccessToken());
         assertEquals("r-token", api.getRefreshToken());
@@ -27,7 +27,7 @@ public class ShuffleApiTest {
     @Test
     public void testAssigningFullCredentials() {
         var spotifyApi = mock(SpotifyApi.class);
-        var api = new ShuffleApi(spotifyApi, createUser());
+        var api = new TrueShuffleApi(spotifyApi, createUser());
 
         var credentials = new TrueShuffleUserCredentials(System.currentTimeMillis(), "new-a-token", "new-r-token", 100);
         api.assignCredentials(credentials);
@@ -39,7 +39,7 @@ public class ShuffleApiTest {
     @Test
     public void testAssigningPartialCredentials() {
         var spotifyApi = mock(SpotifyApi.class);
-        var api = new ShuffleApi(spotifyApi, createUser());
+        var api = new TrueShuffleApi(spotifyApi, createUser());
 
         var credentials = new TrueShuffleUserCredentials(System.currentTimeMillis(), "new-a-token", "new-r-token", 50);
         api.assignCredentials(credentials);
@@ -63,7 +63,7 @@ public class ShuffleApiTest {
     @Test
     public void testAssigningExpiredCredentials() {
         var spotifyApi = mock(SpotifyApi.class);
-        var api = new ShuffleApi(spotifyApi, createUser());
+        var api = new TrueShuffleApi(spotifyApi, createUser());
 
         var credentials = new TrueShuffleUserCredentials(System.currentTimeMillis(), "a-token1", "r-token1", 0);
         api.assignCredentials(credentials);

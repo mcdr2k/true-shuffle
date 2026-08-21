@@ -1,6 +1,6 @@
 package nl.martderoos.trueshuffle.utility;
 
-import nl.martderoos.trueshuffle.model.ShuffleApi;
+import nl.martderoos.trueshuffle.model.TrueShuffleApi;
 import nl.martderoos.trueshuffle.model.ShufflePlaylist;
 import nl.martderoos.trueshuffle.requests.exceptions.FatalRequestResponseException;
 import org.apache.logging.log4j.LogManager;
@@ -27,7 +27,7 @@ public class ShuffleUtil {
      * @param target the target playlist.
      * @param tracks the list of tracks that should be in target playlist.
      */
-    public static void shuffleInto(ShuffleApi api, ShufflePlaylist target, Collection<String> tracks) throws FatalRequestResponseException {
+    public static void shuffleInto(TrueShuffleApi api, ShufflePlaylist target, Collection<String> tracks) throws FatalRequestResponseException {
         var currentTracks = target.getPlaylistTracksUris();
         var currentTracksCounter = new ItemCounter<>(currentTracks);
 
