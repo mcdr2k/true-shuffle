@@ -50,7 +50,7 @@ public class TrueShufflePlaylistJobTest {
         when(api.getDisplayName()).thenReturn("user display name");
 
         var job = new TrueShufflePlaylistJob("user", "pid", "target");
-        var result = job.execute((s) -> user, Runnable::run);
+        var result = new TrueShuffleJobExecutor().execute(job, (s) -> user, Runnable::run).getStatus();
 
         verify(targetShufflePlaylist).shuffleInPlace();
         verify(targetShufflePlaylist).addAndRemoveTracks(eq(List.of("t2", "t3")), eq(List.of("t4")));
@@ -82,7 +82,7 @@ public class TrueShufflePlaylistJobTest {
         when(api.getDisplayName()).thenReturn("user display name");
 
         var job = new TrueShufflePlaylistJob("user", "pid", "pid");
-        var result = job.execute((s) -> user, Runnable::run);
+        var result = new TrueShuffleJobExecutor().execute(job, (s) -> user, Runnable::run).getStatus();
 
         verify(sourceShufflePlaylist).shuffleInPlace();
         verify(sourceShufflePlaylist, times(0)).addAndRemoveTracks(any(), any());
@@ -114,7 +114,7 @@ public class TrueShufflePlaylistJobTest {
         when(api.getDisplayName()).thenReturn("user display name");
 
         var job = new TrueShufflePlaylistJob("user", "pid");
-        var result = job.execute((s) -> user, Runnable::run);
+        var result = new TrueShuffleJobExecutor().execute(job, (s) -> user, Runnable::run).getStatus();
 
         verify(sourceShufflePlaylist).shuffleInPlace();
         verify(sourceShufflePlaylist, times(0)).addAndRemoveTracks(any(), any());
@@ -152,7 +152,7 @@ public class TrueShufflePlaylistJobTest {
         when(api.getDisplayName()).thenReturn("user display name");
 
         var job = new TrueShufflePlaylistJob("user", "pid");
-        var result = job.execute((s) -> user, Runnable::run);
+        var result = new TrueShuffleJobExecutor().execute(job, (s) -> user, Runnable::run).getStatus();
 
         verify(targetShufflePlaylist).shuffleInPlace();
         verify(targetShufflePlaylist).addAndRemoveTracks(eq(List.of("t2", "t3")), eq(List.of("t4")));

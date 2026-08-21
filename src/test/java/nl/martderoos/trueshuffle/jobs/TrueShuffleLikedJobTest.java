@@ -46,7 +46,7 @@ public class TrueShuffleLikedJobTest {
         when(api.getDisplayName()).thenReturn("user display name");
 
         var job = new TrueShuffleLikedJob("user");
-        var result = job.execute((s) -> user, Runnable::run);
+        var result = new TrueShuffleJobExecutor().execute(job, (s) -> user, Runnable::run).getStatus();
 
         verify(shufflePlaylist).shuffleInPlace();
         verify(shufflePlaylist).addAndRemoveTracks(eq(List.of("t2", "t3")), eq(List.of("t4")));
@@ -82,7 +82,7 @@ public class TrueShuffleLikedJobTest {
         when(api.getDisplayName()).thenReturn("user display name");
 
         var job = new TrueShuffleLikedJob("user", "target");
-        var result = job.execute((s) -> user, Runnable::run);
+        var result = new TrueShuffleJobExecutor().execute(job, (s) -> user, Runnable::run).getStatus();
 
         verify(targetShufflePlaylist).shuffleInPlace();
         verify(targetShufflePlaylist).addAndRemoveTracks(eq(List.of("t2", "t3")), eq(List.of("t4")));
@@ -107,7 +107,7 @@ public class TrueShuffleLikedJobTest {
         when(api.getDisplayName()).thenReturn("user display name");
 
         var job = new TrueShuffleLikedJob("user", "target");
-        var result = job.execute((s) -> user, Runnable::run);
+        var result = new TrueShuffleJobExecutor().execute(job, (s) -> user, Runnable::run).getStatus();
 
         assertEquals(ETrueShuffleJobStatus.TERMINATED, result.getStatus());
         assertTrue(result.getMessage().contains("STUB"));
@@ -131,7 +131,7 @@ public class TrueShuffleLikedJobTest {
         when(library.isOwner(targetShufflePlaylist)).thenReturn(false); // <-- not the owner!
 
         var job = new TrueShuffleLikedJob("user", "target");
-        var result = job.execute((s) -> user, Runnable::run);
+        var result = new TrueShuffleJobExecutor().execute(job, (s) -> user, Runnable::run).getStatus();
 
         assertEquals(ETrueShuffleJobStatus.TERMINATED, result.getStatus());
         assertTrue(result.getMessage().contains("owner"));
@@ -157,9 +157,9 @@ public class TrueShuffleLikedJobTest {
         when(library.isOwner(targetShufflePlaylist)).thenReturn(false); // <-- not the owner!
 
         var job = new TrueShuffleLikedJob("peter", "target");
-        var result = job.execute((s) -> {
+        var result = new TrueShuffleJobExecutor().execute(job, (s) -> {
             throw new UserNotFoundException("peter");
-        }, Runnable::run);
+        }, Runnable::run).getStatus();
 
         assertEquals(ETrueShuffleJobStatus.SKIPPED, result.getStatus());
         assertTrue(result.getMessage().contains("user"));

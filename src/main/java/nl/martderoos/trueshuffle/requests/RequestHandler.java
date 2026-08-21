@@ -72,6 +72,7 @@ public class RequestHandler {
 
         public T execute() throws FatalRequestResponseException {
             while (retries <= MAX_RETRIES) {
+                checkInterrupted();
                 try {
                     return request.execute();
                 } catch (IOException | ParseException e) {
@@ -118,8 +119,14 @@ public class RequestHandler {
                 LOGGER.debug("A request has been delayed for {} milliseconds", millis);
                 Thread.sleep(millis);
             } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
                 throw new FatalRequestResponseException("Request retry interrupted", e);
             }
+        }
+
+        private void checkInterrupted() throws FatalRequestResponseException {
+            if (Thread.currentThread().isInterrupted())
+                throw new FatalRequestResponseException("Request interrupted");
         }
     }
 

@@ -18,7 +18,7 @@ True Shuffle is a reusable, non-executable Java library; it has no `main` method
 
 `UserLibrary` maintains lazy-expiring data for liked-track URIs and a playlist index. The index maps playlist IDs and names to `ShufflePlaylist` objects; it can load playlists from Spotify and add newly created or discovered playlists. `ShufflePlaylist` lazily loads playlist metadata/tracks and performs mutation operations when the linked user owns the playlist.
 
-`TrueShuffleJob` is the sealed asynchronous job base. `TrueShuffleLikedJob` shuffles liked tracks into a uniquely named target playlist, while `TrueShufflePlaylistJob` chooses in-place shuffling, a supplied target, or a generated `- TrueShuffle` target based on ownership and constructor arguments. Jobs report progress through `TrueShuffleJobStatus` and use `ShuffleUtil.shuffleInto` to diff playlist contents before shuffling.
+`TrueShuffleJob` is the sealed immutable job-description base. `TrueShuffleLikedJob` shuffles liked tracks into a uniquely named target playlist, while `TrueShufflePlaylistJob` chooses in-place shuffling, a supplied target, or a generated `- TrueShuffle` target based on ownership and constructor arguments. `TrueShuffleJobExecutor` schedules jobs and returns `TrueShuffleJobExecution`, which owns lifecycle operations and status reporting. Jobs use `ShuffleUtil.shuffleInto` to diff playlist contents before shuffling.
 
 ## Repository-specific conventions
 

@@ -1,7 +1,6 @@
 package nl.martderoos.trueshuffle.jobs;
 
 import nl.martderoos.trueshuffle.InternalTrueShuffleUser;
-import nl.martderoos.trueshuffle.exceptions.UserNotFoundException;
 import nl.martderoos.trueshuffle.model.TrueShuffleApi;
 import nl.martderoos.trueshuffle.model.ShufflePlaylist;
 import nl.martderoos.trueshuffle.model.TrueShufflePlaylist;
@@ -13,12 +12,11 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.Collection;
 import java.util.Objects;
-import java.util.concurrent.Executor;
 
 import static nl.martderoos.trueshuffle.jobs.TrueShuffleJobPlaylistData.newPlaylistData;
 
 /**
- * Thread-safe and immutable sealed base class for TrueShuffle-like jobs.
+ * Thread-safe and immutable sealed base class for TrueShuffle-like job descriptions.
  *
  * @see TrueShuffleLikedJob
  * @see TrueShufflePlaylistJob
@@ -35,53 +33,12 @@ public abstract sealed class TrueShuffleJob permits TrueShuffleLikedJob, TrueShu
     }
 
     /**
-     * Executes this job, following the provided executor's schedule.
-     *
-     * @param executor The execution schedule.
-     * @return The status of this job, which is updated continuously throughout the execution of this job.
-     */
-    public final TrueShuffleJobStatus execute(TrueShuffleUserResolver resolver, Executor executor) {
-        var status = new TrueShuffleJobStatus();
-        executor.execute(() -> this.execute(resolver, status));
-        return status;
-    }
-
-    private void execute(TrueShuffleUserResolver resolver, TrueShuffleJobStatus status) {
-        final var jobName = getClass().getSimpleName() + "-" + userId;
-        InternalTrueShuffleUser user;
-        try {
-            user = resolver.resolve(userId);
-        } catch (UserNotFoundException e) {
-            LOGGER.info("Skipped {} because we could not find the specified user: {}", jobName, e.getMessage());
-            status.setStatusMessage(ETrueShuffleJobStatus.SKIPPED, e.getMessage());
-            return;
-        }
-        status.setStatusMessage(ETrueShuffleJobStatus.EXECUTING, null);
-        try {
-            internalExecute(user, status);
-            if (status.getStatus() == ETrueShuffleJobStatus.EXECUTING) {
-                status.setStatusMessage(ETrueShuffleJobStatus.FINISHED, null);
-                LOGGER.info("{} completed appropriately", jobName);
-            } else if (status.getStatus() != ETrueShuffleJobStatus.FINISHED) {
-                LOGGER.info("{} completed with status {} and message: {}", jobName, status.getStatus(), status.getMessage());
-            }
-        } catch (FatalRequestResponseException e) {
-            var message = jobName + " could not complete: " + e.getMessage();
-            LOGGER.error(message);
-            status.setStatusMessage(ETrueShuffleJobStatus.TERMINATED, message);
-        } catch (Throwable t) {
-            status.setStatusMessage(ETrueShuffleJobStatus.TERMINATED, "Encountered an unexpected issue");
-            throw t;
-        }
-    }
-
-    /**
-     * Abstract method for subclasses to implement their logic.
+     * Performs this job's operation.
      *
      * @param user   the user for which to execute the job, never null.
      * @param status the status that may be updated continuously throughout the job, never null.
      */
-    protected abstract void internalExecute(InternalTrueShuffleUser user, TrueShuffleJobStatus status) throws FatalRequestResponseException;
+    abstract void perform(InternalTrueShuffleUser user, TrueShuffleJobStatus status) throws FatalRequestResponseException;
 
     /**
      * Attempts to find a user owned playlist with the given name or create a new one if it does not exist. If 2 or more

@@ -1,12 +1,13 @@
 package nl.martderoos.trueshuffle.jobs;
 
 /**
- * Thread-safe class describing the state of a {@link TrueShuffleJob job}. This object's fields will be updated
- * throughout the execution of a job.
+ * Thread-safe class describing the state of a {@link TrueShuffleJobExecution job execution}. This object's fields will
+ * be updated throughout the execution.
  */
 public class TrueShuffleJobStatus {
     private ETrueShuffleJobStatus status = ETrueShuffleJobStatus.WAITING;
     private String message;
+    private Throwable failure;
     private TrueShuffleJobPlaylistData sourcePlaylist;
     private TrueShuffleJobPlaylistData targetPlaylist;
 
@@ -72,6 +73,15 @@ public class TrueShuffleJobStatus {
     }
 
     /**
+     * Get the failure that caused this execution to terminate or be skipped.
+     *
+     * @return the original failure, or null when no failure was recorded.
+     */
+    public synchronized Throwable getFailure() {
+        return failure;
+    }
+
+    /**
      * Set the status and the message of the related job. This operation is grouped because the status is usually tied
      * closely to the message.
      *
@@ -79,7 +89,13 @@ public class TrueShuffleJobStatus {
      * @param message the new message.
      */
     synchronized void setStatusMessage(ETrueShuffleJobStatus status, String message) {
+        if (this.status.isDone())
+            return;
         this.message = message;
         this.status = status;
+    }
+
+    synchronized void setFailure(Throwable failure) {
+        this.failure = failure;
     }
 }

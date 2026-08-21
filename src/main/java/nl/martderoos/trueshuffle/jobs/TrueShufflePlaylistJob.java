@@ -47,7 +47,7 @@ public final class TrueShufflePlaylistJob extends TrueShuffleJob {
     }
 
     @Override
-    protected void internalExecute(InternalTrueShuffleUser user, TrueShuffleJobStatus status) throws FatalRequestResponseException {
+    void perform(InternalTrueShuffleUser user, TrueShuffleJobStatus status) throws FatalRequestResponseException {
         LOGGER.info("Executing playlist shuffle for user: {} with source playlist id: {} and target playlist id: {}", getUserId(), sourcePlaylistId, targetPlaylistId);
         var library = user.getUserLibrary();
         var sourcePlaylist = library.getPlaylistById(sourcePlaylistId);

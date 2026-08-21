@@ -3,7 +3,9 @@ package nl.martderoos.trueshuffle;
 import nl.martderoos.trueshuffle.exceptions.AuthorizationException;
 import nl.martderoos.trueshuffle.exceptions.InitializationException;
 import nl.martderoos.trueshuffle.exceptions.UserNotFoundException;
-import nl.martderoos.trueshuffle.jobs.TrueShuffleJobStatus;
+import nl.martderoos.trueshuffle.jobs.TrueShuffleJobExecution;
+import nl.martderoos.trueshuffle.jobs.TrueShuffleJobExecutor;
+import nl.martderoos.trueshuffle.jobs.TrueShuffleJob;
 import nl.martderoos.trueshuffle.jobs.TrueShuffleLikedJob;
 import nl.martderoos.trueshuffle.jobs.TrueShufflePlaylistJob;
 import nl.martderoos.trueshuffle.jobs.TrueShuffleUserResolver;
@@ -32,6 +34,7 @@ public class TrueShuffleClient {
 
     private final RequestHandler handler = new RequestHandler(null);
     private final TrueShuffleUserResolver resolver = this::getInternalAuthorizedUser;
+    private final TrueShuffleJobExecutor jobExecutor = new TrueShuffleJobExecutor();
 
     private final Map<String, InternalTrueShuffleUser> authorizedUsersMap = Collections.synchronizedMap(new HashMap<>());
 
@@ -208,22 +211,35 @@ public class TrueShuffleClient {
     }
 
     /**
+     * Executes an immutable job description following the provided executor's schedule.
+     *
+     * @param job      the job description.
+     * @param executor the execution schedule.
+     * @return the execution handle, which exposes status and lifecycle operations.
+     * @throws UserNotFoundException when no user could be found for the job.
+     * @throws IllegalStateException when the client has not been initialized yet.
+     */
+    public TrueShuffleJobExecution execute(TrueShuffleJob job, Executor executor) throws UserNotFoundException {
+        verifyInit();
+        Objects.requireNonNull(job);
+        Objects.requireNonNull(executor);
+        getInternalAuthorizedUser(job.getUserId());
+        return jobExecutor.execute(job, resolver, executor);
+    }
+
+    /**
      * Perform a shuffle on the user's liked songs, following the provided executor's schedule.
      * If one wishes to monitor the status of this job, an asynchronous executor must be provided. Otherwise, this function,
      * will not return until it has completed execution.
      *
      * @param userId   the id of the user.
      * @param executor the execution schedule (should be an asynchronous schedule).
-     * @return the status of the shuffle job, which is updated continuously until it has finished.
+     * @return the execution handle, which exposes status and lifecycle operations.
      * @throws UserNotFoundException when no user could be found with the provided user identifier.
      * @throws IllegalStateException when the client has not been initialized yet.
      */
-    public TrueShuffleJobStatus shuffleLikedSongs(String userId, Executor executor) throws UserNotFoundException {
-        verifyInit();
-        Objects.requireNonNull(executor);
-        getInternalAuthorizedUser(userId);
-        var job = new TrueShuffleLikedJob(userId);
-        return job.execute(resolver, executor);
+    public TrueShuffleJobExecution shuffleLikedSongs(String userId, Executor executor) throws UserNotFoundException {
+        return execute(new TrueShuffleLikedJob(userId), executor);
     }
 
     /**
@@ -234,16 +250,12 @@ public class TrueShuffleClient {
      * @param userId     the id of the user.
      * @param playlistId the id of the playlist to shuffle.
      * @param executor   the execution schedule (should be an asynchronous schedule).
-     * @return the status of the shuffle job, which is updated continuously until it has finished.
+     * @return the execution handle, which exposes status and lifecycle operations.
      * @throws UserNotFoundException when no user could be found with the provided user identifier.
      * @throws IllegalStateException when the client has not been initialized yet.
      */
-    public TrueShuffleJobStatus shufflePlaylist(String userId, String playlistId, Executor executor) throws UserNotFoundException {
-        verifyInit();
-        Objects.requireNonNull(executor);
-        getInternalAuthorizedUser(userId);
-        var job = new TrueShufflePlaylistJob(userId, playlistId);
-        return job.execute(resolver, executor);
+    public TrueShuffleJobExecution shufflePlaylist(String userId, String playlistId, Executor executor) throws UserNotFoundException {
+        return execute(new TrueShufflePlaylistJob(userId, playlistId), executor);
     }
 
     /**

@@ -41,7 +41,7 @@ public final class TrueShuffleLikedJob extends TrueShuffleJob {
     }
 
     @Override
-    protected void internalExecute(InternalTrueShuffleUser user, TrueShuffleJobStatus status) throws FatalRequestResponseException {
+    void perform(InternalTrueShuffleUser user, TrueShuffleJobStatus status) throws FatalRequestResponseException {
         LOGGER.info("Executing liked songs shuffle for user: {} with target playlist id: {}", getUserId(), targetPlaylistId);
         var api = user.getApi();
         var library = user.getUserLibrary();
