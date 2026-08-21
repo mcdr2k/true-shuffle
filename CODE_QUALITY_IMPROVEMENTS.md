@@ -13,10 +13,10 @@ The repository is already fairly well-structured, but these improvements would m
    - Reject invalid timeout values in `LazyExpiringData`.
 
 3. **Improve retry behavior**
-   - `RequestHandler` documentation is inconsistent: `MAX_RETRIES` is 8, while messages mention 10 retries.
-   - Restore the interrupted thread flag in `sleep()` instead of silently ignoring `InterruptedException`.
-   - Add jitter to exponential backoff to reduce synchronized retry spikes.
-   - Preserve the original exception as the cause when wrapping failures.
+   - `RequestHandler` treats `MAX_RETRIES` as retries after the initial attempt.
+   - Interrupted retry sleeps restore the thread flag and terminate the request explicitly.
+   - Exponential backoff includes bounded jitter to reduce synchronized retry spikes.
+   - Wrapped fatal failures preserve the original exception as the cause.
 
 4. **Reduce playlist shuffle API traffic**
    - `ShufflePlaylist.shuffleInPlace()` performs one Spotify reorder request per track.

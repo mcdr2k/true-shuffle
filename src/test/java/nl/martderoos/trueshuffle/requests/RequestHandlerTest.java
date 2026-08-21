@@ -80,7 +80,8 @@ public class RequestHandlerTest {
     public void testIOExceptionMapsToFatalRequest() throws Exception {
         var handler = new RequestHandler(null);
         var request = forgeRequest(new IOException());
-        assertThrows(FatalRequestResponseException.class, () -> handler.handleRequest(request));
+        var exception = assertThrows(FatalRequestResponseException.class, () -> handler.handleRequest(request));
+        assertInstanceOf(IOException.class, exception.getCause());
         verify(request, times(1)).execute();
     }
 

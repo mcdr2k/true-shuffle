@@ -9,4 +9,8 @@ public class TrueShuffleRequestException extends TrueShuffleException {
     TrueShuffleRequestException(String message) {
         super(message);
     }
+
+    TrueShuffleRequestException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

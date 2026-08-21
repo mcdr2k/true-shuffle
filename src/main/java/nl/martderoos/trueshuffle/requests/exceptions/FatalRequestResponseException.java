@@ -8,4 +8,8 @@ public class FatalRequestResponseException extends TrueShuffleRequestException {
     public FatalRequestResponseException(String message) {
         super(message);
     }
+
+    public FatalRequestResponseException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }
