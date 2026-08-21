@@ -2,8 +2,6 @@ package nl.martderoos.trueshuffle.jobs;
 
 import nl.martderoos.trueshuffle.model.TrueShuffleImage;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 

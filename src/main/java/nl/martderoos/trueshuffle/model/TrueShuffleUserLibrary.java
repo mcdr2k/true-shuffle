@@ -3,6 +3,7 @@ package nl.martderoos.trueshuffle.model;
 
 import nl.martderoos.trueshuffle.adhoc.LazyExpiringApiData;
 import nl.martderoos.trueshuffle.requests.exceptions.FatalRequestResponseException;
+
 import java.util.*;
 import java.util.stream.Collectors;
 

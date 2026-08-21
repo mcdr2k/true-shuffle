@@ -1,6 +1,5 @@
 package nl.martderoos.trueshuffle;
 
-import com.neovisionaries.i18n.CountryCode;
 import nl.martderoos.trueshuffle.jobs.TrueShuffleLikedJob;
 import nl.martderoos.trueshuffle.jobs.TrueShufflePlaylistJob;
 import nl.martderoos.trueshuffle.model.TrueShuffleApi;

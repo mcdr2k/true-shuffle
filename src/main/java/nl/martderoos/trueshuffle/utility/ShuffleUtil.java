@@ -1,7 +1,7 @@
 package nl.martderoos.trueshuffle.utility;
 
-import nl.martderoos.trueshuffle.model.TrueShuffleApi;
 import nl.martderoos.trueshuffle.model.ShufflePlaylist;
+import nl.martderoos.trueshuffle.model.TrueShuffleApi;
 import nl.martderoos.trueshuffle.requests.exceptions.FatalRequestResponseException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

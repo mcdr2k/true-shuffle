@@ -1,6 +1,7 @@
 package nl.martderoos.trueshuffle.model;
 
 import nl.martderoos.trueshuffle.requests.exceptions.FatalRequestResponseException;
+
 import java.util.List;
 
 /**

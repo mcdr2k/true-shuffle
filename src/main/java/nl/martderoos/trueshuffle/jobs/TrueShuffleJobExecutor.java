@@ -7,9 +7,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.Executor;
 import java.util.concurrent.FutureTask;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Schedules and manages executions of immutable shuffle job descriptions.
