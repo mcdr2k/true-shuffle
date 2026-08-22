@@ -3,9 +3,6 @@ package nl.martderoos.trueshuffle.model;
 import java.util.List;
 import java.util.Objects;
 
-/**
- * Immutable playlist data independent of the Spotify SDK.
- */
 public record TrueShufflePlaylistData(
         String id,
         String name,

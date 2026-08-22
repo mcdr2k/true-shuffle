@@ -24,6 +24,7 @@ public class ShufflePlaylist implements TrueShufflePlaylist {
 
     private final TrueShuffleApi api;
     private final boolean mutable;
+    private final Object mutationLock = new Object();
 
     private final String playlistId;
     private final String ownerId;
@@ -64,25 +65,24 @@ public class ShufflePlaylist implements TrueShufflePlaylist {
      * @param tracksToRemove The tracks to remove from the playlist (nullable)
      * @throws ImmutablePlaylistException if this playlist is immutable.
      */
-    public synchronized void addAndRemoveTracks(List<String> tracksToAdd, List<String> tracksToRemove) throws FatalRequestResponseException, ImmutablePlaylistException {
+    public void addAndRemoveTracks(List<String> tracksToAdd, List<String> tracksToRemove) throws FatalRequestResponseException, ImmutablePlaylistException {
         verifyMutable();
-        String playlistId = getPlaylistId();
-        String snapshot = getSnapshotId();
-
-        boolean changed = false;
-        if (tracksToRemove != null && !tracksToRemove.isEmpty()) {
-            snapshot = api.removeTracks(playlistId, snapshot, tracksToRemove);
-            changed = true;
+        var tracksToAddCopy = copyTracks(tracksToAdd);
+        var tracksToRemoveCopy = copyTracks(tracksToRemove);
+        if (tracksToAddCopy.isEmpty() && tracksToRemoveCopy.isEmpty()) {
+            return;
         }
 
-        if (tracksToAdd != null && !tracksToAdd.isEmpty()) {
-            api.addTracks(playlistId, snapshot, tracksToAdd);
-            changed = true;
-        }
+        synchronized (mutationLock) {
+            String playlistId = getPlaylistId();
+            String snapshot = getSnapshotId();
 
-        if (changed) {
-            playlistData.invalidate();
-            playlistTracksUris.invalidate();
+            try {
+                snapshot = api.removeTracks(playlistId, snapshot, tracksToRemoveCopy);
+                api.addTracks(playlistId, snapshot, tracksToAddCopy);
+            } finally {
+                invalidate();
+            }
         }
     }
 
@@ -94,29 +94,32 @@ public class ShufflePlaylist implements TrueShufflePlaylist {
      *
      * @throws ImmutablePlaylistException if this playlist is immutable.
      */
-    public synchronized void shuffleInPlace() throws FatalRequestResponseException, ImmutablePlaylistException {
+    public void shuffleInPlace() throws FatalRequestResponseException, ImmutablePlaylistException {
         verifyMutable();
-        var id = getPlaylistId();
-        var playlist = playlistData.getData();
-        var snapshot = playlist.snapshotId();
-        int total = playlist.trackCount();
 
-        LOGGER.info("Shuffling {} in-place by reordering {} tracks", playlist.name(), total);
+        synchronized (mutationLock) {
+            var id = getPlaylistId();
+            var playlist = playlistData.getData();
+            var snapshot = playlist.snapshotId();
+            int total = playlist.trackCount();
 
-        Random random = new Random();
+            LOGGER.info("Shuffling {} in-place by reordering {} tracks", playlist.name(), total);
 
-        for (int i = 0; i < total; i++) {
-            int moveFront = random.nextInt(i, total);
-            snapshot = api.reorderTrack(id, moveFront, 0, snapshot);
+            try {
+                Random random = new Random();
+                for (int i = 0; i < total; i++) {
+                    int moveFront = random.nextInt(i, total);
+                    snapshot = api.reorderTrack(id, moveFront, 0, snapshot);
+                }
+            } finally {
+                invalidate();
+            }
         }
-
-        playlistData.invalidate();
-        playlistTracksUris.invalidate();
     }
 
     private void verifyMutable() throws ImmutablePlaylistException {
         if (!mutable) {
-            throw new ImmutablePlaylistException(String.format("Playlist %s from %s is immutable", getPlaylistId(), getOwnerId()));
+            throw new ImmutablePlaylistException(String.format("Playlist %s is immutable", getPlaylistId()));
         }
     }
 
@@ -141,7 +144,7 @@ public class ShufflePlaylist implements TrueShufflePlaylist {
         return ownerId;
     }
 
-    private synchronized String getSnapshotId() throws FatalRequestResponseException {
+    private String getSnapshotId() throws FatalRequestResponseException {
         return playlistData.getData().snapshotId();
     }
 
@@ -151,7 +154,7 @@ public class ShufflePlaylist implements TrueShufflePlaylist {
      * @return the playlist's tracks
      * @throws FatalRequestResponseException if an attempt to get the playlist's tracks from the server fails
      */
-    public synchronized List<String> getPlaylistTracksUris() throws FatalRequestResponseException {
+    public List<String> getPlaylistTracksUris() throws FatalRequestResponseException {
         return List.copyOf(playlistTracksUris.getData());
     }
 
@@ -161,7 +164,7 @@ public class ShufflePlaylist implements TrueShufflePlaylist {
      * @return the name of the playlist
      * @throws FatalRequestResponseException if an attempt to get the playlist's name from the server fails
      */
-    public synchronized String getName() throws FatalRequestResponseException {
+    public String getName() throws FatalRequestResponseException {
         return playlistData.getData().name();
     }
 
@@ -171,7 +174,18 @@ public class ShufflePlaylist implements TrueShufflePlaylist {
      * @return the images (same image, different dimension), never null
      * @throws FatalRequestResponseException if an attempt to get the playlist's thumbnails from the server fails
      */
-    public synchronized List<TrueShuffleImage> getImages() throws FatalRequestResponseException {
+    public List<TrueShuffleImage> getImages() throws FatalRequestResponseException {
         return List.copyOf(playlistData.getData().images());
+    }
+
+    private void invalidate() {
+        playlistData.invalidate();
+        playlistTracksUris.invalidate();
+    }
+
+    private List<String> copyTracks(List<String> tracks) {
+        if (tracks == null || tracks.isEmpty())
+            return List.of();
+        return List.copyOf(tracks);
     }
 }
