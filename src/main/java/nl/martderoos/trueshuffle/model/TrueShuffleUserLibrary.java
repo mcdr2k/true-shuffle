@@ -60,10 +60,10 @@ public class TrueShuffleUserLibrary {
     }
 
     /**
-     * Retrieves a playlist from the index by its name
+     * Retrieves all playlists from the index that have the provided name.
      *
-     * @param playlistName The playlist name to search for
-     * @param mustBeOwner      Whether we should only include playlists that are owned by the current user
+     * @param playlistName the playlist name to search for
+     * @param mustBeOwner  whether we should only include playlists that are owned by the current user
      */
     public synchronized List<ShufflePlaylist> getPlaylistByName(String playlistName, boolean mustBeOwner) throws FatalRequestResponseException {
         var result = index.getData().getPlaylistsByName(playlistName);
@@ -140,7 +140,7 @@ public class TrueShuffleUserLibrary {
             return this.playlists.subList(0, Math.min(this.playlists.size(), limit));
         }
 
-        private ShufflePlaylist addPlaylist(TrueShufflePlaylistMetadata playlistData) throws FatalRequestResponseException {
+        private ShufflePlaylist addPlaylist(TrueShufflePlaylistMetadata playlistData) {
             if (pidToPlaylist.containsKey(playlistData.id())) {
                 return pidToPlaylist.get(playlistData.id());
             }
@@ -150,7 +150,7 @@ public class TrueShuffleUserLibrary {
             return playlist;
         }
 
-        private void put(ShufflePlaylist playlist, boolean putFront) throws FatalRequestResponseException {
+        private void put(ShufflePlaylist playlist, boolean putFront) {
             pidToPlaylist.put(playlist.getPlaylistId(), playlist);
 
             var list = nameToPlaylist.computeIfAbsent(playlist.getMetadata().name(), k -> new ArrayList<>());
@@ -176,13 +176,13 @@ public class TrueShuffleUserLibrary {
             // if some playlists were renamed
             var list = nameToPlaylist.get(playlistName);
             if (list == null) {
+                list = new ArrayList<>();
                 var simplifiedPlaylists = api.searchPlaylistByExactName(playlistName, 5);
                 for (var playlist : simplifiedPlaylists)
-                    addPlaylist(playlist);
-                list = simplifiedPlaylists.stream().map((p) -> new ShufflePlaylist(api, p, isOwner(p.owner()))).collect(Collectors.toList());
+                    list.add(addPlaylist(playlist));
                 nameToPlaylist.put(playlistName, list);
             }
-            return list;
+            return new ArrayList<>(list);
         }
     }
 }
