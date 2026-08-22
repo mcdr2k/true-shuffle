@@ -12,6 +12,7 @@ public class ETrueShuffleJobStatusTest {
         assertFalse(ETrueShuffleJobStatus.EXECUTING.isWaiting());
         assertFalse(ETrueShuffleJobStatus.COMPLETED.isWaiting());
         assertFalse(ETrueShuffleJobStatus.SKIPPED.isWaiting());
+        assertFalse(ETrueShuffleJobStatus.CANCELLED.isWaiting());
         assertFalse(ETrueShuffleJobStatus.TERMINATED.isWaiting());
     }
 
@@ -21,6 +22,7 @@ public class ETrueShuffleJobStatusTest {
         assertTrue(ETrueShuffleJobStatus.EXECUTING.isRunning());
         assertFalse(ETrueShuffleJobStatus.COMPLETED.isRunning());
         assertFalse(ETrueShuffleJobStatus.SKIPPED.isRunning());
+        assertFalse(ETrueShuffleJobStatus.CANCELLED.isRunning());
         assertFalse(ETrueShuffleJobStatus.TERMINATED.isRunning());
     }
 
@@ -30,6 +32,7 @@ public class ETrueShuffleJobStatusTest {
         assertFalse(ETrueShuffleJobStatus.EXECUTING.isDone());
         assertTrue(ETrueShuffleJobStatus.COMPLETED.isDone());
         assertTrue(ETrueShuffleJobStatus.SKIPPED.isDone());
+        assertTrue(ETrueShuffleJobStatus.CANCELLED.isDone());
         assertTrue(ETrueShuffleJobStatus.TERMINATED.isDone());
     }
 }
