@@ -36,7 +36,7 @@ public class TrueShufflePlaylistJobTest {
         var sourceShufflePlaylist = spy(new ShufflePlaylist(api, toPlaylistData(sourcePlaylist), false));
         when(library.getPlaylistById(sourcePlaylist.getId())).thenReturn(sourceShufflePlaylist);
         var sourceTracks = List.of("t1", "t2", "t3");
-        doReturn(sourceTracks).when(sourceShufflePlaylist).getPlaylistTracksUris(); // works differently for spies
+        doReturn(sourceTracks).when(sourceShufflePlaylist).getTracksUris(); // works differently for spies
 
         var targetPlaylist = defaultPlaylistBuilder().setId("target").setName("target-name").build();
         var targetShufflePlaylist = spy(new ShufflePlaylist(api, toPlaylistData(targetPlaylist), true));
@@ -74,7 +74,7 @@ public class TrueShufflePlaylistJobTest {
         when(library.getPlaylistById(sourcePlaylist.getId())).thenReturn(sourceShufflePlaylist);
         when(library.isOwner(sourceShufflePlaylist)).thenReturn(true);
         var sourceTracks = List.of("t1", "t2", "t3");
-        doReturn(sourceTracks).when(sourceShufflePlaylist).getPlaylistTracksUris(); // works differently for spies
+        doReturn(sourceTracks).when(sourceShufflePlaylist).getTracksUris(); // works differently for spies
 
         Mockito.doNothing().when(sourceShufflePlaylist).shuffleInPlace();
         Mockito.doNothing().when(sourceShufflePlaylist).addAndRemoveTracks(any(), any());
@@ -106,7 +106,7 @@ public class TrueShufflePlaylistJobTest {
         when(library.getPlaylistById(sourcePlaylist.getId())).thenReturn(sourceShufflePlaylist);
         when(library.isOwner(sourceShufflePlaylist)).thenReturn(true);
         var sourceTracks = List.of("t1", "t2", "t3");
-        doReturn(sourceTracks).when(sourceShufflePlaylist).getPlaylistTracksUris(); // works differently for spies
+        doReturn(sourceTracks).when(sourceShufflePlaylist).getTracksUris(); // works differently for spies
 
         Mockito.doNothing().when(sourceShufflePlaylist).shuffleInPlace();
         Mockito.doNothing().when(sourceShufflePlaylist).addAndRemoveTracks(any(), any());
@@ -138,7 +138,7 @@ public class TrueShufflePlaylistJobTest {
         when(library.getPlaylistById(sourcePlaylist.getId())).thenReturn(sourceShufflePlaylist);
         when(library.isOwner(sourceShufflePlaylist)).thenReturn(false);
         var sourceTracks = List.of("t1", "t2", "t3");
-        doReturn(sourceTracks).when(sourceShufflePlaylist).getPlaylistTracksUris(); // works differently for spies
+        doReturn(sourceTracks).when(sourceShufflePlaylist).getTracksUris(); // works differently for spies
 
         var targetPlaylist = defaultPlaylistBuilder().setId("target").setName("target-name").build();
         var targetShufflePlaylist = spy(new ShufflePlaylist(api, toPlaylistData(targetPlaylist), true));

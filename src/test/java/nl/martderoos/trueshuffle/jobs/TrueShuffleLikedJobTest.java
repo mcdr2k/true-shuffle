@@ -34,7 +34,7 @@ public class TrueShuffleLikedJobTest {
         Mockito.doNothing().when(shufflePlaylist).shuffleInPlace();
         Mockito.doNothing().when(shufflePlaylist).addAndRemoveTracks(any(), any());
         when(library.createPlaylist(anyString(), anyString())).thenReturn(shufflePlaylist);
-        when(library.getPlaylistByName(eq(shufflePlaylist.getName()), anyBoolean())).thenReturn(List.of(shufflePlaylist));
+        when(library.getPlaylistByName(eq(shufflePlaylist.getMetadata().name()), anyBoolean())).thenReturn(List.of(shufflePlaylist));
         when(library.getPlaylistById("pid")).thenReturn(shufflePlaylist);
 
         var targetPlaylistTracks = List.of("t1", "t4");

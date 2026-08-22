@@ -50,10 +50,10 @@ public final class TrueShuffleLikedJob extends TrueShuffleJob {
 
         ShufflePlaylist target;
         if (targetPlaylistId != null) {
-            target = (ShufflePlaylist) library.getPlaylistById(targetPlaylistId);
+            target = library.getPlaylistById(targetPlaylistId);
             if (!user.getUserLibrary().isOwner(target)) {
                 status.setStatusMessage(ETrueShuffleJobStatus.TERMINATED,
-                        String.format("Could not shuffle liked songs into %s because we are not the owner of the target playlist", target.getName())
+                        String.format("Could not shuffle liked songs into %s because we are not the owner of the target playlist", target.getMetadata().name())
                 );
                 return;
             }
@@ -69,9 +69,11 @@ public final class TrueShuffleLikedJob extends TrueShuffleJob {
                 return;
         }
 
-        status.setTargetPlaylist(newPlaylistData(target.getPlaylistId(), target.getName(), target.getImages()));
+        var targetData = target.getMetadata();
+        status.setTargetPlaylist(newPlaylistData(targetData.id(), targetData.name(), targetData.images()));
         ShuffleUtil.shuffleInto(api, target, library.getUserLikedTracksUris());
-        status.setTargetPlaylist(newPlaylistData(target.getPlaylistId(), target.getName(), target.getImages()));
+        targetData = target.getMetadata();
+        status.setTargetPlaylist(newPlaylistData(targetData.id(), targetData.name(), targetData.images()));
     }
 
     /**

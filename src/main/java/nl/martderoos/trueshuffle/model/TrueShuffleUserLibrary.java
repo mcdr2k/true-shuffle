@@ -43,7 +43,7 @@ public class TrueShuffleUserLibrary {
      * @param limit The maximum number of playlists to retrieve.
      * @return A shallow copy of the underlying playlists.
      */
-    public synchronized List<TrueShufflePlaylistData> getMostRecentPlaylists(int limit) throws FatalRequestResponseException {
+    public synchronized List<TrueShufflePlaylistMetadata> getMostRecentPlaylists(int limit) throws FatalRequestResponseException {
         return new ArrayList<>(this.index.getData().getMostRecentPlaylists(limit));
     }
 
@@ -110,7 +110,7 @@ public class TrueShuffleUserLibrary {
      * sometimes and may be inconsistent between multiple requests.
      */
     private class ShufflePlaylistIndex {
-        private List<TrueShufflePlaylistData> playlists;
+        private List<TrueShufflePlaylistMetadata> playlists;
         private final Map<String, ShufflePlaylist> pidToPlaylist = new HashMap<>();
         private final Map<String, List<ShufflePlaylist>> nameToPlaylist = new HashMap<>();
 
@@ -136,11 +136,11 @@ public class TrueShuffleUserLibrary {
          * @param limit The maximum number of playlists to retrieve.
          * @return A <b>view</b> of the underlying playlists.
          */
-        public List<TrueShufflePlaylistData> getMostRecentPlaylists(int limit) {
+        public List<TrueShufflePlaylistMetadata> getMostRecentPlaylists(int limit) {
             return this.playlists.subList(0, Math.min(this.playlists.size(), limit));
         }
 
-        private ShufflePlaylist addPlaylist(TrueShufflePlaylistData playlistData) throws FatalRequestResponseException {
+        private ShufflePlaylist addPlaylist(TrueShufflePlaylistMetadata playlistData) throws FatalRequestResponseException {
             if (pidToPlaylist.containsKey(playlistData.id())) {
                 return pidToPlaylist.get(playlistData.id());
             }
@@ -153,7 +153,7 @@ public class TrueShuffleUserLibrary {
         private void put(ShufflePlaylist playlist, boolean putFront) throws FatalRequestResponseException {
             pidToPlaylist.put(playlist.getPlaylistId(), playlist);
 
-            var list = nameToPlaylist.computeIfAbsent(playlist.getName(), k -> new ArrayList<>());
+            var list = nameToPlaylist.computeIfAbsent(playlist.getMetadata().name(), k -> new ArrayList<>());
 
             if (putFront)
                 list.add(0, playlist);

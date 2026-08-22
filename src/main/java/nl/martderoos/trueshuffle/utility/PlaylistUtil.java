@@ -1,7 +1,7 @@
 package nl.martderoos.trueshuffle.utility;
 
 import nl.martderoos.trueshuffle.model.TrueShuffleImage;
-import nl.martderoos.trueshuffle.model.TrueShufflePlaylistData;
+import nl.martderoos.trueshuffle.model.TrueShufflePlaylistMetadata;
 import nl.martderoos.trueshuffle.model.TrueShufflePlaylistOwner;
 import se.michaelthelin.spotify.model_objects.specification.Playlist;
 import se.michaelthelin.spotify.model_objects.specification.PlaylistSimplified;
@@ -16,7 +16,7 @@ import java.util.Objects;
 public class PlaylistUtil {
     private PlaylistUtil() {}
 
-    public static TrueShufflePlaylistData toPlaylistData(Playlist playlist) {
+    public static TrueShufflePlaylistMetadata toPlaylistData(Playlist playlist) {
         return toPlaylistData(
                 playlist.getId(),
                 playlist.getName(),
@@ -31,7 +31,7 @@ public class PlaylistUtil {
         );
     }
 
-    public static TrueShufflePlaylistData toPlaylistData(PlaylistSimplified playlist) {
+    public static TrueShufflePlaylistMetadata toPlaylistData(PlaylistSimplified playlist) {
         return toPlaylistData(
                 playlist.getId(),
                 playlist.getName(),
@@ -46,7 +46,7 @@ public class PlaylistUtil {
         );
     }
 
-    private static TrueShufflePlaylistData toPlaylistData(
+    private static TrueShufflePlaylistMetadata toPlaylistData(
             String id,
             String name,
             String ownerId,
@@ -64,7 +64,7 @@ public class PlaylistUtil {
                 .filter(Objects::nonNull)
                 .map(image -> new TrueShuffleImage(image.getUrl(), image.getWidth(), image.getHeight()))
                 .toList();
-        return new TrueShufflePlaylistData(
+        return new TrueShufflePlaylistMetadata(
                 id,
                 name,
                 new TrueShufflePlaylistOwner(ownerId, ownerDisplayName),

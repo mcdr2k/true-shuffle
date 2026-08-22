@@ -35,12 +35,12 @@ public class TrueShuffleUserLibraryTest {
         verify(api).uploadPlaylist("newPlaylist", "newDescription");
 
         var actualFoundPlaylist = lib.getPlaylistByName("newPlaylist", true).get(0);
-        assertEquals("newPlaylist", actualFoundPlaylist.getName());
+        assertEquals("newPlaylist", actualFoundPlaylist.getMetadata().name());
         assertEquals("upload-id", actualFoundPlaylist.getPlaylistId());
 
         actualFoundPlaylist = lib.getPlaylistById("upload-id");
         assertNotNull(actualFoundPlaylist);
-        assertEquals("newPlaylist", actualFoundPlaylist.getName());
+        assertEquals("newPlaylist", actualFoundPlaylist.getMetadata().name());
     }
 
     @Test
@@ -48,9 +48,9 @@ public class TrueShuffleUserLibraryTest {
         var api = mock(TrueShuffleApi.class);
         when(api.getUserId()).thenReturn("user");
 
-        TrueShufflePlaylistData p1 = toPlaylistData(defaultPlaylistBuilder().setName("cool").setId("pid1").build());
-        TrueShufflePlaylistData p2 = toPlaylistData(defaultPlaylistBuilder().setName("cool").setId("pid2").setOwner(createUser("some guy", "some name")).build());
-        TrueShufflePlaylistData p3 = toPlaylistData(defaultPlaylistBuilder().setName("cool").setId("pid3").build());
+        TrueShufflePlaylistMetadata p1 = toPlaylistData(defaultPlaylistBuilder().setName("cool").setId("pid1").build());
+        TrueShufflePlaylistMetadata p2 = toPlaylistData(defaultPlaylistBuilder().setName("cool").setId("pid2").setOwner(createUser("some guy", "some name")).build());
+        TrueShufflePlaylistMetadata p3 = toPlaylistData(defaultPlaylistBuilder().setName("cool").setId("pid3").build());
         when(api.searchPlaylistByExactName(eq("cool"), anyInt())).thenReturn(List.of(p1, p2, p3));
 
         var lib = new TrueShuffleUserLibrary(api);
@@ -73,8 +73,8 @@ public class TrueShuffleUserLibraryTest {
         var api = mock(TrueShuffleApi.class);
         when(api.getUserId()).thenReturn("user");
 
-        TrueShufflePlaylistData p1 = toPlaylistData(defaultPlaylistBuilder().setName("n1").setId("pid1").build());
-        TrueShufflePlaylistData p2 = toPlaylistData(defaultPlaylistBuilder().setName("n2").setId("pid2").setOwner(createUser("some guy", "some name")).build());
+        TrueShufflePlaylistMetadata p1 = toPlaylistData(defaultPlaylistBuilder().setName("n1").setId("pid1").build());
+        TrueShufflePlaylistMetadata p2 = toPlaylistData(defaultPlaylistBuilder().setName("n2").setId("pid2").setOwner(createUser("some guy", "some name")).build());
         when(api.streamPlaylistSimplified("pid1")).thenReturn(p1);
         when(api.streamPlaylistSimplified("pid2")).thenReturn(p2);
 

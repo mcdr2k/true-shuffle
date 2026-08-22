@@ -48,7 +48,7 @@ public class LazyExpiringData<T, E extends Exception> {
     private synchronized T checkReload(boolean forceReload) throws E {
         var data = this.data;
         if (forceReload || !valid || clock.getAsLong() >= validUntil) {
-            invalidate();
+            expire();
             return reload();
         }
         return data;
@@ -73,6 +73,22 @@ public class LazyExpiringData<T, E extends Exception> {
      */
     public final synchronized void validate() {
         validateForAtLeast(refreshTimeoutNanos, TimeUnit.NANOSECONDS);
+    }
+
+    /**
+     * Mark the current data as expired without discarding it.
+     */
+    public final synchronized void expire() {
+        valid = false;
+    }
+
+    /**
+     * Get the currently cached value without attempting to load or refresh it.
+     *
+     * @return the last successfully loaded value, possibly null.
+     */
+    public final synchronized T getCachedData() {
+        return data;
     }
 
     /**

@@ -64,7 +64,7 @@ public class TrueShuffleApi {
      * @throws FatalRequestResponseException if the playlist does not exist or if it is not visible to the user (private but
      *                                       owned by other user).
      */
-    public TrueShufflePlaylistData streamPlaylist(String playlistId) throws FatalRequestResponseException {
+    public TrueShufflePlaylistMetadata streamPlaylist(String playlistId) throws FatalRequestResponseException {
         return toPlaylistData(apiRequest(getApi().getPlaylist(playlistId).build()));
     }
 
@@ -75,7 +75,7 @@ public class TrueShuffleApi {
      * @throws FatalRequestResponseException if the playlist does not exist or if it is not visible to the user (private but
      *                                       owned by other user).
      */
-    public TrueShufflePlaylistData streamPlaylistSimplified(String playlistId) throws FatalRequestResponseException {
+    public TrueShufflePlaylistMetadata streamPlaylistSimplified(String playlistId) throws FatalRequestResponseException {
         return streamPlaylist(playlistId);
     }
 
@@ -86,7 +86,7 @@ public class TrueShuffleApi {
      *
      * @param hardLimit the hard limit on the amount of playlists to stream.
      */
-    public List<TrueShufflePlaylistData> streamUserPlaylists(int hardLimit) throws FatalRequestResponseException {
+    public List<TrueShufflePlaylistMetadata> streamUserPlaylists(int hardLimit) throws FatalRequestResponseException {
         return PageAggregator.aggregate(
                 new SpotifyFuturePage<>(
                         (offset, limit) -> apiRequest(getApi()
@@ -108,7 +108,7 @@ public class TrueShuffleApi {
      * @param hardLimit    the hard limit on the amount of search results.
      * @return the search results, never null but may be empty.
      */
-    public List<TrueShufflePlaylistData> searchPlaylistByExactName(String playlistName, int hardLimit) throws FatalRequestResponseException {
+    public List<TrueShufflePlaylistMetadata> searchPlaylistByExactName(String playlistName, int hardLimit) throws FatalRequestResponseException {
         return PageAggregator.aggregate(
                 new SpotifyFuturePage<>(
                         (offset, limit) -> apiRequest(getApi()
@@ -268,7 +268,7 @@ public class TrueShuffleApi {
      * @param playlistDescription the description of the new playlist.
      * @return the newly created playlist's details, never null.
      */
-    public TrueShufflePlaylistData uploadPlaylist(String playlistName, String playlistDescription) throws FatalRequestResponseException {
+    public TrueShufflePlaylistMetadata uploadPlaylist(String playlistName, String playlistDescription) throws FatalRequestResponseException {
         return toPlaylistData(apiRequest(getApi()
                 .createPlaylist(getUserId(), playlistName)
                 .collaborative(false)

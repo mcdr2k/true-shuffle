@@ -77,16 +77,18 @@ public abstract sealed class TrueShuffleJob permits TrueShuffleLikedJob, TrueShu
         var library = user.getUserLibrary();
         if (!library.isOwner(source)) {
             status.setStatusMessage(ETrueShuffleJobStatus.TERMINATED,
-                    String.format("Could not shuffle playlist %s (%s) in-place because we are not the owner of the playlist", source.getName(), source.getPlaylistId())
+                    String.format("Could not shuffle playlist %s (%s) in-place because we are not the owner of the playlist", source.getMetadata().name(), source.getPlaylistId())
             );
             return;
         }
-        status.setSourcePlaylist(newPlaylistData(source.getPlaylistId(), source.getName(), source.getImages()));
-        status.setTargetPlaylist(newPlaylistData(source.getPlaylistId(), source.getName(), source.getImages()));
+        var sourceData = source.getMetadata();
+        status.setSourcePlaylist(newPlaylistData(sourceData.id(), sourceData.name(), sourceData.images()));
+        status.setTargetPlaylist(newPlaylistData(sourceData.id(), sourceData.name(), sourceData.images()));
 
         source.shuffleInPlace();
 
-        status.setTargetPlaylist(newPlaylistData(source.getPlaylistId(), source.getName(), source.getImages()));
+        sourceData = source.getMetadata();
+        status.setTargetPlaylist(newPlaylistData(sourceData.id(), sourceData.name(), sourceData.images()));
     }
 
     /**
@@ -106,36 +108,39 @@ public abstract sealed class TrueShuffleJob permits TrueShuffleLikedJob, TrueShu
     protected static void shuffleAfterCopy(InternalTrueShuffleUser user, TrueShuffleJobStatus status, ShufflePlaylist source, ShufflePlaylist target) throws FatalRequestResponseException {
         String name;
         if (target != null) {
-            name = target.getName();
+            name = target.getMetadata().name();
             if (!user.getUserLibrary().isOwner(target)) {
                 status.setStatusMessage(ETrueShuffleJobStatus.TERMINATED,
-                        String.format("Could not shuffle playlist %s into %s because we are not the owner of the target playlist", source.getName(), target.getName())
+                        String.format("Could not shuffle playlist %s into %s because we are not the owner of the target playlist", source.getMetadata().name(), name)
                 );
                 return;
             }
         } else {
-            name = source.getName();
+            name = source.getMetadata().name();
             if (!name.endsWith(TRUE_SHUFFLE_SUFFIX))
                 name += TRUE_SHUFFLE_SUFFIX;
         }
 
-        LOGGER.info("Copying {} to {} before shuffling", source.getName(), name);
-        status.setSourcePlaylist(newPlaylistData(source.getPlaylistId(), source.getName(), source.getImages()));
+        var sourceData = source.getMetadata();
+        LOGGER.info("Copying {} to {} before shuffling", sourceData.name(), name);
+        status.setSourcePlaylist(newPlaylistData(sourceData.id(), sourceData.name(), sourceData.images()));
 
         if (target == null) {
             target = findOrCreateUniqueUserOwnedPlaylistByName(
                     user.getUserLibrary(),
                     status,
                     name,
-                    source.getName() + " shuffled by TrueShuffle"
+                    sourceData.name() + " shuffled by TrueShuffle"
             );
             if (target == null)
                 return;
         }
 
-        status.setTargetPlaylist(newPlaylistData(target.getPlaylistId(), target.getName(), target.getImages()));
-        ShuffleUtil.shuffleInto(user.getApi(), target, source.getPlaylistTracksUris());
-        status.setTargetPlaylist(newPlaylistData(target.getPlaylistId(), target.getName(), target.getImages()));
+        var targetData = target.getMetadata();
+        status.setTargetPlaylist(newPlaylistData(targetData.id(), targetData.name(), targetData.images()));
+        ShuffleUtil.shuffleInto(user.getApi(), target, source.getTracksUris());
+        targetData = target.getMetadata();
+        status.setTargetPlaylist(newPlaylistData(targetData.id(), targetData.name(), targetData.images()));
     }
 
     /**

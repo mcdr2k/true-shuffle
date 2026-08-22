@@ -6,21 +6,35 @@ import java.util.List;
 
 /**
  * Consumer-facing view of a Spotify playlist managed by TrueShuffle.
- *
- * <p>Playlist tracks are loaded lazily. The only playlist mutation exposed by this interface is shuffling.</p>
  */
 public interface TrueShufflePlaylist {
+    /**
+     * @return the unique identifier of the playlist
+     */
     String getPlaylistId();
 
+    /**
+     * @return the unique identifier of the owner of this playlist
+     */
     String getOwnerId();
 
-    String getName() throws FatalRequestResponseException;
+    /**
+     * Retrieve this playlist's metadata. The returned metadata may be stale.
+     *
+     * @return the playlist metadata, never null.
+     */
+    TrueShufflePlaylistMetadata getMetadata();
 
-    List<TrueShuffleImage> getImages() throws FatalRequestResponseException;
-
+    /**
+     * @return True if modifications can be made to this playlist, false otherwise
+     */
     boolean isMutable();
 
-    List<String> getPlaylistTracksUris() throws FatalRequestResponseException;
-
-    void shuffleInPlace() throws FatalRequestResponseException;
+    /**
+     * Attempt to retrieve the playlist's tracks.
+     *
+     * @return the playlist's tracks, which are the unique identifiers of the tracks. Never null.
+     * @throws FatalRequestResponseException if an attempt to get the playlist's tracks from the server fails
+     */
+    List<String> getTracksUris() throws FatalRequestResponseException;
 }

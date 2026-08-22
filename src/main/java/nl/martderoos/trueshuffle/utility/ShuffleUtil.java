@@ -28,7 +28,7 @@ public class ShuffleUtil {
      * @param tracks the list of tracks that should be in target playlist.
      */
     public static void shuffleInto(TrueShuffleApi api, ShufflePlaylist target, Collection<String> tracks) throws FatalRequestResponseException {
-        var currentTracks = target.getPlaylistTracksUris();
+        var currentTracks = target.getTracksUris();
         var currentTracksCounter = new ItemCounter<>(currentTracks);
 
         List<String> tracksToAdd = new ArrayList<>();
@@ -45,7 +45,7 @@ public class ShuffleUtil {
                 tracksToRemove.add(currentTrack);
         }
 
-        LOGGER.info("Updating playlist '{}' for {} ({} tracks removed, {} tracks added)", target.getName(), api.getDisplayName(), tracksToRemove.size(), tracksToAdd.size());
+        LOGGER.info("Updating playlist '{}' for {} ({} tracks removed, {} tracks added)", target.getMetadata().name(), api.getDisplayName(), tracksToRemove.size(), tracksToAdd.size());
 
         target.addAndRemoveTracks(tracksToAdd, tracksToRemove);
         target.shuffleInPlace();

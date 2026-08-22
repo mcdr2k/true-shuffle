@@ -3,7 +3,7 @@ package nl.martderoos.trueshuffle.model;
 import java.util.List;
 import java.util.Objects;
 
-public record TrueShufflePlaylistData(
+public record TrueShufflePlaylistMetadata(
         String id,
         String name,
         TrueShufflePlaylistOwner owner,
@@ -14,7 +14,7 @@ public record TrueShufflePlaylistData(
         int trackCount,
         List<TrueShuffleImage> images
 ) {
-    public TrueShufflePlaylistData {
+    public TrueShufflePlaylistMetadata {
         Objects.requireNonNull(id);
         Objects.requireNonNull(name);
         Objects.requireNonNull(owner);

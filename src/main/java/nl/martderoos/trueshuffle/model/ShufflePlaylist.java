@@ -29,7 +29,7 @@ public class ShufflePlaylist implements TrueShufflePlaylist {
     private final String playlistId;
     private final String ownerId;
 
-    private final LazyExpiringApiData<TrueShufflePlaylistData> playlistData;
+    private final LazyExpiringApiData<TrueShufflePlaylistMetadata> playlistData;
     private final LazyExpiringApiData<List<String>> playlistTracksUris;
 
     /**
@@ -43,7 +43,7 @@ public class ShufflePlaylist implements TrueShufflePlaylist {
         this(api, nl.martderoos.trueshuffle.utility.PlaylistUtil.toPlaylistData(playlist), mutable);
     }
 
-    public ShufflePlaylist(TrueShuffleApi api, TrueShufflePlaylistData playlist, boolean mutable) {
+    public ShufflePlaylist(TrueShuffleApi api, TrueShufflePlaylistMetadata playlist, boolean mutable) {
         this.api = Objects.requireNonNull(api);
         this.mutable = mutable;
 
@@ -123,23 +123,14 @@ public class ShufflePlaylist implements TrueShufflePlaylist {
         }
     }
 
-    /**
-     * @return True if modifications can be made to this playlist, false otherwise
-     */
     public boolean isMutable() {
         return mutable;
     }
 
-    /**
-     * @return the unique identifier of the playlist
-     */
     public String getPlaylistId() {
         return playlistId;
     }
 
-    /**
-     * @return the unique identifier of the owner of this playlist
-     */
     public String getOwnerId() {
         return ownerId;
     }
@@ -148,38 +139,21 @@ public class ShufflePlaylist implements TrueShufflePlaylist {
         return playlistData.getData().snapshotId();
     }
 
-    /**
-     * Attempt to retrieve the playlist's tracks
-     *
-     * @return the playlist's tracks
-     * @throws FatalRequestResponseException if an attempt to get the playlist's tracks from the server fails
-     */
-    public List<String> getPlaylistTracksUris() throws FatalRequestResponseException {
+    public TrueShufflePlaylistMetadata getMetadata() {
+        try {
+            return playlistData.getData();
+        } catch (FatalRequestResponseException exception) {
+            LOGGER.info("Could not refresh metadata for playlist {}", playlistId, exception);
+            return playlistData.getCachedData();
+        }
+    }
+
+    public List<String> getTracksUris() throws FatalRequestResponseException {
         return List.copyOf(playlistTracksUris.getData());
     }
 
-    /**
-     * Attempt to retrieve the name of the playlist
-     *
-     * @return the name of the playlist
-     * @throws FatalRequestResponseException if an attempt to get the playlist's name from the server fails
-     */
-    public String getName() throws FatalRequestResponseException {
-        return playlistData.getData().name();
-    }
-
-    /**
-     * Attempt to retrieve the set of images for the thumbnail (different dimensions)
-     *
-     * @return the images (same image, different dimension), never null
-     * @throws FatalRequestResponseException if an attempt to get the playlist's thumbnails from the server fails
-     */
-    public List<TrueShuffleImage> getImages() throws FatalRequestResponseException {
-        return List.copyOf(playlistData.getData().images());
-    }
-
     private void invalidate() {
-        playlistData.invalidate();
+        playlistData.expire();
         playlistTracksUris.invalidate();
     }
 
