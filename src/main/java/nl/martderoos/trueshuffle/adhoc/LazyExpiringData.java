@@ -2,6 +2,7 @@ package nl.martderoos.trueshuffle.adhoc;
 
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+import java.util.function.LongSupplier;
 
 /**
  * Thread-safe class that encapsulates lazily evaluated data that may expire over time.
@@ -12,10 +13,12 @@ import java.util.concurrent.TimeUnit;
 public class LazyExpiringData<T, E extends Exception> {
     private final boolean forceReloadOnNull;
     private final DataSource<T, E> source;
-    private final long refreshTimeoutMillis;
+    private final long refreshTimeoutNanos;
+    private final LongSupplier clock;
 
     private volatile T data;
-    private volatile long validTill = 0;
+    private volatile long validUntil;
+    private volatile boolean valid;
 
     public LazyExpiringData(DataSource<T, E> source) {
         this(source, true);
@@ -30,14 +33,21 @@ public class LazyExpiringData<T, E extends Exception> {
     }
 
     public LazyExpiringData(DataSource<T, E> source, boolean forceReloadOnNull, long refreshTimeout, TimeUnit timeUnit) {
+        this(source, forceReloadOnNull, refreshTimeout, timeUnit, System::nanoTime);
+    }
+
+    LazyExpiringData(DataSource<T, E> source, boolean forceReloadOnNull, long refreshTimeout, TimeUnit timeUnit, LongSupplier clock) {
         this.source = Objects.requireNonNull(source);
         this.forceReloadOnNull = forceReloadOnNull;
-        this.refreshTimeoutMillis = Objects.requireNonNull(timeUnit).toMillis(refreshTimeout);
+        if (refreshTimeout < 0)
+            throw new IllegalArgumentException("refreshTimeout must not be negative");
+        this.refreshTimeoutNanos = Objects.requireNonNull(timeUnit).toNanos(refreshTimeout);
+        this.clock = Objects.requireNonNull(clock);
     }
 
     private synchronized T checkReload(boolean forceReload) throws E {
         var data = this.data;
-        if (forceReload || System.currentTimeMillis() > validTill) {
+        if (forceReload || !valid || clock.getAsLong() >= validUntil) {
             invalidate();
             return reload();
         }
@@ -55,14 +65,14 @@ public class LazyExpiringData<T, E extends Exception> {
      */
     public final synchronized void invalidate() {
         data = null;
-        validTill = 0;
+        valid = false;
     }
 
     /**
      * Validate the current data for the configured amount of time as provided to the constructor
      */
     public final synchronized void validate() {
-        validateForAtLeast(refreshTimeoutMillis, TimeUnit.MILLISECONDS);
+        validateForAtLeast(refreshTimeoutNanos, TimeUnit.NANOSECONDS);
     }
 
     /**
@@ -83,10 +93,21 @@ public class LazyExpiringData<T, E extends Exception> {
      * @param timeUnit        The unit of time
      */
     public final synchronized void validateForAtLeast(long validForAtLeast, TimeUnit timeUnit) {
-        var stillValidFor = validTill - System.currentTimeMillis();
-        validForAtLeast = timeUnit.toMillis(validForAtLeast);
-        if (stillValidFor < validForAtLeast)
-            validTill = System.currentTimeMillis() + validForAtLeast;
+        if (validForAtLeast < 0)
+            throw new IllegalArgumentException("validForAtLeast must not be negative");
+
+        var now = clock.getAsLong();
+        var durationNanos = Objects.requireNonNull(timeUnit).toNanos(validForAtLeast);
+        var newValidUntil = saturatingAdd(now, durationNanos);
+        if (!valid || newValidUntil - validUntil > 0)
+            validUntil = newValidUntil;
+        valid = true;
+    }
+
+    private static long saturatingAdd(long value, long amount) {
+        if (amount > 0 && value > Long.MAX_VALUE - amount)
+            return Long.MAX_VALUE;
+        return value + amount;
     }
 
     /**
