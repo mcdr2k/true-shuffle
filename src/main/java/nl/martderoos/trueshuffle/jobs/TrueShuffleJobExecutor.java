@@ -2,7 +2,6 @@ package nl.martderoos.trueshuffle.jobs;
 
 import nl.martderoos.trueshuffle.InternalTrueShuffleUser;
 import nl.martderoos.trueshuffle.exceptions.UserNotFoundException;
-import nl.martderoos.trueshuffle.requests.exceptions.FatalRequestResponseException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -46,8 +45,7 @@ public final class TrueShuffleJobExecutor {
             executor.execute(task);
         } catch (RuntimeException exception) {
             task.cancel(false);
-            execution.getStatus().setFailure(exception);
-            execution.getStatus().setStatusMessage(ETrueShuffleJobStatus.TERMINATED, "Could not schedule job execution: " + exception.getMessage());
+            execution.getStatus().setStatusMessage(ETrueShuffleJobStatus.TERMINATED, "Could not schedule job execution: " + exception.getMessage(), exception);
         }
         return execution;
     }
@@ -58,35 +56,47 @@ public final class TrueShuffleJobExecutor {
             TrueShuffleJobExecution execution
     ) {
         var status = execution.getStatus();
-        var jobName = job.getClass().getSimpleName() + "-" + job.getUserId();
 
         try {
             InternalTrueShuffleUser user = resolver.resolve(job.getUserId());
             status.setStatusMessage(ETrueShuffleJobStatus.EXECUTING, null);
             job.perform(user, status);
-
-            if (status.getStatus() == ETrueShuffleJobStatus.EXECUTING) {
-                status.setStatusMessage(ETrueShuffleJobStatus.FINISHED, null);
-                LOGGER.info("{} completed appropriately", jobName);
-            }
+            updateStatus(status, ETrueShuffleJobStatus.COMPLETED, null, null);
         } catch (UserNotFoundException exception) {
-            LOGGER.info("Skipped {} because we could not find the specified user: {}", jobName, exception.getMessage());
-            status.setFailure(exception);
-            status.setStatusMessage(ETrueShuffleJobStatus.SKIPPED, exception.getMessage());
-        } catch (FatalRequestResponseException exception) {
-            var message = jobName + " could not complete: " + exception.getMessage();
-            LOGGER.info(message, exception);
-            status.setFailure(exception);
-            status.setStatusMessage(ETrueShuffleJobStatus.TERMINATED, message);
-        } catch (RuntimeException exception) {
-            LOGGER.error("{} encountered an unexpected issue", jobName, exception);
-            status.setFailure(exception);
-            status.setStatusMessage(ETrueShuffleJobStatus.TERMINATED, "Encountered an unexpected issue");
-        } catch (Error error) {
-            LOGGER.error("{} encountered an unrecoverable error", jobName, error);
-            status.setFailure(error);
-            status.setStatusMessage(ETrueShuffleJobStatus.TERMINATED, "Encountered an unrecoverable error");
-            throw error;
+            updateStatus(status, ETrueShuffleJobStatus.SKIPPED, exception.getMessage(), exception);
+        } catch (Exception e) {
+            updateStatus(status, ETrueShuffleJobStatus.TERMINATED, e.getMessage(), e);
+        } catch (Error throwable) {
+            updateStatus(status, ETrueShuffleJobStatus.TERMINATED, throwable.getMessage(), throwable);
+            throw throwable;
+        } finally {
+            var message = status.getMessage();
+            if (message != null && !message.isEmpty()) {
+                LOGGER.info("Execution of {} with id {} finished with status: {}. {}", job.getClass().getSimpleName(), execution.getId(), status.getStatus(), message, status.getFailure());
+            } else {
+                LOGGER.info("Execution of {} with id {} finished with status: {}.", job.getClass().getSimpleName(), execution.getId(), status.getStatus(), status.getFailure());
+            }
         }
+    }
+
+    private static void updateStatus(TrueShuffleJobStatus status, ETrueShuffleJobStatus newStatus, String message, Throwable failure) {
+        if (cancellationRequested(status)) {
+            status.setStatusMessage(ETrueShuffleJobStatus.CANCELLED, formatCancellationMessage(failure), failure);
+        } else {
+            status.setStatusMessage(newStatus, message, failure);
+        }
+    }
+
+    private static String formatCancellationMessage(Throwable failure) {
+        if (failure != null) {
+            return "Execution was cancelled: " + failure.getMessage();
+        } else {
+            return "Execution was cancelled";
+        }
+    }
+
+    private static boolean cancellationRequested(TrueShuffleJobStatus status) {
+        // interrupt check only works from worker thread
+        return status.getStatus() == ETrueShuffleJobStatus.CANCELLED || Thread.currentThread().isInterrupted();
     }
 }

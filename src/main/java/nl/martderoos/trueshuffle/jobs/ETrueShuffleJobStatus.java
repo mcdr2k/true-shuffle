@@ -13,9 +13,9 @@ public enum ETrueShuffleJobStatus {
      */
     EXECUTING,
     /**
-     * Indicates that the job finished appropriately.
+     * Indicates that the job completed fully.
      */
-    FINISHED,
+    COMPLETED,
     /**
      * Indicates that the job was skipped for some specific reason.
      */
@@ -44,10 +44,10 @@ public enum ETrueShuffleJobStatus {
     }
 
     /**
-     * @return true if the job has finished executing, which can be either {@link #FINISHED}, {@link #SKIPPED},
+     * @return true if the job has finished executing, which can be either {@link #COMPLETED}, {@link #SKIPPED},
      * {@link #CANCELLED} or {@link #TERMINATED}, false otherwise.
      */
     public boolean isDone() {
-        return this == FINISHED || this == SKIPPED || this == CANCELLED || this == TERMINATED;
+        return this == COMPLETED || this == SKIPPED || this == CANCELLED || this == TERMINATED;
     }
 }

@@ -1,5 +1,7 @@
 package nl.martderoos.trueshuffle.jobs;
 
+import java.util.Objects;
+
 /**
  * Thread-safe class describing the state of a {@link TrueShuffleJobExecution job execution}. This object's fields will
  * be updated throughout the execution.
@@ -12,15 +14,8 @@ public class TrueShuffleJobStatus {
     private TrueShuffleJobPlaylistData targetPlaylist;
 
     public TrueShuffleJobStatus(ETrueShuffleJobStatus status, String message) {
-        this.status = status;
+        this.status = Objects.requireNonNull(status);
         this.message = message;
-    }
-
-    /**
-     * Create a new instance with default status {@link ETrueShuffleJobStatus#WAITING} and all other fields null.
-     */
-    TrueShuffleJobStatus() {
-
     }
 
     /**
@@ -83,19 +78,18 @@ public class TrueShuffleJobStatus {
 
     /**
      * Set the status and the message of the related job. This operation is grouped because the status is usually tied
-     * closely to the message.
-     *
-     * @param status  the new status.
-     * @param message the new message.
+     * closely to the message. This method will not update the status or message if the job is considered done following
+     * {@link ETrueShuffleJobStatus#isDone()}.
      */
-    synchronized void setStatusMessage(ETrueShuffleJobStatus status, String message) {
+    synchronized void setStatusMessage(ETrueShuffleJobStatus status, String message, Throwable failure) {
         if (this.status.isDone())
             return;
         this.message = message;
         this.status = status;
+        this.failure = failure;
     }
 
-    synchronized void setFailure(Throwable failure) {
-        this.failure = failure;
+    void setStatusMessage(ETrueShuffleJobStatus status, String message) {
+        setStatusMessage(status, message, null);
     }
 }

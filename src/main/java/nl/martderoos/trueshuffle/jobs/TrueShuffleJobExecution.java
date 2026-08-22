@@ -1,6 +1,7 @@
 package nl.martderoos.trueshuffle.jobs;
 
 import java.util.Objects;
+import java.util.UUID;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -12,11 +13,13 @@ public final class TrueShuffleJobExecution {
     private final TrueShuffleJob job;
     private final TrueShuffleJobStatus status;
     private final Future<?> future;
+    private final UUID id;
 
     TrueShuffleJobExecution(TrueShuffleJob job, Future<?> future) {
         this.job = Objects.requireNonNull(job);
-        this.status = new TrueShuffleJobStatus();
+        this.status = new TrueShuffleJobStatus(ETrueShuffleJobStatus.WAITING, null);
         this.future = Objects.requireNonNull(future);
+        this.id = UUID.randomUUID();
     }
 
     /**
@@ -44,7 +47,7 @@ public final class TrueShuffleJobExecution {
      * @return true when cancellation was requested successfully.
      */
     public boolean isCancelled() {
-        return future.isCancelled();
+        return status.getStatus() == ETrueShuffleJobStatus.CANCELLED;
     }
 
     /**
@@ -90,5 +93,12 @@ public final class TrueShuffleJobExecution {
         } catch (java.util.concurrent.CancellationException ignored) {
             // Cancellation is reflected by the execution status.
         }
+    }
+
+    /**
+     * @return the unique identifier of this execution.
+     */
+    public UUID getId() {
+        return id;
     }
 }

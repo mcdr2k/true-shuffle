@@ -50,7 +50,7 @@ public class TrueShuffleLikedJobTest {
 
         verify(shufflePlaylist).shuffleInPlace();
         verify(shufflePlaylist).addAndRemoveTracks(eq(List.of("t2", "t3")), eq(List.of("t4")));
-        assertEquals(ETrueShuffleJobStatus.FINISHED, result.getStatus());
+        assertEquals(ETrueShuffleJobStatus.COMPLETED, result.getStatus());
         assertTrue(result.getSourcePlaylist().isLikedSongsPlaylist());
         assertEquals("pid", result.getTargetPlaylist().getPlaylistId());
         assertEquals(LIKED_SONGS_TRUE_SHUFFLE, result.getTargetPlaylist().getName());
@@ -86,7 +86,7 @@ public class TrueShuffleLikedJobTest {
 
         verify(targetShufflePlaylist).shuffleInPlace();
         verify(targetShufflePlaylist).addAndRemoveTracks(eq(List.of("t2", "t3")), eq(List.of("t4")));
-        assertEquals(ETrueShuffleJobStatus.FINISHED, result.getStatus());
+        assertEquals(ETrueShuffleJobStatus.COMPLETED, result.getStatus());
         assertTrue(result.getSourcePlaylist().isLikedSongsPlaylist());
         assertEquals("target", result.getTargetPlaylist().getPlaylistId());
         assertEquals(LIKED_SONGS_TRUE_SHUFFLE, result.getTargetPlaylist().getName());

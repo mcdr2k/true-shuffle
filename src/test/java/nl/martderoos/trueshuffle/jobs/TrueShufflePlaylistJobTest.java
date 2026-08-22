@@ -54,7 +54,7 @@ public class TrueShufflePlaylistJobTest {
 
         verify(targetShufflePlaylist).shuffleInPlace();
         verify(targetShufflePlaylist).addAndRemoveTracks(eq(List.of("t2", "t3")), eq(List.of("t4")));
-        assertEquals(ETrueShuffleJobStatus.FINISHED, result.getStatus());
+        assertEquals(ETrueShuffleJobStatus.COMPLETED, result.getStatus());
         assertFalse(result.getSourcePlaylist().isLikedSongsPlaylist());
         assertEquals("target", result.getTargetPlaylist().getPlaylistId());
         assertEquals("target-name", result.getTargetPlaylist().getName());
@@ -86,7 +86,7 @@ public class TrueShufflePlaylistJobTest {
 
         verify(sourceShufflePlaylist).shuffleInPlace();
         verify(sourceShufflePlaylist, times(0)).addAndRemoveTracks(any(), any());
-        assertEquals(ETrueShuffleJobStatus.FINISHED, result.getStatus());
+        assertEquals(ETrueShuffleJobStatus.COMPLETED, result.getStatus());
         assertFalse(result.getSourcePlaylist().isLikedSongsPlaylist());
         assertEquals("pid", result.getTargetPlaylist().getPlaylistId());
         assertEquals("p-name", result.getTargetPlaylist().getName());
@@ -118,7 +118,7 @@ public class TrueShufflePlaylistJobTest {
 
         verify(sourceShufflePlaylist).shuffleInPlace();
         verify(sourceShufflePlaylist, times(0)).addAndRemoveTracks(any(), any());
-        assertEquals(ETrueShuffleJobStatus.FINISHED, result.getStatus());
+        assertEquals(ETrueShuffleJobStatus.COMPLETED, result.getStatus());
         assertFalse(result.getSourcePlaylist().isLikedSongsPlaylist());
         assertEquals("pid", result.getTargetPlaylist().getPlaylistId());
         assertEquals("p-name", result.getTargetPlaylist().getName());
@@ -156,7 +156,7 @@ public class TrueShufflePlaylistJobTest {
 
         verify(targetShufflePlaylist).shuffleInPlace();
         verify(targetShufflePlaylist).addAndRemoveTracks(eq(List.of("t2", "t3")), eq(List.of("t4")));
-        assertEquals(ETrueShuffleJobStatus.FINISHED, result.getStatus());
+        assertEquals(ETrueShuffleJobStatus.COMPLETED, result.getStatus());
         assertFalse(result.getSourcePlaylist().isLikedSongsPlaylist());
         assertEquals("target", result.getTargetPlaylist().getPlaylistId());
         assertEquals("target-name", result.getTargetPlaylist().getName());
