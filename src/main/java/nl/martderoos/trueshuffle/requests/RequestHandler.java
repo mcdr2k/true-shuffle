@@ -9,6 +9,7 @@ import se.michaelthelin.spotify.exceptions.detailed.*;
 import se.michaelthelin.spotify.requests.IRequest;
 
 import java.io.IOException;
+import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
@@ -24,6 +25,7 @@ public class RequestHandler {
     private static final Logger LOGGER = LogManager.getLogger(RequestHandler.class);
 
     private final AccessTokenRefresher refresher;
+    private final Sleeper sleeper;
 
     /**
      * Create a new handler with provided {@link AccessTokenRefresher}.
@@ -33,7 +35,12 @@ public class RequestHandler {
      *                  to never be called concurrently from within the same handler.
      */
     public RequestHandler(AccessTokenRefresher refresher) {
+        this(refresher, Thread::sleep);
+    }
+
+    RequestHandler(AccessTokenRefresher refresher, Sleeper sleeper) {
         this.refresher = refresher;
+        this.sleeper = Objects.requireNonNull(sleeper);
     }
 
     /**
@@ -67,7 +74,7 @@ public class RequestHandler {
         private Exception lastException;
 
         private ApiRequest(IRequest<T> request) {
-            this.request = request;
+            this.request = Objects.requireNonNull(request);
         }
 
         public T execute() throws FatalRequestResponseException {
@@ -84,7 +91,7 @@ public class RequestHandler {
                     handleError(e);
                 } catch (Exception e) {
                     // this should never happen, unless the SpotifyApi library we use is faulty
-                    LOGGER.error("Request threw an unidentified error: {}", e.getMessage());
+                    LOGGER.error("Request threw an unexpected error: {}", e.getMessage());
                     throw new FatalRequestResponseException(e.getMessage(), e);
                 }
 
@@ -117,7 +124,7 @@ public class RequestHandler {
                 millis = Math.min(millis, MAX_WAIT_TIME_MILLIS);
                 millis = Math.max(MIN_WAIT_TIME_MILLIS, millis);
                 LOGGER.debug("A request has been delayed for {} milliseconds", millis);
-                Thread.sleep(millis);
+                sleeper.sleep(millis);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
                 throw new FatalRequestResponseException("Request retry interrupted", e);
@@ -128,6 +135,11 @@ public class RequestHandler {
             if (Thread.currentThread().isInterrupted())
                 throw new FatalRequestResponseException("Request interrupted");
         }
+    }
+
+    @FunctionalInterface
+    interface Sleeper {
+        void sleep(long millis) throws InterruptedException;
     }
 
     private static void rethrow(SpotifyWebApiException e) throws FatalRequestResponseException, RetryShortlyException, SlowDownException, RefreshTokenException {
