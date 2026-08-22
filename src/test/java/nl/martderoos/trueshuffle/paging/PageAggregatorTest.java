@@ -38,6 +38,35 @@ public class PageAggregatorTest {
     }
 
     @Test
+    public void testNegativeHardLimitIsRejected() {
+        var future = new SpotifyFuturePage<>(new IntLoader(), 0, 100);
+
+        assertThrows(IllegalArgumentException.class, () -> PageAggregator.aggregate(future, -1, false));
+    }
+
+    @Test
+    public void testEmptyPageEndsAggregation() throws FatalRequestResponseException {
+        var loader = (SpotifyPageLoader<Integer>) (offset, limit) -> {
+            if (offset > 1)
+                throw new AssertionError("The aggregator loaded beyond the empty page");
+
+            var items = offset == 0 ? new Integer[]{1} : new Integer[0];
+            return new Paging.Builder<Integer>()
+                    .setPrevious("previous")
+                    .setHref("page")
+                    .setNext("page")
+                    .setLimit(limit)
+                    .setOffset(offset)
+                    .setTotal(2)
+                    .setItems(items)
+                    .build();
+        };
+        var future = new SpotifyFuturePage<>(loader, 0, 100);
+
+        assertEquals(List.of(1), PageAggregator.aggregate(future, 2, false));
+    }
+
+    @Test
     public void testHardLimitEnd() throws FatalRequestResponseException {
         var spyLoader = spy(new IntLoader(1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
         var future = new SpotifyFuturePage<>(spyLoader, 0, 100);

@@ -148,6 +148,12 @@ public class ShufflePlaylist implements TrueShufflePlaylist {
         }
     }
 
+    /**
+     * Attempt to retrieve the playlist's tracks.
+     *
+     * @return the playlist's tracks, which are the unique identifiers of the tracks. Never null.
+     * @throws FatalRequestResponseException if an attempt to get the playlist's tracks from the server fails
+     */
     public List<String> getTracksUris() throws FatalRequestResponseException {
         return List.copyOf(playlistTracksUris.getData());
     }

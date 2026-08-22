@@ -5,7 +5,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -24,9 +23,9 @@ public class PageAggregator {
      * Aggregates the provided initial page's items and all subsequent pages' items into a single list of items. This
      * method will filter out null objects if allowed.
      *
-     * @param initialPage the first page from which we will start aggregating.
-     * @param hardLimit   the limit on the total number of items this function may return at most.
-     * @param <T>         the type of items we may return
+     * @param initialPage         the first page from which we will start aggregating.
+     * @param hardLimit           the limit on the total number of items this function may return at most.
+     * @param <T>                 the type of items we may return
      * @param allowAndFilterNulls whether you allow that Spotify returns null for some items in a page. If allowed, the
      *                            null values will be filtered out of the result. If not allowed, this method will throw
      *                            a {@link FatalRequestResponseException}.
@@ -34,16 +33,25 @@ public class PageAggregator {
      * @throws FatalRequestResponseException when a page fails to load.
      */
     public static <T> List<T> aggregate(SpotifyFuturePage<T> initialPage, int hardLimit, boolean allowAndFilterNulls) throws FatalRequestResponseException {
+        Objects.requireNonNull(initialPage);
+        if (hardLimit < 0)
+            throw new IllegalArgumentException("Hard limit must not be negative");
+
         var page = initialPage.load();
         hardLimit = Math.min(page.getTotal(), hardLimit);
 
         List<T> result = new ArrayList<>(hardLimit);
-        addSome(result, Arrays.asList(page.getItems()), hardLimit);
+        addSome(result, page.getItems(), hardLimit);
 
         var next = page.getNext();
         while (next != null && result.size() < hardLimit) {
             page = next.load();
-            addSome(result, Arrays.asList(page.getItems()), hardLimit - result.size());
+            var items = page.getItems();
+            if (items.isEmpty()) {
+                // This is a safety check to prevent an infinite loop in case Spotify returns an empty page with a next link.
+                break;
+            }
+            addSome(result, items, hardLimit - result.size());
             next = page.getNext();
         }
 
