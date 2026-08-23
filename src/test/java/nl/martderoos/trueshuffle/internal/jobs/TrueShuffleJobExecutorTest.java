@@ -100,7 +100,7 @@ public class TrueShuffleJobExecutorTest {
         assertTrue(execution.isCancelled());
     }
 
-    private static TrueShuffleJobExecution execute(TrueShuffleUserResolver resolver, Executor executor) {
+    private static InternalTrueShuffleJobExecution execute(TrueShuffleUserResolver resolver, Executor executor) {
         return new TrueShuffleJobExecutor().execute(
                 new TrueShuffleLikedJob("user"),
                 resolver,

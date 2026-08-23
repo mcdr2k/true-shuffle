@@ -5,16 +5,16 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TrueShuffleJobStatusTest {
+public class InternalTrueShuffleJobStatusTest {
     @Test
     public void testStatusCannotBeNull() {
-        assertThrows(NullPointerException.class, () -> new TrueShuffleJobStatus(null, null));
+        assertThrows(NullPointerException.class, () -> new InternalTrueShuffleJobStatus(null, null));
     }
 
     @Test
     public void testStatusStoresFailure() {
         var failure = new IllegalStateException("failure");
-        var status = new TrueShuffleJobStatus(ETrueShuffleJobStatus.WAITING, "waiting");
+        var status = new InternalTrueShuffleJobStatus(ETrueShuffleJobStatus.WAITING, "waiting");
 
         status.setStatusMessage(ETrueShuffleJobStatus.TERMINATED, "terminated", failure);
 
@@ -26,7 +26,7 @@ public class TrueShuffleJobStatusTest {
     @Test
     public void testTerminalStatusCannotBeOverwritten() {
         var failure = new IllegalStateException("failure");
-        var status = new TrueShuffleJobStatus(ETrueShuffleJobStatus.TERMINATED, "terminated");
+        var status = new InternalTrueShuffleJobStatus(ETrueShuffleJobStatus.TERMINATED, "terminated");
 
         status.setStatusMessage(ETrueShuffleJobStatus.COMPLETED, "completed", failure);
 

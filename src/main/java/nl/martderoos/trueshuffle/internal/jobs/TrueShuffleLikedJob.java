@@ -8,8 +8,8 @@ import nl.martderoos.trueshuffle.internal.utility.ShuffleUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import static nl.martderoos.trueshuffle.internal.jobs.TrueShuffleJobPlaylistData.newLikedSongsData;
-import static nl.martderoos.trueshuffle.internal.jobs.TrueShuffleJobPlaylistData.newPlaylistData;
+import static nl.martderoos.trueshuffle.api.jobs.TrueShuffleJobPlaylistData.newLikedSongsData;
+import static nl.martderoos.trueshuffle.api.jobs.TrueShuffleJobPlaylistData.newPlaylistData;
 
 /**
  * Dedicated thread-safe and immutable class that contains the data required for shuffling any user's liked songs.
@@ -42,7 +42,7 @@ public final class TrueShuffleLikedJob extends TrueShuffleJob {
     }
 
     @Override
-    void perform(InternalTrueShuffleUser user, TrueShuffleJobStatus status) throws FatalRequestResponseException {
+    void perform(InternalTrueShuffleUser user, InternalTrueShuffleJobStatus status) throws FatalRequestResponseException {
         LOGGER.info("Executing liked songs shuffle for user: {} with target playlist id: {}", getUserId(), targetPlaylistId);
         var api = user.getApi();
         var library = user.getUserLibrary();

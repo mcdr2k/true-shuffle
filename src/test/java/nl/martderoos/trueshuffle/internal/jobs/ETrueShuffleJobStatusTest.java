@@ -28,12 +28,12 @@ public class ETrueShuffleJobStatusTest {
     }
 
     @Test
-    public void testIsDone() {
-        assertFalse(ETrueShuffleJobStatus.WAITING.isDone());
-        assertFalse(ETrueShuffleJobStatus.EXECUTING.isDone());
-        assertTrue(ETrueShuffleJobStatus.COMPLETED.isDone());
-        assertTrue(ETrueShuffleJobStatus.SKIPPED.isDone());
-        assertTrue(ETrueShuffleJobStatus.CANCELLED.isDone());
-        assertTrue(ETrueShuffleJobStatus.TERMINATED.isDone());
+    public void testIsFinished() {
+        assertFalse(ETrueShuffleJobStatus.WAITING.isFinished());
+        assertFalse(ETrueShuffleJobStatus.EXECUTING.isFinished());
+        assertTrue(ETrueShuffleJobStatus.COMPLETED.isFinished());
+        assertTrue(ETrueShuffleJobStatus.SKIPPED.isFinished());
+        assertTrue(ETrueShuffleJobStatus.CANCELLED.isFinished());
+        assertTrue(ETrueShuffleJobStatus.TERMINATED.isFinished());
     }
 }

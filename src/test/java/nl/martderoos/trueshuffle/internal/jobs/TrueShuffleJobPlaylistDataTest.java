@@ -5,7 +5,7 @@ import nl.martderoos.trueshuffle.api.model.TrueShuffleImage;
 
 import java.util.List;
 
-import static nl.martderoos.trueshuffle.internal.jobs.TrueShuffleJobPlaylistData.*;
+import static nl.martderoos.trueshuffle.api.jobs.TrueShuffleJobPlaylistData.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TrueShuffleJobPlaylistDataTest {

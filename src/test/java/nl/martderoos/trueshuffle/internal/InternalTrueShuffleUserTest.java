@@ -1,13 +1,14 @@
 package nl.martderoos.trueshuffle.internal;
 
 import com.neovisionaries.i18n.CountryCode;
+import nl.martderoos.trueshuffle.api.model.TrueShuffleImage;
 import nl.martderoos.trueshuffle.api.model.TrueShuffleUserCredentials;
 import nl.martderoos.trueshuffle.internal.model.TrueShuffleApi;
 import org.junit.jupiter.api.Test;
 import se.michaelthelin.spotify.model_objects.specification.Image;
 import se.michaelthelin.spotify.model_objects.specification.User;
 
-import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -20,7 +21,7 @@ public class InternalTrueShuffleUserTest {
                 .setDisplayName("u-name")
                 .setBirthdate("x/y/z")
                 .setEmail("a@b.c")
-                .setImages(new Image[5])
+                .setImages(null, new Image.Builder().build())
                 .setCountry(CountryCode.NL)
                 .build();
         var api = mock(TrueShuffleApi.class);
@@ -30,7 +31,7 @@ public class InternalTrueShuffleUserTest {
         assertEquals("u-name", trueShuffleUser.getDisplayName());
         assertEquals("x/y/z", trueShuffleUser.getBirthdate());
         assertEquals("a@b.c", trueShuffleUser.getEmail());
-        assertEquals(Arrays.asList(null, null, null, null, null), trueShuffleUser.getImages());
+        assertEquals(List.of(new TrueShuffleImage(null, null, null)), trueShuffleUser.getImages());
         assertEquals(api, trueShuffleUser.getApi());
     }
 

@@ -25,7 +25,7 @@ public final class TrueShuffleJobExecutor {
      * @param executor the execution schedule.
      * @return the execution handle.
      */
-    public TrueShuffleJobExecution execute(
+    public InternalTrueShuffleJobExecution execute(
             TrueShuffleJob job,
             TrueShuffleUserResolver resolver,
             Executor executor
@@ -34,12 +34,12 @@ public final class TrueShuffleJobExecutor {
         Objects.requireNonNull(resolver);
         Objects.requireNonNull(executor);
 
-        var executionReference = new AtomicReference<TrueShuffleJobExecution>();
+        var executionReference = new AtomicReference<InternalTrueShuffleJobExecution>();
         var task = new FutureTask<Void>(() -> {
             run(job, resolver, executionReference.get());
             return null;
         });
-        var execution = new TrueShuffleJobExecution(job, task);
+        var execution = new InternalTrueShuffleJobExecution(job, task);
         executionReference.set(execution);
 
         try {
@@ -54,7 +54,7 @@ public final class TrueShuffleJobExecutor {
     private void run(
             TrueShuffleJob job,
             TrueShuffleUserResolver resolver,
-            TrueShuffleJobExecution execution
+            InternalTrueShuffleJobExecution execution
     ) {
         var status = execution.getStatus();
 
@@ -80,7 +80,7 @@ public final class TrueShuffleJobExecutor {
         }
     }
 
-    private static void updateStatus(TrueShuffleJobStatus status, ETrueShuffleJobStatus newStatus, String message, Throwable failure) {
+    private static void updateStatus(InternalTrueShuffleJobStatus status, ETrueShuffleJobStatus newStatus, String message, Throwable failure) {
         if (cancellationRequested(status)) {
             status.setStatusMessage(ETrueShuffleJobStatus.CANCELLED, formatCancellationMessage(failure), failure);
         } else {
@@ -96,7 +96,7 @@ public final class TrueShuffleJobExecutor {
         }
     }
 
-    private static boolean cancellationRequested(TrueShuffleJobStatus status) {
+    private static boolean cancellationRequested(InternalTrueShuffleJobStatus status) {
         // interrupt check only works from worker thread
         return status.getStatus() == ETrueShuffleJobStatus.CANCELLED || Thread.currentThread().isInterrupted();
     }

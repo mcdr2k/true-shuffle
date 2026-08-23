@@ -16,27 +16,27 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
-public class TrueShuffleJobExecutionTest {
+public class InternalTrueShuffleJobExecutionTest {
     @Test
     public void testCancelUpdatesStatusAndInterruptsFuture() {
         var future = mock(Future.class);
         when(future.isDone()).thenReturn(false);
         when(future.cancel(true)).thenReturn(true);
-        var execution = new TrueShuffleJobExecution(new TrueShuffleLikedJob("user"), future);
+        var execution = new InternalTrueShuffleJobExecution(new TrueShuffleLikedJob("user"), future);
 
         assertTrue(execution.cancel());
 
         assertTrue(execution.isCancelled());
-        assertTrue(execution.isDone());
+        assertTrue(execution.isFinished());
         assertEquals(ETrueShuffleJobStatus.CANCELLED, execution.getStatus().getStatus());
         verify(future).cancel(true);
     }
 
     @Test
-    public void testCancelReturnsFalseWhenFutureIsDone() {
+    public void testCancelReturnsFalseWhenFutureIsFinished() {
         var future = mock(Future.class);
         when(future.isDone()).thenReturn(true);
-        var execution = new TrueShuffleJobExecution(new TrueShuffleLikedJob("user"), future);
+        var execution = new InternalTrueShuffleJobExecution(new TrueShuffleLikedJob("user"), future);
 
         assertFalse(execution.cancel());
 
@@ -49,7 +49,7 @@ public class TrueShuffleJobExecutionTest {
         var cause = new IllegalStateException("failure");
         var future = mock(Future.class);
         when(future.get()).thenThrow(new ExecutionException(cause));
-        var execution = new TrueShuffleJobExecution(new TrueShuffleLikedJob("user"), future);
+        var execution = new InternalTrueShuffleJobExecution(new TrueShuffleLikedJob("user"), future);
 
         var exception = assertThrows(IllegalStateException.class, execution::await);
 
@@ -60,15 +60,15 @@ public class TrueShuffleJobExecutionTest {
     public void testTimedAwaitPropagatesTimeout() throws Exception {
         var future = mock(Future.class);
         when(future.get(1, TimeUnit.SECONDS)).thenThrow(new TimeoutException());
-        var execution = new TrueShuffleJobExecution(new TrueShuffleLikedJob("user"), future);
+        var execution = new InternalTrueShuffleJobExecution(new TrueShuffleLikedJob("user"), future);
 
         assertThrows(TimeoutException.class, () -> execution.await(1, TimeUnit.SECONDS));
     }
 
     @Test
     public void testExecutionHasUniqueId() {
-        var first = new TrueShuffleJobExecution(new TrueShuffleLikedJob("user"), mock(Future.class));
-        var second = new TrueShuffleJobExecution(new TrueShuffleLikedJob("user"), mock(Future.class));
+        var first = new InternalTrueShuffleJobExecution(new TrueShuffleLikedJob("user"), mock(Future.class));
+        var second = new InternalTrueShuffleJobExecution(new TrueShuffleLikedJob("user"), mock(Future.class));
 
         assertNotEquals(first.getId(), second.getId());
     }

@@ -1,4 +1,4 @@
-package nl.martderoos.trueshuffle.internal.jobs;
+package nl.martderoos.trueshuffle.api.jobs;
 
 import nl.martderoos.trueshuffle.api.model.TrueShuffleImage;
 

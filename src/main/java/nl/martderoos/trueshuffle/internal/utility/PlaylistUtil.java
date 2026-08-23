@@ -2,7 +2,7 @@ package nl.martderoos.trueshuffle.internal.utility;
 
 import nl.martderoos.trueshuffle.api.model.TrueShuffleImage;
 import nl.martderoos.trueshuffle.api.model.TrueShufflePlaylistMetadata;
-import nl.martderoos.trueshuffle.internal.model.TrueShufflePlaylistOwner;
+import nl.martderoos.trueshuffle.api.model.TrueShufflePlaylistOwner;
 import se.michaelthelin.spotify.model_objects.specification.Playlist;
 import se.michaelthelin.spotify.model_objects.specification.PlaylistSimplified;
 

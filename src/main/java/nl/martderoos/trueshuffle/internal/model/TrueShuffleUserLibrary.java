@@ -1,6 +1,7 @@
 package nl.martderoos.trueshuffle.internal.model;
 
 
+import nl.martderoos.trueshuffle.api.model.TrueShufflePlaylistOwner;
 import nl.martderoos.trueshuffle.internal.adhoc.LazyExpiringApiData;
 import nl.martderoos.trueshuffle.api.model.TrueShufflePlaylistMetadata;
 import nl.martderoos.trueshuffle.internal.requests.exceptions.FatalRequestResponseException;

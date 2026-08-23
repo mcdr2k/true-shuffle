@@ -1,7 +1,5 @@
 package nl.martderoos.trueshuffle.api.model;
 
-import nl.martderoos.trueshuffle.internal.model.TrueShufflePlaylistOwner;
-
 import java.util.List;
 import java.util.Objects;
 

@@ -21,7 +21,7 @@ import java.util.*;
 import java.util.concurrent.Executor;
 
 /**
- * Thread-safe class for managing TrueShuffle users. Additionally, exposes methods for shuffling a user's playlists.
+ * Thread-safe class for managing TrueShuffle users.
  */
 public class InternalTrueShuffleClient implements TrueShuffleClient {
     private final URI redirectUri;
@@ -47,9 +47,6 @@ public class InternalTrueShuffleClient implements TrueShuffleClient {
                 .build();
     }
 
-    /**
-     * Attempts to initialize the client by verifying the client id and secret with Spotify.
-     */
     @Override
     public synchronized void initialize() throws InitializationException {
         if (initialized)
@@ -62,25 +59,6 @@ public class InternalTrueShuffleClient implements TrueShuffleClient {
         }
     }
 
-    /**
-     * <p>Attempts to add an authorized user to this client by validating the provided credentials. The userId is optional
-     * because Spotify is able to derive the user from both the access token and the refresh token alone. If the userId
-     * is null and the access token is invalid, the refresh token is used to get a new access token. It is preferred
-     * to not leave the userId field null because then we can reuse the current authorized user if available.</p>
-     * <p>This method should mainly be used to add previously authorized users to this client. Especially useful when the
-     * client was taken offline.</p>
-     *
-     * @param userId      the unique identifier of the user whom the credentials are for (nullable).
-     * @param credentials the credentials of the user (not nullable). The access token of the credentials may not be
-     *                    null nor empty, but it may be invalid.
-     * @return the ShuffleApi that is bound to a specific user corresponding to the provided userId and credentials.
-     * @throws AuthorizationException   when both the access token and refresh token of the credentials are invalid.
-     *                                  The only way to 'fix' this is to get a new code from Spotify and calling
-     *                                  {@link #addAuthorizedUser(String)}.
-     * @throws NullPointerException     when credentials is null.
-     * @throws IllegalArgumentException when the access token of the credentials is null or empty.
-     * @throws IllegalStateException    when the client has not been initialized yet.
-     */
     @Override
     public TrueShuffleUser addAuthorizedUser(String userId, TrueShuffleUserCredentials credentials) throws AuthorizationException {
         verifyInit();
@@ -111,14 +89,6 @@ public class InternalTrueShuffleClient implements TrueShuffleClient {
         }
     }
 
-    /**
-     * Attempts to add an authorized user to this client by validating the provided code with Spotify.
-     *
-     * @param code the code received from Spotify through the redirect (callback) link upon authorization.
-     * @return the ShuffleApi that is bound to this specific user.
-     * @throws AuthorizationException when the code provided is invalid (or could not be validated).
-     * @throws IllegalStateException  when the client has not been initialized yet.
-     */
     @Override
     public TrueShuffleUser addAuthorizedUser(String code) throws AuthorizationException {
         verifyInit();
@@ -169,17 +139,11 @@ public class InternalTrueShuffleClient implements TrueShuffleClient {
         return trueShuffleUser;
     }
 
-    /**
-     * Removes an authorized user from the set of authorized users.
-     */
     @Override
     public void removeAuthorizedUser(String userId) {
         authorizedUsersMap.remove(userId);
     }
 
-    /**
-     * @return a shallow copy of the complete set of all current authorized users known to this client, never null.
-     */
     @Override
     public Set<String> getAuthorizedUsers() {
         synchronized (authorizedUsersMap) {
@@ -194,29 +158,12 @@ public class InternalTrueShuffleClient implements TrueShuffleClient {
         return user;
     }
 
-    /**
-     * Retrieve a shuffle user by means of a unique user identifier.
-     *
-     * @param userId the user identifier of the user to find.
-     * @return the user (never null).
-     * @throws UserNotFoundException if the user could not be found.
-     */
     @Override
     public TrueShuffleUser getAuthorizedUser(String userId) throws UserNotFoundException {
         return getInternalAuthorizedUser(userId);
     }
 
-    /**
-     * Executes an immutable job description following the provided executor's schedule.
-     *
-     * @param job      the job description.
-     * @param executor the execution schedule.
-     * @return the execution handle, which exposes status and lifecycle operations.
-     * @throws UserNotFoundException when no user could be found for the job.
-     * @throws IllegalStateException when the client has not been initialized yet.
-     */
-    @Override
-    public TrueShuffleJobExecution execute(TrueShuffleJob job, Executor executor) throws UserNotFoundException {
+    private InternalTrueShuffleJobExecution execute(TrueShuffleJob job, Executor executor) throws UserNotFoundException {
         verifyInit();
         Objects.requireNonNull(job);
         Objects.requireNonNull(executor);
@@ -224,50 +171,16 @@ public class InternalTrueShuffleClient implements TrueShuffleClient {
         return jobExecutor.execute(job, resolver, executor);
     }
 
-    /**
-     * Perform a shuffle on the user's liked songs, following the provided executor's schedule.
-     * If one wishes to monitor the status of this job, an asynchronous executor must be provided. Otherwise, this function,
-     * will not return until it has completed execution.
-     *
-     * @param userId   the id of the user.
-     * @param executor the execution schedule (should be an asynchronous schedule).
-     * @return the execution handle, which exposes status and lifecycle operations.
-     * @throws UserNotFoundException when no user could be found with the provided user identifier.
-     * @throws IllegalStateException when the client has not been initialized yet.
-     */
     @Override
-    public TrueShuffleJobExecution shuffleLikedSongs(String userId, Executor executor) throws UserNotFoundException {
+    public InternalTrueShuffleJobExecution shuffleLikedSongs(String userId, Executor executor) throws UserNotFoundException {
         return execute(new TrueShuffleLikedJob(userId), executor);
     }
 
-    /**
-     * Perform a shuffle on the provided playlist for a specific user, following the provided executor's schedule.
-     * If one wishes to monitor the status of this job, an asynchronous executor must be provided. Otherwise, this function,
-     * will not return until it has completed execution.
-     *
-     * @param userId     the id of the user.
-     * @param playlistId the id of the playlist to shuffle.
-     * @param executor   the execution schedule (should be an asynchronous schedule).
-     * @return the execution handle, which exposes status and lifecycle operations.
-     * @throws UserNotFoundException when no user could be found with the provided user identifier.
-     * @throws IllegalStateException when the client has not been initialized yet.
-     */
     @Override
-    public TrueShuffleJobExecution shufflePlaylist(String userId, String playlistId, Executor executor) throws UserNotFoundException {
+    public InternalTrueShuffleJobExecution shufflePlaylist(String userId, String playlistId, Executor executor) throws UserNotFoundException {
         return execute(new TrueShufflePlaylistJob(userId, playlistId), executor);
     }
 
-    /**
-     * Builds the URI for this client which redirects users to the authorization page of spotify with the appropriate
-     * scopes and state.
-     *
-     * @param state optional, but strongly recommended (ignored if blank). The state can be useful for correlating requests and responses.
-     *              Because your redirect_uri can be guessed, using a state value can increase your assurance that an
-     *              incoming connection is the result of an authentication request. If you generate a random string or
-     *              encode the hash of some client state (e.g., a cookie) in this state variable, you can validate the
-     *              response to additionally ensure that the request and response originated in the same browser. This
-     *              provides protection against attacks such as cross-site request forgery.
-     */
     @Override
     public URI getAuthorizationURI(String state) {
         var uriBuilder = client.authorizationCodeUri()
@@ -285,10 +198,6 @@ public class InternalTrueShuffleClient implements TrueShuffleClient {
         return uriBuilder.build().execute();
     }
 
-    /**
-     * @return the redirect uri set during construction of this instance.
-     */
-    @Override
     public URI getRedirectUri() {
         return redirectUri;
     }

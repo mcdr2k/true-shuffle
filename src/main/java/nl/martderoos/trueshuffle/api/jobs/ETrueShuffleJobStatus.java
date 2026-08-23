@@ -1,9 +1,7 @@
 package nl.martderoos.trueshuffle.api.jobs;
 
-import nl.martderoos.trueshuffle.internal.jobs.TrueShuffleJob;
-
 /**
- * Enumerates the possible states a {@link TrueShuffleJob} can be in.
+ * Enumerates the possible states a {@link TrueShuffleJobExecution} can be in.
  */
 public enum ETrueShuffleJobStatus {
     /**
@@ -49,7 +47,7 @@ public enum ETrueShuffleJobStatus {
      * @return true if the job has finished executing, which can be either {@link #COMPLETED}, {@link #SKIPPED},
      * {@link #CANCELLED} or {@link #TERMINATED}, false otherwise.
      */
-    public boolean isDone() {
+    public boolean isFinished() {
         return this == COMPLETED || this == SKIPPED || this == CANCELLED || this == TERMINATED;
     }
 }

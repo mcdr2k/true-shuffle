@@ -3,7 +3,7 @@ package nl.martderoos.trueshuffle.internal.utility;
 import nl.martderoos.trueshuffle.internal.model.TrueShuffleApi;
 import nl.martderoos.trueshuffle.internal.model.ShufflePlaylist;
 import nl.martderoos.trueshuffle.api.model.TrueShufflePlaylistMetadata;
-import nl.martderoos.trueshuffle.internal.model.TrueShufflePlaylistOwner;
+import nl.martderoos.trueshuffle.api.model.TrueShufflePlaylistOwner;
 import nl.martderoos.trueshuffle.internal.requests.exceptions.FatalRequestResponseException;
 import org.junit.jupiter.api.Test;
 

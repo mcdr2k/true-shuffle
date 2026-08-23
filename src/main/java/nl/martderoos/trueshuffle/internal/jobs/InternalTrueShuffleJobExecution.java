@@ -1,6 +1,7 @@
 package nl.martderoos.trueshuffle.internal.jobs;
 
 import nl.martderoos.trueshuffle.api.jobs.ETrueShuffleJobStatus;
+import nl.martderoos.trueshuffle.api.jobs.TrueShuffleJobExecution;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -11,52 +12,27 @@ import java.util.concurrent.TimeoutException;
 /**
  * Represents one attempt to execute a {@link TrueShuffleJob}.
  */
-public final class TrueShuffleJobExecution {
+public final class InternalTrueShuffleJobExecution implements TrueShuffleJobExecution {
     private final TrueShuffleJob job;
-    private final TrueShuffleJobStatus status;
+    private final InternalTrueShuffleJobStatus status;
     private final Future<?> future;
     private final UUID id;
 
-    TrueShuffleJobExecution(TrueShuffleJob job, Future<?> future) {
+    InternalTrueShuffleJobExecution(TrueShuffleJob job, Future<?> future) {
         this.job = Objects.requireNonNull(job);
-        this.status = new TrueShuffleJobStatus(ETrueShuffleJobStatus.WAITING, null);
+        this.status = new InternalTrueShuffleJobStatus(ETrueShuffleJobStatus.WAITING, null);
         this.future = Objects.requireNonNull(future);
         this.id = UUID.randomUUID();
     }
 
-    /**
-     * @return the immutable job description being executed.
-     */
-    public TrueShuffleJob getJob() {
-        return job;
+    public boolean isFinished() {
+        return status.getStatus().isFinished();
     }
 
-    /**
-     * @return the live status of this execution.
-     */
-    public TrueShuffleJobStatus getStatus() {
-        return status;
-    }
-
-    /**
-     * @return true when this execution has reached a terminal state.
-     */
-    public boolean isDone() {
-        return status.getStatus().isDone();
-    }
-
-    /**
-     * @return true when cancellation was requested successfully.
-     */
     public boolean isCancelled() {
         return status.getStatus() == ETrueShuffleJobStatus.CANCELLED;
     }
 
-    /**
-     * Attempts to cancel this execution.
-     *
-     * @return true if cancellation was requested successfully.
-     */
     public boolean cancel() {
         if (future.isDone())
             return false;
@@ -66,11 +42,6 @@ public final class TrueShuffleJobExecution {
         return true;
     }
 
-    /**
-     * Waits until this execution reaches a terminal state.
-     *
-     * @throws InterruptedException if the waiting thread is interrupted.
-     */
     public void await() throws InterruptedException {
         try {
             future.get();
@@ -81,12 +52,6 @@ public final class TrueShuffleJobExecution {
         }
     }
 
-    /**
-     * Waits until this execution reaches a terminal state or the timeout expires.
-     *
-     * @throws InterruptedException if the waiting thread is interrupted.
-     * @throws TimeoutException if the timeout expires first.
-     */
     public void await(long timeout, TimeUnit unit) throws InterruptedException, TimeoutException {
         try {
             future.get(timeout, unit);
@@ -97,10 +62,15 @@ public final class TrueShuffleJobExecution {
         }
     }
 
-    /**
-     * @return the unique identifier of this execution.
-     */
+    public TrueShuffleJob getJob() {
+        return job;
+    }
+
     public UUID getId() {
         return id;
+    }
+
+    public InternalTrueShuffleJobStatus getStatus() {
+        return status;
     }
 }
