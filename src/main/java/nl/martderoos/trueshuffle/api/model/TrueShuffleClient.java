@@ -3,6 +3,7 @@ package nl.martderoos.trueshuffle.api.model;
 import nl.martderoos.trueshuffle.api.exceptions.AuthorizationException;
 import nl.martderoos.trueshuffle.api.exceptions.InitializationException;
 import nl.martderoos.trueshuffle.api.exceptions.UserNotFoundException;
+import nl.martderoos.trueshuffle.internal.InternalTrueShuffleClient;
 import nl.martderoos.trueshuffle.internal.jobs.TrueShuffleJob;
 import nl.martderoos.trueshuffle.internal.jobs.TrueShuffleJobExecution;
 
@@ -12,6 +13,10 @@ import java.util.UUID;
 import java.util.concurrent.Executor;
 
 public interface TrueShuffleClient {
+    static TrueShuffleClient create(String cid, String secret, String redirectUri) {
+        return InternalTrueShuffleClient.create(cid, secret, redirectUri);
+    }
+
     /**
      * Generates a random 'state' to be used for security purposes. Note that this generated state should be stored
      * by the user in their own code as to be able to use it further down the authorization flow. This program

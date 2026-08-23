@@ -36,15 +36,7 @@ public class InternalTrueShuffleClient implements TrueShuffleClient {
 
     private final Map<String, InternalTrueShuffleUser> authorizedUsersMap = Collections.synchronizedMap(new HashMap<>());
 
-    /**
-     * Creates a new client from provided client-id, secret and redirect uri (callback). Note that this client must
-     * still be initialized using {@link #initialize()} before it can be used.
-     *
-     * @param cid         The client-id to use.
-     * @param secret      The secret to use.
-     * @param redirectUri The redirect uri (callback) to use for authorization.
-     */
-    public InternalTrueShuffleClient(String cid, String secret, String redirectUri) {
+    private InternalTrueShuffleClient(String cid, String secret, String redirectUri) {
         this.cid = Objects.requireNonNull(cid);
         this.secret = Objects.requireNonNull(secret);
         this.redirectUri = SpotifyHttpManager.makeUri(Objects.requireNonNull(redirectUri));
@@ -308,5 +300,17 @@ public class InternalTrueShuffleClient implements TrueShuffleClient {
 
     private void verifyInit() throws IllegalStateException {
         if (!initialized) throw new IllegalStateException("Cannot execute this method before initialization");
+    }
+
+    /**
+     * Creates a new client from provided client-id, secret and redirect uri (callback). Note that this client must
+     * still be initialized using {@link #initialize()} before it can be used.
+     *
+     * @param cid         The client-id to use.
+     * @param secret      The secret to use.
+     * @param redirectUri The redirect uri (callback) to use for authorization.
+     */
+    public static TrueShuffleClient create(String cid, String secret, String redirectUri) {
+        return new InternalTrueShuffleClient(cid, secret, redirectUri);
     }
 }
