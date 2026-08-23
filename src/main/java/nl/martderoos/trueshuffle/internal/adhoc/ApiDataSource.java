@@ -1,0 +1,11 @@
+package nl.martderoos.trueshuffle.internal.adhoc;
+
+import nl.martderoos.trueshuffle.internal.requests.exceptions.FatalRequestResponseException;
+
+/**
+ * Specification for a {@link DataSource} that may throw a {@link FatalRequestResponseException}
+ * @param <T> the type of data this source may produce
+ */
+public interface ApiDataSource<T> extends DataSource<T, FatalRequestResponseException> {
+
+}
