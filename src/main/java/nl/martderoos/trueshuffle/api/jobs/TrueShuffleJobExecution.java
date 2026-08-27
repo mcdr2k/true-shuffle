@@ -1,5 +1,7 @@
 package nl.martderoos.trueshuffle.api.jobs;
 
+import nl.martderoos.trueshuffle.internal.jobs.TrueShuffleJob;
+
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -8,6 +10,10 @@ import java.util.concurrent.TimeoutException;
  * Represents an attempt to execute a job.
  */
 public interface TrueShuffleJobExecution {
+    /**
+     * The job being executed.
+     */
+    TrueShuffleJob getJob();
     /**
      * @return the unique identifier of this execution.
      */
