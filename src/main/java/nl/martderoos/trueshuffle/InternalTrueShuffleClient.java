@@ -188,7 +188,7 @@ public class InternalTrueShuffleClient implements TrueShuffleClient {
         return getInternalAuthorizedUser(userId);
     }
 
-    private InternalTrueShuffleJobExecution execute(TrueShuffleJob job, Executor executor) throws UserNotFoundException {
+    public InternalTrueShuffleJobExecution execute(TrueShuffleJob job, Executor executor) throws UserNotFoundException {
         verifyInit();
         Objects.requireNonNull(job);
         Objects.requireNonNull(executor);
