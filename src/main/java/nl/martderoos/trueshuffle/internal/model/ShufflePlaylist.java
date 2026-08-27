@@ -4,7 +4,7 @@ import nl.martderoos.trueshuffle.internal.adhoc.LazyExpiringApiData;
 import nl.martderoos.trueshuffle.api.model.TrueShufflePlaylist;
 import nl.martderoos.trueshuffle.api.model.TrueShufflePlaylistMetadata;
 import nl.martderoos.trueshuffle.api.exceptions.ImmutablePlaylistException;
-import nl.martderoos.trueshuffle.internal.requests.exceptions.FatalRequestResponseException;
+import nl.martderoos.trueshuffle.api.requests.exceptions.FatalRequestResponseException;
 import nl.martderoos.trueshuffle.internal.utility.PlaylistUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

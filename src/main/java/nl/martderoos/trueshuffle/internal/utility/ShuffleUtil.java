@@ -2,7 +2,7 @@ package nl.martderoos.trueshuffle.internal.utility;
 
 import nl.martderoos.trueshuffle.internal.model.ShufflePlaylist;
 import nl.martderoos.trueshuffle.internal.model.TrueShuffleApi;
-import nl.martderoos.trueshuffle.internal.requests.exceptions.FatalRequestResponseException;
+import nl.martderoos.trueshuffle.api.requests.exceptions.FatalRequestResponseException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

@@ -1,7 +1,7 @@
 package nl.martderoos.trueshuffle.internal.jobs;
 
 import nl.martderoos.trueshuffle.internal.InternalTrueShuffleUser;
-import nl.martderoos.trueshuffle.internal.requests.exceptions.FatalRequestResponseException;
+import nl.martderoos.trueshuffle.api.requests.exceptions.FatalRequestResponseException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -58,7 +58,7 @@ public final class TrueShufflePlaylistJob extends TrueShuffleJob {
             // dedicated target playlist, so do a shuffle after copy
             var targetPlaylist = library.getPlaylistById(targetPlaylistId);
             shuffleAfterCopy(user, status, sourcePlaylist, targetPlaylist);
-        } else if (library.isOwner(sourcePlaylist)) {
+        } else if (library.isOwnerOf(sourcePlaylist)) {
             // if we are the owner, just shuffle in-place
             shuffleInPlace(user, status, sourcePlaylist);
         } else {

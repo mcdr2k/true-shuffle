@@ -4,7 +4,7 @@ import nl.martderoos.trueshuffle.internal.model.TrueShuffleApi;
 import nl.martderoos.trueshuffle.internal.model.ShufflePlaylist;
 import nl.martderoos.trueshuffle.api.model.TrueShufflePlaylistMetadata;
 import nl.martderoos.trueshuffle.api.model.TrueShufflePlaylistOwner;
-import nl.martderoos.trueshuffle.internal.requests.exceptions.FatalRequestResponseException;
+import nl.martderoos.trueshuffle.api.requests.exceptions.FatalRequestResponseException;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

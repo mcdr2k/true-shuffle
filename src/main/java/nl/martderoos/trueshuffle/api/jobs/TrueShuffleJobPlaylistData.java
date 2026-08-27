@@ -25,7 +25,6 @@ public final class TrueShuffleJobPlaylistData {
      * @param playlistId the unique identifier of the playlist (non-nullable).
      * @param name       the name of the playlist (non-nullable).
      * @param images     the images (thumbnails) of this playlist (nullable).
-     * @return a new instance.
      * @throws NullPointerException if either playlistId or name is null.
      * @throws IllegalArgumentException if either playlistId or name is blank.
      */
@@ -41,7 +40,6 @@ public final class TrueShuffleJobPlaylistData {
      * Factory method for creating playlist data that references a user's liked songs pseudo playlist.
      *
      * @param name the name of the liked songs pseudo playlist (not nullable).
-     * @return a new instance.
      * @throws NullPointerException if the argument is null.
      * @throws IllegalArgumentException if name is blank.
      */

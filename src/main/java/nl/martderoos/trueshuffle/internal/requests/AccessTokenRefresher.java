@@ -1,6 +1,6 @@
 package nl.martderoos.trueshuffle.internal.requests;
 
-import nl.martderoos.trueshuffle.internal.requests.exceptions.FatalRequestResponseException;
+import nl.martderoos.trueshuffle.api.requests.exceptions.FatalRequestResponseException;
 
 /**
  * Functional interface describing a way to refresh an access token. Required for {@link RequestHandler} to work

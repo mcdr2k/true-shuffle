@@ -1,7 +1,7 @@
 package nl.martderoos.trueshuffle.internal.model;
 
 import nl.martderoos.trueshuffle.api.exceptions.ImmutablePlaylistException;
-import nl.martderoos.trueshuffle.internal.requests.exceptions.FatalRequestResponseException;
+import nl.martderoos.trueshuffle.api.requests.exceptions.FatalRequestResponseException;
 import org.junit.jupiter.api.Test;
 import se.michaelthelin.spotify.model_objects.specification.Paging;
 import se.michaelthelin.spotify.model_objects.specification.Playlist;

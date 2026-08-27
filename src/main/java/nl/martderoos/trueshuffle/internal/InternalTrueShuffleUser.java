@@ -6,7 +6,7 @@ import nl.martderoos.trueshuffle.internal.jobs.TrueShuffleLikedJob;
 import nl.martderoos.trueshuffle.internal.jobs.TrueShufflePlaylistJob;
 import nl.martderoos.trueshuffle.internal.model.TrueShuffleApi;
 import nl.martderoos.trueshuffle.api.model.TrueShuffleImage;
-import nl.martderoos.trueshuffle.internal.model.TrueShuffleUserLibrary;
+import nl.martderoos.trueshuffle.internal.model.InternalTrueShuffleUserLibrary;
 import se.michaelthelin.spotify.model_objects.specification.Image;
 import se.michaelthelin.spotify.model_objects.specification.User;
 
@@ -21,7 +21,7 @@ import java.util.Objects;
  */
 public class InternalTrueShuffleUser implements TrueShuffleUser {
     private final TrueShuffleApi api;
-    private final TrueShuffleUserLibrary userLibrary;
+    private final InternalTrueShuffleUserLibrary userLibrary;
 
     private final String userId;
     private final String birthdate;
@@ -42,13 +42,13 @@ public class InternalTrueShuffleUser implements TrueShuffleUser {
                 .map(InternalTrueShuffleUser::convert)
                 .toList();
 
-        this.userLibrary = new TrueShuffleUserLibrary(api);
+        this.userLibrary = new InternalTrueShuffleUserLibrary(api);
     }
 
     /**
      * Get the user's library.
      */
-    public TrueShuffleUserLibrary getUserLibrary() {
+    public InternalTrueShuffleUserLibrary getUserLibrary() {
         return userLibrary;
     }
 
@@ -92,7 +92,7 @@ public class InternalTrueShuffleUser implements TrueShuffleUser {
     }
 
     /**
-     * Get the underlying {@link TrueShuffleApi} linked to this user. Can be used.
+     * Get the underlying {@link TrueShuffleApi} linked to this user.
      *
      * @return the linked api, never null.
      */

@@ -1,4 +1,4 @@
-package nl.martderoos.trueshuffle.internal.requests.exceptions;
+package nl.martderoos.trueshuffle.api.requests.exceptions;
 
 /**
  * Indicates that a Spotify user has revoked their authorization for TrueShuffle to access their account.

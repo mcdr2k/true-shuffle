@@ -7,7 +7,7 @@ import nl.martderoos.trueshuffle.api.model.TrueShufflePlaylistMetadata;
 import nl.martderoos.trueshuffle.internal.paging.PageAggregator;
 import nl.martderoos.trueshuffle.internal.paging.SpotifyFuturePage;
 import nl.martderoos.trueshuffle.internal.requests.RequestHandler;
-import nl.martderoos.trueshuffle.internal.requests.exceptions.FatalRequestResponseException;
+import nl.martderoos.trueshuffle.api.requests.exceptions.FatalRequestResponseException;
 import nl.martderoos.trueshuffle.internal.utility.PlaylistUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

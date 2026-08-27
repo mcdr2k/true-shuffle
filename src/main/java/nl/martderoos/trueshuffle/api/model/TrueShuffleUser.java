@@ -1,8 +1,5 @@
 package nl.martderoos.trueshuffle.api.model;
 
-import nl.martderoos.trueshuffle.internal.model.TrueShuffleApi;
-import nl.martderoos.trueshuffle.internal.model.TrueShuffleUserLibrary;
-
 import java.util.List;
 
 public interface TrueShuffleUser {
@@ -39,18 +36,4 @@ public interface TrueShuffleUser {
      * @return the user's profile images in different resolutions.
      */
     List<TrueShuffleImage> getImages();
-
-    /**
-     * Get the underlying {@link TrueShuffleApi} linked to this user.
-     *
-     * @return the linked api, never null.
-     */
-    TrueShuffleApi getApi();
-
-    /**
-     * Get the current credentials used by the underlying {@link TrueShuffleApi}.
-     *
-     * @return the credentials, never null.
-     */
-    TrueShuffleUserCredentials getCredentials();
 }

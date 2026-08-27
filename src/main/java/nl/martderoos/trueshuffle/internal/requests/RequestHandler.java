@@ -1,6 +1,9 @@
 package nl.martderoos.trueshuffle.internal.requests;
 
-import nl.martderoos.trueshuffle.internal.requests.exceptions.*;
+import nl.martderoos.trueshuffle.api.requests.exceptions.*;
+import nl.martderoos.trueshuffle.internal.requests.exceptions.RefreshTokenException;
+import nl.martderoos.trueshuffle.internal.requests.exceptions.RetryShortlyException;
+import nl.martderoos.trueshuffle.internal.requests.exceptions.SlowDownException;
 import org.apache.hc.core5.http.ParseException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

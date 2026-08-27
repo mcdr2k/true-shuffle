@@ -9,7 +9,7 @@ import nl.martderoos.trueshuffle.api.model.TrueShuffleUserCredentials;
 import nl.martderoos.trueshuffle.internal.jobs.*;
 import nl.martderoos.trueshuffle.internal.model.TrueShuffleApi;
 import nl.martderoos.trueshuffle.internal.requests.RequestHandler;
-import nl.martderoos.trueshuffle.internal.requests.exceptions.FatalRequestResponseException;
+import nl.martderoos.trueshuffle.api.requests.exceptions.FatalRequestResponseException;
 import se.michaelthelin.spotify.SpotifyApi;
 import se.michaelthelin.spotify.SpotifyHttpManager;
 import se.michaelthelin.spotify.enums.AuthorizationScope;

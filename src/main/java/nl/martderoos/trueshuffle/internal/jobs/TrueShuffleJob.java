@@ -5,8 +5,8 @@ import nl.martderoos.trueshuffle.api.jobs.ETrueShuffleJobStatus;
 import nl.martderoos.trueshuffle.internal.model.ShufflePlaylist;
 import nl.martderoos.trueshuffle.internal.model.TrueShuffleApi;
 import nl.martderoos.trueshuffle.api.model.TrueShufflePlaylist;
-import nl.martderoos.trueshuffle.internal.model.TrueShuffleUserLibrary;
-import nl.martderoos.trueshuffle.internal.requests.exceptions.FatalRequestResponseException;
+import nl.martderoos.trueshuffle.internal.model.InternalTrueShuffleUserLibrary;
+import nl.martderoos.trueshuffle.api.requests.exceptions.FatalRequestResponseException;
 import nl.martderoos.trueshuffle.internal.utility.ShuffleUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -53,7 +53,7 @@ public abstract sealed class TrueShuffleJob permits TrueShuffleLikedJob, TrueShu
      * @param description the description of the returned playlist in the case that we create a new one.
      * @return null if the provided name is not unique for a user's playlists.
      */
-    protected static ShufflePlaylist findOrCreateUniqueUserOwnedPlaylistByName(TrueShuffleUserLibrary library, InternalTrueShuffleJobStatus status, String name, String description) throws FatalRequestResponseException {
+    protected static ShufflePlaylist findOrCreateUniqueUserOwnedPlaylistByName(InternalTrueShuffleUserLibrary library, InternalTrueShuffleJobStatus status, String name, String description) throws FatalRequestResponseException {
         var list = library.getPlaylistByName(name, true);
         if (list == null || list.isEmpty()) {
             return asInternal(library.createPlaylist(name, description));
@@ -76,7 +76,7 @@ public abstract sealed class TrueShuffleJob permits TrueShuffleLikedJob, TrueShu
      */
     protected static void shuffleInPlace(InternalTrueShuffleUser user, InternalTrueShuffleJobStatus status, ShufflePlaylist source) throws FatalRequestResponseException {
         var library = user.getUserLibrary();
-        if (!library.isOwner(source)) {
+        if (!library.isOwnerOf(source)) {
             status.setStatusMessage(ETrueShuffleJobStatus.TERMINATED,
                     String.format("Could not shuffle playlist %s (%s) in-place because we are not the owner of the playlist", source.getMetadata().name(), source.getPlaylistId())
             );
@@ -110,7 +110,7 @@ public abstract sealed class TrueShuffleJob permits TrueShuffleLikedJob, TrueShu
         String name;
         if (target != null) {
             name = target.getMetadata().name();
-            if (!user.getUserLibrary().isOwner(target)) {
+            if (!user.getUserLibrary().isOwnerOf(target)) {
                 status.setStatusMessage(ETrueShuffleJobStatus.TERMINATED,
                         String.format("Could not shuffle playlist %s into %s because we are not the owner of the target playlist", source.getMetadata().name(), name)
                 );

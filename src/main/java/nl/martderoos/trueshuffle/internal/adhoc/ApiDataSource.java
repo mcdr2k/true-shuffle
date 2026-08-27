@@ -1,6 +1,6 @@
 package nl.martderoos.trueshuffle.internal.adhoc;
 
-import nl.martderoos.trueshuffle.internal.requests.exceptions.FatalRequestResponseException;
+import nl.martderoos.trueshuffle.api.requests.exceptions.FatalRequestResponseException;
 
 /**
  * Specification for a {@link DataSource} that may throw a {@link FatalRequestResponseException}

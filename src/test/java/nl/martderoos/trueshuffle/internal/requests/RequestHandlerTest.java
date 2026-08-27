@@ -1,7 +1,7 @@
 package nl.martderoos.trueshuffle.internal.requests;
 
-import nl.martderoos.trueshuffle.internal.requests.exceptions.AuthorizationRevokedException;
-import nl.martderoos.trueshuffle.internal.requests.exceptions.FatalRequestResponseException;
+import nl.martderoos.trueshuffle.api.requests.exceptions.AuthorizationRevokedException;
+import nl.martderoos.trueshuffle.api.requests.exceptions.FatalRequestResponseException;
 import org.apache.hc.core5.http.ParseException;
 import org.junit.jupiter.api.Test;
 import se.michaelthelin.spotify.exceptions.detailed.*;

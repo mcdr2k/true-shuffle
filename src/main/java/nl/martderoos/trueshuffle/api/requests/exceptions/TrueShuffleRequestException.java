@@ -1,4 +1,4 @@
-package nl.martderoos.trueshuffle.internal.requests.exceptions;
+package nl.martderoos.trueshuffle.api.requests.exceptions;
 
 import nl.martderoos.trueshuffle.api.exceptions.TrueShuffleException;
 
@@ -6,11 +6,11 @@ import nl.martderoos.trueshuffle.api.exceptions.TrueShuffleException;
  * Root exception for TrueShuffle http request failures.
  */
 public class TrueShuffleRequestException extends TrueShuffleException {
-    TrueShuffleRequestException(String message) {
+    protected TrueShuffleRequestException(String message) {
         super(message);
     }
 
-    TrueShuffleRequestException(String message, Throwable cause) {
+    protected TrueShuffleRequestException(String message, Throwable cause) {
         super(message, cause);
     }
 }

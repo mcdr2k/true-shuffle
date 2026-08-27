@@ -1,5 +1,6 @@
 package nl.martderoos.trueshuffle.internal.requests.exceptions;
 
+import nl.martderoos.trueshuffle.api.requests.exceptions.TrueShuffleRequestException;
 import se.michaelthelin.spotify.exceptions.detailed.TooManyRequestsException;
 
 /**

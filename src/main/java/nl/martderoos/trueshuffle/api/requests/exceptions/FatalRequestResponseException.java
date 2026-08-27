@@ -1,4 +1,4 @@
-package nl.martderoos.trueshuffle.internal.requests.exceptions;
+package nl.martderoos.trueshuffle.api.requests.exceptions;
 
 /**
  * When thrown, indicates that an Api request could not complete appropriately and that any attempt to retry the

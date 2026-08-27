@@ -3,7 +3,7 @@ package nl.martderoos.trueshuffle.internal.jobs;
 import nl.martderoos.trueshuffle.internal.InternalTrueShuffleUser;
 import nl.martderoos.trueshuffle.api.jobs.ETrueShuffleJobStatus;
 import nl.martderoos.trueshuffle.internal.model.ShufflePlaylist;
-import nl.martderoos.trueshuffle.internal.requests.exceptions.FatalRequestResponseException;
+import nl.martderoos.trueshuffle.api.requests.exceptions.FatalRequestResponseException;
 import nl.martderoos.trueshuffle.internal.utility.ShuffleUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -52,7 +52,7 @@ public final class TrueShuffleLikedJob extends TrueShuffleJob {
         ShufflePlaylist target;
         if (targetPlaylistId != null) {
             target = library.getPlaylistById(targetPlaylistId);
-            if (!user.getUserLibrary().isOwner(target)) {
+            if (!user.getUserLibrary().isOwnerOf(target)) {
                 status.setStatusMessage(ETrueShuffleJobStatus.TERMINATED,
                         String.format("Could not shuffle liked songs into %s because we are not the owner of the target playlist", target.getMetadata().name())
                 );

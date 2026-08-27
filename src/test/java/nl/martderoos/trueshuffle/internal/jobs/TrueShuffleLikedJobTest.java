@@ -5,8 +5,8 @@ import nl.martderoos.trueshuffle.api.exceptions.UserNotFoundException;
 import nl.martderoos.trueshuffle.api.jobs.ETrueShuffleJobStatus;
 import nl.martderoos.trueshuffle.internal.model.TrueShuffleApi;
 import nl.martderoos.trueshuffle.internal.model.ShufflePlaylist;
-import nl.martderoos.trueshuffle.internal.model.TrueShuffleUserLibrary;
-import nl.martderoos.trueshuffle.internal.requests.exceptions.FatalRequestResponseException;
+import nl.martderoos.trueshuffle.internal.model.InternalTrueShuffleUserLibrary;
+import nl.martderoos.trueshuffle.api.requests.exceptions.FatalRequestResponseException;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import se.michaelthelin.spotify.model_objects.specification.*;
@@ -23,7 +23,7 @@ public class TrueShuffleLikedJobTest {
     @Test
     public void testShuffleLikedSongsIntoPlaylistNamedLikedSongsTrueShuffle() throws Exception {
         var api = mock(TrueShuffleApi.class);
-        var library = mock(TrueShuffleUserLibrary.class);
+        var library = mock(InternalTrueShuffleUserLibrary.class);
         var user = mock(InternalTrueShuffleUser.class);
 
         when(user.getUserLibrary()).thenReturn(library);
@@ -60,7 +60,7 @@ public class TrueShuffleLikedJobTest {
     @Test
     public void testShuffleLikedSongsIntoDesignatedPlaylist() throws Exception {
         var api = mock(TrueShuffleApi.class);
-        var library = mock(TrueShuffleUserLibrary.class);
+        var library = mock(InternalTrueShuffleUserLibrary.class);
         var user = mock(InternalTrueShuffleUser.class);
 
         when(user.getUserLibrary()).thenReturn(library);
@@ -72,7 +72,7 @@ public class TrueShuffleLikedJobTest {
         Mockito.doNothing().when(targetShufflePlaylist).shuffleInPlace();
         Mockito.doNothing().when(targetShufflePlaylist).addAndRemoveTracks(any(), any());
         when(library.getPlaylistById("target")).thenReturn(targetShufflePlaylist);
-        when(library.isOwner(targetShufflePlaylist)).thenReturn(true);
+        when(library.isOwnerOf(targetShufflePlaylist)).thenReturn(true);
 
         var targetPlaylistTracks = List.of("t1", "t4");
         var likedTracks = List.of("t1", "t2", "t3");
@@ -96,7 +96,7 @@ public class TrueShuffleLikedJobTest {
     @Test
     public void testShuffleLikedResponseToFatalRequest() throws Exception {
         var api = mock(TrueShuffleApi.class);
-        var library = mock(TrueShuffleUserLibrary.class);
+        var library = mock(InternalTrueShuffleUserLibrary.class);
         var user = mock(InternalTrueShuffleUser.class);
 
         when(user.getUserLibrary()).thenReturn(library);
@@ -119,7 +119,7 @@ public class TrueShuffleLikedJobTest {
     @Test
     public void testShuffleLikedSongsIntoInvalidDesignatedPlaylist() throws Exception {
         var api = mock(TrueShuffleApi.class);
-        var library = mock(TrueShuffleUserLibrary.class);
+        var library = mock(InternalTrueShuffleUserLibrary.class);
         var user = mock(InternalTrueShuffleUser.class);
 
         when(user.getUserLibrary()).thenReturn(library);
@@ -129,7 +129,7 @@ public class TrueShuffleLikedJobTest {
         var targetSimplified = toPlaylistData(targetPlaylist);
         var targetShufflePlaylist = spy(new ShufflePlaylist(api, targetSimplified, true));
         when(library.getPlaylistById("target")).thenReturn(targetShufflePlaylist);
-        when(library.isOwner(targetShufflePlaylist)).thenReturn(false); // <-- not the owner!
+        when(library.isOwnerOf(targetShufflePlaylist)).thenReturn(false); // <-- not the owner!
 
         var job = new TrueShuffleLikedJob("user", "target");
         var result = new TrueShuffleJobExecutor().execute(job, (s) -> user, Runnable::run).getStatus();
@@ -143,7 +143,7 @@ public class TrueShuffleLikedJobTest {
     @Test
     public void testShuffleLikedSongsWithUnknownUser() throws Exception {
         var api = mock(TrueShuffleApi.class);
-        var library = mock(TrueShuffleUserLibrary.class);
+        var library = mock(InternalTrueShuffleUserLibrary.class);
         var user = mock(InternalTrueShuffleUser.class);
 
         when(user.getUserLibrary()).thenReturn(library);
@@ -155,7 +155,7 @@ public class TrueShuffleLikedJobTest {
         Mockito.doNothing().when(targetShufflePlaylist).shuffleInPlace();
         Mockito.doNothing().when(targetShufflePlaylist).addAndRemoveTracks(any(), any());
         when(library.getPlaylistById("target")).thenReturn(targetShufflePlaylist);
-        when(library.isOwner(targetShufflePlaylist)).thenReturn(false); // <-- not the owner!
+        when(library.isOwnerOf(targetShufflePlaylist)).thenReturn(false); // <-- not the owner!
 
         var job = new TrueShuffleLikedJob("peter", "target");
         var result = new TrueShuffleJobExecutor().execute(job, (s) -> {

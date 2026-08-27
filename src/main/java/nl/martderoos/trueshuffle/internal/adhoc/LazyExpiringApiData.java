@@ -1,6 +1,6 @@
 package nl.martderoos.trueshuffle.internal.adhoc;
 
-import nl.martderoos.trueshuffle.internal.requests.exceptions.FatalRequestResponseException;
+import nl.martderoos.trueshuffle.api.requests.exceptions.FatalRequestResponseException;
 
 import java.util.concurrent.TimeUnit;
 
