@@ -48,9 +48,15 @@ public class TrueShuffleApi {
     private TrueShuffleUserCredentials credentials = null;
 
     public TrueShuffleApi(final SpotifyApi api, User user) {
+        this(api, user, null);
+    }
+
+    TrueShuffleApi(final SpotifyApi api, User user, RequestHandler requestHandler) {
         this.api = Objects.requireNonNull(api);
         this.user = Objects.requireNonNull(user);
-        this.requestHandler = new RequestHandler(this::refreshAccessToken);
+        this.requestHandler = requestHandler == null
+                ? new RequestHandler(this::refreshAccessToken)
+                : requestHandler;
     }
 
     /**
