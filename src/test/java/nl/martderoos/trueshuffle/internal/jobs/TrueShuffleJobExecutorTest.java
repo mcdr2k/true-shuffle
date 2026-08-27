@@ -1,7 +1,7 @@
 package nl.martderoos.trueshuffle.internal.jobs;
 
-import nl.martderoos.trueshuffle.api.exceptions.UserNotFoundException;
-import nl.martderoos.trueshuffle.api.jobs.ETrueShuffleJobStatus;
+import nl.martderoos.trueshuffle.exceptions.UserNotFoundException;
+import nl.martderoos.trueshuffle.jobs.*;
 import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.CountDownLatch;

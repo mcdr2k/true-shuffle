@@ -1,6 +1,8 @@
 package nl.martderoos.trueshuffle.internal.jobs;
 
-import nl.martderoos.trueshuffle.api.jobs.ETrueShuffleJobStatus;
+import nl.martderoos.trueshuffle.jobs.ETrueShuffleJobStatus;
+import nl.martderoos.trueshuffle.jobs.InternalTrueShuffleJobExecution;
+import nl.martderoos.trueshuffle.jobs.TrueShuffleLikedJob;
 import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.ExecutionException;

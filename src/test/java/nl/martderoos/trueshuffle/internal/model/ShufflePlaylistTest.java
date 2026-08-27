@@ -1,7 +1,9 @@
 package nl.martderoos.trueshuffle.internal.model;
 
-import nl.martderoos.trueshuffle.api.exceptions.ImmutablePlaylistException;
-import nl.martderoos.trueshuffle.api.requests.exceptions.FatalRequestResponseException;
+import nl.martderoos.trueshuffle.exceptions.ImmutablePlaylistException;
+import nl.martderoos.trueshuffle.exceptions.FatalRequestResponseException;
+import nl.martderoos.trueshuffle.model.ShufflePlaylist;
+import nl.martderoos.trueshuffle.model.TrueShuffleApi;
 import org.junit.jupiter.api.Test;
 import se.michaelthelin.spotify.model_objects.specification.Paging;
 import se.michaelthelin.spotify.model_objects.specification.Playlist;
@@ -10,7 +12,7 @@ import se.michaelthelin.spotify.model_objects.specification.User;
 
 import java.util.List;
 
-import static nl.martderoos.trueshuffle.internal.utility.PlaylistUtil.toPlaylistData;
+import static nl.martderoos.trueshuffle.utility.PlaylistUtil.toPlaylistData;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;

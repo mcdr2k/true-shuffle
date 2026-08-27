@@ -1,5 +1,6 @@
 package nl.martderoos.trueshuffle.internal.utility;
 
+import nl.martderoos.trueshuffle.utility.ItemCounter;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

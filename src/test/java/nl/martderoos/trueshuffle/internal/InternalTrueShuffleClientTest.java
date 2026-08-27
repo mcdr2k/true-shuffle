@@ -1,12 +1,19 @@
 package nl.martderoos.trueshuffle.internal;
 
-import nl.martderoos.trueshuffle.api.exceptions.InitializationException;
-import nl.martderoos.trueshuffle.api.exceptions.AuthorizationException;
-import nl.martderoos.trueshuffle.api.exceptions.UserNotFoundException;
-import nl.martderoos.trueshuffle.api.jobs.ETrueShuffleJobStatus;
-import nl.martderoos.trueshuffle.api.model.TrueShuffleUserCredentials;
-import nl.martderoos.trueshuffle.internal.requests.RequestHandler;
-import nl.martderoos.trueshuffle.internal.model.ShufflePlaylist;
+import nl.martderoos.trueshuffle.InternalTrueShuffleClient;
+import nl.martderoos.trueshuffle.InternalTrueShuffleUser;
+import nl.martderoos.trueshuffle.exceptions.FatalRequestResponseException;
+import nl.martderoos.trueshuffle.exceptions.InitializationException;
+import nl.martderoos.trueshuffle.exceptions.AuthorizationException;
+import nl.martderoos.trueshuffle.exceptions.UserNotFoundException;
+import nl.martderoos.trueshuffle.jobs.ETrueShuffleJobStatus;
+import nl.martderoos.trueshuffle.api.TrueShufflePlaylistMetadata;
+import nl.martderoos.trueshuffle.api.TrueShufflePlaylistOwner;
+import nl.martderoos.trueshuffle.api.TrueShuffleUserCredentials;
+import nl.martderoos.trueshuffle.requests.RequestHandler;
+import nl.martderoos.trueshuffle.model.ShufflePlaylist;
+import nl.martderoos.trueshuffle.model.InternalTrueShuffleUserLibrary;
+import nl.martderoos.trueshuffle.model.TrueShuffleApi;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import se.michaelthelin.spotify.SpotifyApi;
@@ -178,7 +185,7 @@ public class InternalTrueShuffleClientTest {
         client.initialize();
 
         Mockito.reset(handler);
-        when(handler.handleRequest(any())).thenThrow(new nl.martderoos.trueshuffle.api.requests.exceptions.FatalRequestResponseException("failed"));
+        when(handler.handleRequest(any())).thenThrow(new FatalRequestResponseException("failed"));
         var credentials = new TrueShuffleUserCredentials(0, "access-token", "refresh-token", 3600);
 
         assertThrows(AuthorizationException.class, () -> client.addAuthorizedUser(null, credentials));
@@ -220,17 +227,17 @@ public class InternalTrueShuffleClientTest {
     @Test
     public void testShuffleLikedSongsExecutesThroughProvidedExecutor() throws Exception {
         var user = mock(InternalTrueShuffleUser.class);
-        var library = mock(nl.martderoos.trueshuffle.internal.model.InternalTrueShuffleUserLibrary.class);
-        var api = mock(nl.martderoos.trueshuffle.internal.model.TrueShuffleApi.class);
+        var library = mock(InternalTrueShuffleUserLibrary.class);
+        var api = mock(TrueShuffleApi.class);
         var target = mock(ShufflePlaylist.class);
         var handler = mock(RequestHandler.class);
         var client = new InternalTrueShuffleClient("cid", "secret", "http://localhost/callback",
                 mock(SpotifyApi.class, Mockito.RETURNS_DEEP_STUBS), handler, userId -> user);
         initialize(client, handler);
-        var metadata = new nl.martderoos.trueshuffle.api.model.TrueShufflePlaylistMetadata(
+        var metadata = new TrueShufflePlaylistMetadata(
                 "target",
                 "Liked Songs - TrueShuffle",
-                new nl.martderoos.trueshuffle.api.model.TrueShufflePlaylistOwner("user", "user"),
+                new TrueShufflePlaylistOwner("user", "user"),
                 null,
                 false,
                 false,
@@ -261,11 +268,11 @@ public class InternalTrueShuffleClientTest {
         var client = new InternalTrueShuffleClient("cid", "secret", "http://localhost/callback",
                 mock(SpotifyApi.class, Mockito.RETURNS_DEEP_STUBS), handler, userId -> user);
         initialize(client, handler);
-        var library = mock(nl.martderoos.trueshuffle.internal.model.InternalTrueShuffleUserLibrary.class);
-        var metadata = new nl.martderoos.trueshuffle.api.model.TrueShufflePlaylistMetadata(
+        var library = mock(InternalTrueShuffleUserLibrary.class);
+        var metadata = new TrueShufflePlaylistMetadata(
                 "playlist",
                 "Playlist",
-                new nl.martderoos.trueshuffle.api.model.TrueShufflePlaylistOwner("user", "user"),
+                new TrueShufflePlaylistOwner("user", "user"),
                 null,
                 false,
                 false,

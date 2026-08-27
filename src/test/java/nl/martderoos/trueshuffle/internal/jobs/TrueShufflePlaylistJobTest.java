@@ -1,12 +1,12 @@
 package nl.martderoos.trueshuffle.internal.jobs;
 
-import nl.martderoos.trueshuffle.internal.InternalTrueShuffleUser;
-import nl.martderoos.trueshuffle.api.jobs.ETrueShuffleJobStatus;
-import nl.martderoos.trueshuffle.api.model.TrueShufflePlaylistMetadata;
-import nl.martderoos.trueshuffle.api.model.TrueShufflePlaylistOwner;
-import nl.martderoos.trueshuffle.internal.model.TrueShuffleApi;
-import nl.martderoos.trueshuffle.internal.model.ShufflePlaylist;
-import nl.martderoos.trueshuffle.internal.model.InternalTrueShuffleUserLibrary;
+import nl.martderoos.trueshuffle.InternalTrueShuffleUser;
+import nl.martderoos.trueshuffle.jobs.*;
+import nl.martderoos.trueshuffle.api.TrueShufflePlaylistMetadata;
+import nl.martderoos.trueshuffle.api.TrueShufflePlaylistOwner;
+import nl.martderoos.trueshuffle.model.TrueShuffleApi;
+import nl.martderoos.trueshuffle.model.ShufflePlaylist;
+import nl.martderoos.trueshuffle.model.InternalTrueShuffleUserLibrary;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import se.michaelthelin.spotify.model_objects.specification.Paging;
@@ -16,7 +16,7 @@ import se.michaelthelin.spotify.model_objects.specification.User;
 
 import java.util.List;
 
-import static nl.martderoos.trueshuffle.internal.utility.PlaylistUtil.toPlaylistData;
+import static nl.martderoos.trueshuffle.utility.PlaylistUtil.toPlaylistData;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;

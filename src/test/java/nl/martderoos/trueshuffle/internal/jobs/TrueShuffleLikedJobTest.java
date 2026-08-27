@@ -1,20 +1,23 @@
 package nl.martderoos.trueshuffle.internal.jobs;
 
-import nl.martderoos.trueshuffle.internal.InternalTrueShuffleUser;
-import nl.martderoos.trueshuffle.api.exceptions.UserNotFoundException;
-import nl.martderoos.trueshuffle.api.jobs.ETrueShuffleJobStatus;
-import nl.martderoos.trueshuffle.internal.model.TrueShuffleApi;
-import nl.martderoos.trueshuffle.internal.model.ShufflePlaylist;
-import nl.martderoos.trueshuffle.internal.model.InternalTrueShuffleUserLibrary;
-import nl.martderoos.trueshuffle.api.requests.exceptions.FatalRequestResponseException;
+import nl.martderoos.trueshuffle.InternalTrueShuffleUser;
+import nl.martderoos.trueshuffle.exceptions.UserNotFoundException;
+import nl.martderoos.trueshuffle.jobs.ETrueShuffleJobStatus;
+import nl.martderoos.trueshuffle.jobs.TrueShuffleJob;
+import nl.martderoos.trueshuffle.jobs.TrueShuffleJobExecutor;
+import nl.martderoos.trueshuffle.jobs.TrueShuffleLikedJob;
+import nl.martderoos.trueshuffle.model.TrueShuffleApi;
+import nl.martderoos.trueshuffle.model.ShufflePlaylist;
+import nl.martderoos.trueshuffle.model.InternalTrueShuffleUserLibrary;
+import nl.martderoos.trueshuffle.exceptions.FatalRequestResponseException;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import se.michaelthelin.spotify.model_objects.specification.*;
 
 import java.util.List;
 
-import static nl.martderoos.trueshuffle.internal.jobs.TrueShuffleJob.LIKED_SONGS_TRUE_SHUFFLE;
-import static nl.martderoos.trueshuffle.internal.utility.PlaylistUtil.toPlaylistData;
+import static nl.martderoos.trueshuffle.jobs.TrueShuffleJob.LIKED_SONGS_TRUE_SHUFFLE;
+import static nl.martderoos.trueshuffle.utility.PlaylistUtil.toPlaylistData;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;

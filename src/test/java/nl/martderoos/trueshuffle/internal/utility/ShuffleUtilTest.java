@@ -1,10 +1,11 @@
 package nl.martderoos.trueshuffle.internal.utility;
 
-import nl.martderoos.trueshuffle.internal.model.TrueShuffleApi;
-import nl.martderoos.trueshuffle.internal.model.ShufflePlaylist;
-import nl.martderoos.trueshuffle.api.model.TrueShufflePlaylistMetadata;
-import nl.martderoos.trueshuffle.api.model.TrueShufflePlaylistOwner;
-import nl.martderoos.trueshuffle.api.requests.exceptions.FatalRequestResponseException;
+import nl.martderoos.trueshuffle.model.TrueShuffleApi;
+import nl.martderoos.trueshuffle.model.ShufflePlaylist;
+import nl.martderoos.trueshuffle.api.TrueShufflePlaylistMetadata;
+import nl.martderoos.trueshuffle.api.TrueShufflePlaylistOwner;
+import nl.martderoos.trueshuffle.exceptions.FatalRequestResponseException;
+import nl.martderoos.trueshuffle.utility.ShuffleUtil;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

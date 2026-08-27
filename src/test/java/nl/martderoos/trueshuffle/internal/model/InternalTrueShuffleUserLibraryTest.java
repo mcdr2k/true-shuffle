@@ -1,13 +1,15 @@
 package nl.martderoos.trueshuffle.internal.model;
 
-import nl.martderoos.trueshuffle.api.model.TrueShufflePlaylistMetadata;
-import nl.martderoos.trueshuffle.api.requests.exceptions.FatalRequestResponseException;
+import nl.martderoos.trueshuffle.api.TrueShufflePlaylistMetadata;
+import nl.martderoos.trueshuffle.exceptions.FatalRequestResponseException;
+import nl.martderoos.trueshuffle.model.InternalTrueShuffleUserLibrary;
+import nl.martderoos.trueshuffle.model.TrueShuffleApi;
 import org.junit.jupiter.api.Test;
 import se.michaelthelin.spotify.model_objects.specification.*;
 
 import java.util.List;
 
-import static nl.martderoos.trueshuffle.internal.utility.PlaylistUtil.toPlaylistData;
+import static nl.martderoos.trueshuffle.utility.PlaylistUtil.toPlaylistData;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
