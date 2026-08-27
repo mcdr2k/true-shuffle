@@ -2,6 +2,8 @@ package nl.martderoos.trueshuffle.internal.jobs;
 
 import nl.martderoos.trueshuffle.internal.InternalTrueShuffleUser;
 import nl.martderoos.trueshuffle.api.jobs.ETrueShuffleJobStatus;
+import nl.martderoos.trueshuffle.api.model.TrueShufflePlaylistMetadata;
+import nl.martderoos.trueshuffle.api.model.TrueShufflePlaylistOwner;
 import nl.martderoos.trueshuffle.internal.model.TrueShuffleApi;
 import nl.martderoos.trueshuffle.internal.model.ShufflePlaylist;
 import nl.martderoos.trueshuffle.internal.model.InternalTrueShuffleUserLibrary;
@@ -16,13 +18,45 @@ import java.util.List;
 
 import static nl.martderoos.trueshuffle.internal.utility.PlaylistUtil.toPlaylistData;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.verify;
 
 public class TrueShufflePlaylistJobTest {
+
+    @Test
+    public void testShuffleInPlaceTerminatesWhenSourceIsNotOwned() throws Exception {
+        var library = mock(InternalTrueShuffleUserLibrary.class);
+        var user = mock(InternalTrueShuffleUser.class);
+        var sourcePlaylist = mock(ShufflePlaylist.class);
+        var sourceMetadata = new TrueShufflePlaylistMetadata(
+                "pid",
+                "p-name",
+                new TrueShufflePlaylistOwner("owner", "owner name"),
+                null,
+                false,
+                true,
+                "snap",
+                0,
+                List.of()
+        );
+        var status = new InternalTrueShuffleJobStatus(ETrueShuffleJobStatus.WAITING, null);
+
+        when(user.getUserLibrary()).thenReturn(library);
+        when(library.isOwnerOf(sourcePlaylist)).thenReturn(false);
+        when(sourcePlaylist.getMetadata()).thenReturn(sourceMetadata);
+        when(sourcePlaylist.getPlaylistId()).thenReturn("pid");
+
+        TrueShuffleJob.shuffleInPlace(user, status, sourcePlaylist);
+
+        verify(sourcePlaylist, never()).shuffleInPlace();
+        assertEquals(ETrueShuffleJobStatus.TERMINATED, status.getStatus());
+        assertTrue(status.getMessage().contains("not the owner"));
+        assertNull(status.getSourcePlaylist());
+        assertNull(status.getTargetPlaylist());
+    }
 
     @Test
     public void testShufflePlaylistIntoDesignatedPlaylist() throws Exception {

@@ -38,10 +38,6 @@ public class TrueShuffleApi {
      * The maximum number of tracks a regular Spotify playlist can have. It is currently 10_000.
      */
     public static final int MAXIMUM_PLAYLIST_SIZE = 10_000;
-    /**
-     * The maximum number of tracks a user can save (like). Currently, there exists no limit.
-     */
-    public static final int MAXIMUM_LIKED_SONGS_SIZE = Integer.MAX_VALUE;
 
     private static final Logger LOGGER = LogManager.getLogger(TrueShuffleApi.class);
 

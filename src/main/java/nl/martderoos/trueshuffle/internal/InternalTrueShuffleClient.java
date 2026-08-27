@@ -30,21 +30,44 @@ public class InternalTrueShuffleClient implements TrueShuffleClient {
     private final SpotifyApi client;
     private volatile boolean initialized = false;
 
-    private final RequestHandler handler = new RequestHandler(null);
-    private final TrueShuffleUserResolver resolver = this::getInternalAuthorizedUser;
+    private final RequestHandler handler;
+    private final TrueShuffleUserResolver resolver;
     private final TrueShuffleJobExecutor jobExecutor = new TrueShuffleJobExecutor();
 
     private final Map<String, InternalTrueShuffleUser> authorizedUsersMap = Collections.synchronizedMap(new HashMap<>());
 
     private InternalTrueShuffleClient(String cid, String secret, String redirectUri) {
+        this(
+                cid,
+                secret,
+                redirectUri,
+                SpotifyApi.builder()
+                        .setClientId(cid)
+                        .setClientSecret(secret)
+                        .setRedirectUri(SpotifyHttpManager.makeUri(Objects.requireNonNull(redirectUri)))
+                        .build(),
+                new RequestHandler(null)
+        );
+    }
+
+    InternalTrueShuffleClient(String cid, String secret, String redirectUri, SpotifyApi client, RequestHandler handler) {
+        this(cid, secret, redirectUri, client, handler, null);
+    }
+
+    InternalTrueShuffleClient(
+            String cid,
+            String secret,
+            String redirectUri,
+            SpotifyApi client,
+            RequestHandler handler,
+            TrueShuffleUserResolver resolver
+    ) {
         this.cid = Objects.requireNonNull(cid);
         this.secret = Objects.requireNonNull(secret);
         this.redirectUri = SpotifyHttpManager.makeUri(Objects.requireNonNull(redirectUri));
-        client = SpotifyApi.builder()
-                .setClientId(cid)
-                .setClientSecret(secret)
-                .setRedirectUri(this.redirectUri)
-                .build();
+        this.client = Objects.requireNonNull(client);
+        this.handler = Objects.requireNonNull(handler);
+        this.resolver = resolver == null ? this::getInternalAuthorizedUser : resolver;
     }
 
     @Override
@@ -68,9 +91,11 @@ public class InternalTrueShuffleClient implements TrueShuffleClient {
         }
 
         try {
-            var user = getInternalAuthorizedUser(userId);
-            user.assignCredentials(credentials);
-            return user;
+            if (userId != null) {
+                var user = getInternalAuthorizedUser(userId);
+                user.assignCredentials(credentials);
+                return user;
+            }
         } catch (UserNotFoundException e) {
             // ok
         }
@@ -167,7 +192,7 @@ public class InternalTrueShuffleClient implements TrueShuffleClient {
         verifyInit();
         Objects.requireNonNull(job);
         Objects.requireNonNull(executor);
-        getInternalAuthorizedUser(job.getUserId());
+        resolver.resolve(job.getUserId());
         return jobExecutor.execute(job, resolver, executor);
     }
 

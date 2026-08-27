@@ -4,7 +4,6 @@ import nl.martderoos.trueshuffle.internal.InternalTrueShuffleUser;
 import nl.martderoos.trueshuffle.api.jobs.ETrueShuffleJobStatus;
 import nl.martderoos.trueshuffle.internal.model.ShufflePlaylist;
 import nl.martderoos.trueshuffle.internal.model.TrueShuffleApi;
-import nl.martderoos.trueshuffle.api.model.TrueShufflePlaylist;
 import nl.martderoos.trueshuffle.internal.model.InternalTrueShuffleUserLibrary;
 import nl.martderoos.trueshuffle.api.requests.exceptions.FatalRequestResponseException;
 import nl.martderoos.trueshuffle.internal.utility.ShuffleUtil;
@@ -56,11 +55,11 @@ public abstract sealed class TrueShuffleJob permits TrueShuffleLikedJob, TrueShu
     protected static ShufflePlaylist findOrCreateUniqueUserOwnedPlaylistByName(InternalTrueShuffleUserLibrary library, InternalTrueShuffleJobStatus status, String name, String description) throws FatalRequestResponseException {
         var list = library.getPlaylistByName(name, true);
         if (list == null || list.isEmpty()) {
-            return asInternal(library.createPlaylist(name, description));
+            return library.createPlaylist(name, description);
         }
 
         if (list.size() == 1) {
-            return asInternal(list.get(0));
+            return list.get(0);
         }
 
         status.setStatusMessage(ETrueShuffleJobStatus.SKIPPED, String.format("Multiple playlists exist already with the name '%s'", name));
@@ -151,12 +150,5 @@ public abstract sealed class TrueShuffleJob permits TrueShuffleLikedJob, TrueShu
      */
     public String getUserId() {
         return userId;
-    }
-
-    private static ShufflePlaylist asInternal(TrueShufflePlaylist playlist) {
-        if (!(playlist instanceof ShufflePlaylist internalPlaylist)) {
-            throw new IllegalArgumentException("TrueShufflePlaylist must be managed by TrueShuffle");
-        }
-        return internalPlaylist;
     }
 }

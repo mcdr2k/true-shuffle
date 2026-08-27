@@ -7,20 +7,9 @@ import nl.martderoos.trueshuffle.api.jobs.TrueShuffleJobExecution;
 
 import java.net.URI;
 import java.util.Set;
-import java.util.UUID;
 import java.util.concurrent.Executor;
 
 public interface TrueShuffleClient {
-    /**
-     * Generates a random 'state' to be used for security purposes. Note that this generated state should be stored
-     * by the user in their own code as to be able to use it further down the authorization flow. This program
-     * itself does nothing with it unless provided to some of this instance's functions, like {@link #getAuthorizationURI(String)}.
-     * The random state generated is produced by a call to {@link UUID#randomUUID()}.
-     */
-    static String generateRandomState() {
-        return UUID.randomUUID().toString();
-    }
-
     /**
      * Attempts to initialize the client by verifying the client id and secret with Spotify.
      */

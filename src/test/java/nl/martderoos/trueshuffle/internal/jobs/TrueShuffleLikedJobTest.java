@@ -16,7 +16,7 @@ import java.util.List;
 import static nl.martderoos.trueshuffle.internal.jobs.TrueShuffleJob.LIKED_SONGS_TRUE_SHUFFLE;
 import static nl.martderoos.trueshuffle.internal.utility.PlaylistUtil.toPlaylistData;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Matchers.*;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 public class TrueShuffleLikedJobTest {

@@ -9,8 +9,8 @@ import java.util.List;
 
 import static nl.martderoos.trueshuffle.internal.utility.PlaylistUtil.toPlaylistData;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 public class InternalTrueShuffleUserLibraryTest {
