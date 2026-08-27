@@ -1,19 +1,17 @@
 package nl.martderoos.trueshuffle;
 
-import nl.martderoos.trueshuffle.InternalTrueShuffleClient;
-import nl.martderoos.trueshuffle.InternalTrueShuffleUser;
-import nl.martderoos.trueshuffle.exceptions.FatalRequestResponseException;
-import nl.martderoos.trueshuffle.exceptions.InitializationException;
-import nl.martderoos.trueshuffle.exceptions.AuthorizationException;
-import nl.martderoos.trueshuffle.exceptions.UserNotFoundException;
-import nl.martderoos.trueshuffle.jobs.ETrueShuffleJobStatus;
 import nl.martderoos.trueshuffle.api.TrueShufflePlaylistMetadata;
 import nl.martderoos.trueshuffle.api.TrueShufflePlaylistOwner;
 import nl.martderoos.trueshuffle.api.TrueShuffleUserCredentials;
-import nl.martderoos.trueshuffle.requests.RequestHandler;
-import nl.martderoos.trueshuffle.model.ShufflePlaylist;
+import nl.martderoos.trueshuffle.exceptions.AuthorizationException;
+import nl.martderoos.trueshuffle.exceptions.FatalRequestResponseException;
+import nl.martderoos.trueshuffle.exceptions.InitializationException;
+import nl.martderoos.trueshuffle.exceptions.UserNotFoundException;
+import nl.martderoos.trueshuffle.jobs.ETrueShuffleJobStatus;
 import nl.martderoos.trueshuffle.model.InternalTrueShuffleUserLibrary;
+import nl.martderoos.trueshuffle.model.ShufflePlaylist;
 import nl.martderoos.trueshuffle.model.TrueShuffleApi;
+import nl.martderoos.trueshuffle.requests.RequestHandler;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import se.michaelthelin.spotify.SpotifyApi;
@@ -28,11 +26,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Executor;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 

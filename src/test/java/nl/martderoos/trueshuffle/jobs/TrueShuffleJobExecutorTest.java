@@ -1,7 +1,6 @@
 package nl.martderoos.trueshuffle.jobs;
 
 import nl.martderoos.trueshuffle.exceptions.UserNotFoundException;
-import nl.martderoos.trueshuffle.jobs.*;
 import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.CountDownLatch;
@@ -10,11 +9,7 @@ import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TrueShuffleJobExecutorTest {
     @Test

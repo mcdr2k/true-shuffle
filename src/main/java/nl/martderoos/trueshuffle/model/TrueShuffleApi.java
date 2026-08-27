@@ -2,12 +2,12 @@ package nl.martderoos.trueshuffle.model;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import nl.martderoos.trueshuffle.api.TrueShuffleUserCredentials;
 import nl.martderoos.trueshuffle.api.TrueShufflePlaylistMetadata;
+import nl.martderoos.trueshuffle.api.TrueShuffleUserCredentials;
+import nl.martderoos.trueshuffle.exceptions.FatalRequestResponseException;
 import nl.martderoos.trueshuffle.paging.PageAggregator;
 import nl.martderoos.trueshuffle.paging.SpotifyFuturePage;
 import nl.martderoos.trueshuffle.requests.RequestHandler;
-import nl.martderoos.trueshuffle.exceptions.FatalRequestResponseException;
 import nl.martderoos.trueshuffle.utility.PlaylistUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

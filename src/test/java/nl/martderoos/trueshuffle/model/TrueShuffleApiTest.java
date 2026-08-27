@@ -1,9 +1,8 @@
 package nl.martderoos.trueshuffle.model;
 
-import nl.martderoos.trueshuffle.api.TrueShuffleUserCredentials;
 import nl.martderoos.trueshuffle.api.TrueShufflePlaylistMetadata;
+import nl.martderoos.trueshuffle.api.TrueShuffleUserCredentials;
 import nl.martderoos.trueshuffle.requests.RequestHandler;
-import nl.martderoos.trueshuffle.model.TrueShuffleApi;
 import org.junit.jupiter.api.Test;
 import se.michaelthelin.spotify.SpotifyApi;
 import se.michaelthelin.spotify.model_objects.miscellaneous.PlaylistTracksInformation;

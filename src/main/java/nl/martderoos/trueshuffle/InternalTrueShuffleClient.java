@@ -1,15 +1,15 @@
 package nl.martderoos.trueshuffle;
 
-import nl.martderoos.trueshuffle.exceptions.AuthorizationException;
-import nl.martderoos.trueshuffle.exceptions.InitializationException;
-import nl.martderoos.trueshuffle.exceptions.UserNotFoundException;
 import nl.martderoos.trueshuffle.api.TrueShuffleClient;
 import nl.martderoos.trueshuffle.api.TrueShuffleUser;
 import nl.martderoos.trueshuffle.api.TrueShuffleUserCredentials;
+import nl.martderoos.trueshuffle.exceptions.AuthorizationException;
+import nl.martderoos.trueshuffle.exceptions.FatalRequestResponseException;
+import nl.martderoos.trueshuffle.exceptions.InitializationException;
+import nl.martderoos.trueshuffle.exceptions.UserNotFoundException;
 import nl.martderoos.trueshuffle.jobs.*;
 import nl.martderoos.trueshuffle.model.TrueShuffleApi;
 import nl.martderoos.trueshuffle.requests.RequestHandler;
-import nl.martderoos.trueshuffle.exceptions.FatalRequestResponseException;
 import se.michaelthelin.spotify.SpotifyApi;
 import se.michaelthelin.spotify.SpotifyHttpManager;
 import se.michaelthelin.spotify.enums.AuthorizationScope;

@@ -1,7 +1,5 @@
 package nl.martderoos.trueshuffle.jobs;
 
-import nl.martderoos.trueshuffle.jobs.ETrueShuffleJobStatus;
-import nl.martderoos.trueshuffle.jobs.InternalTrueShuffleJobStatus;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

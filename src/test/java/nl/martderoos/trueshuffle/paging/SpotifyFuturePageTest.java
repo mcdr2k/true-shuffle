@@ -1,8 +1,6 @@
 package nl.martderoos.trueshuffle.paging;
 
 import nl.martderoos.trueshuffle.exceptions.FatalRequestResponseException;
-import nl.martderoos.trueshuffle.paging.SpotifyFuturePage;
-import nl.martderoos.trueshuffle.paging.SpotifyPageLoader;
 import org.junit.jupiter.api.Test;
 import se.michaelthelin.spotify.model_objects.specification.Paging;
 

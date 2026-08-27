@@ -1,12 +1,12 @@
 package nl.martderoos.trueshuffle;
 
+import nl.martderoos.trueshuffle.api.TrueShuffleImage;
 import nl.martderoos.trueshuffle.api.TrueShuffleUser;
 import nl.martderoos.trueshuffle.api.TrueShuffleUserCredentials;
 import nl.martderoos.trueshuffle.jobs.TrueShuffleLikedJob;
 import nl.martderoos.trueshuffle.jobs.TrueShufflePlaylistJob;
-import nl.martderoos.trueshuffle.model.TrueShuffleApi;
-import nl.martderoos.trueshuffle.api.TrueShuffleImage;
 import nl.martderoos.trueshuffle.model.InternalTrueShuffleUserLibrary;
+import nl.martderoos.trueshuffle.model.TrueShuffleApi;
 import se.michaelthelin.spotify.model_objects.specification.Image;
 import se.michaelthelin.spotify.model_objects.specification.User;
 

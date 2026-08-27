@@ -1,7 +1,7 @@
 package nl.martderoos.trueshuffle.jobs;
 
-import org.junit.jupiter.api.Test;
 import nl.martderoos.trueshuffle.api.TrueShuffleImage;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 

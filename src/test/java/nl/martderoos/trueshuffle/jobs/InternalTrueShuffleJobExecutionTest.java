@@ -1,8 +1,5 @@
 package nl.martderoos.trueshuffle.jobs;
 
-import nl.martderoos.trueshuffle.jobs.ETrueShuffleJobStatus;
-import nl.martderoos.trueshuffle.jobs.InternalTrueShuffleJobExecution;
-import nl.martderoos.trueshuffle.jobs.TrueShuffleLikedJob;
 import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.ExecutionException;
@@ -10,12 +7,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 public class InternalTrueShuffleJobExecutionTest {

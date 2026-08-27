@@ -2,10 +2,11 @@ package nl.martderoos.trueshuffle.model;
 
 import nl.martderoos.trueshuffle.api.TrueShufflePlaylistMetadata;
 import nl.martderoos.trueshuffle.exceptions.FatalRequestResponseException;
-import nl.martderoos.trueshuffle.model.InternalTrueShuffleUserLibrary;
-import nl.martderoos.trueshuffle.model.TrueShuffleApi;
 import org.junit.jupiter.api.Test;
-import se.michaelthelin.spotify.model_objects.specification.*;
+import se.michaelthelin.spotify.model_objects.specification.Paging;
+import se.michaelthelin.spotify.model_objects.specification.Playlist;
+import se.michaelthelin.spotify.model_objects.specification.PlaylistTrack;
+import se.michaelthelin.spotify.model_objects.specification.User;
 
 import java.util.List;
 

@@ -10,14 +10,6 @@ public class LazyExpiringApiData<T> extends LazyExpiringData<T, FatalRequestResp
         super(source);
     }
 
-    public LazyExpiringApiData(DataSource<T, FatalRequestResponseException> source, boolean forceReloadOnNull) {
-        super(source, forceReloadOnNull);
-    }
-
-    public LazyExpiringApiData(DataSource<T, FatalRequestResponseException> source, long refreshTimeout, TimeUnit timeUnit) {
-        super(source, refreshTimeout, timeUnit);
-    }
-
     public LazyExpiringApiData(DataSource<T, FatalRequestResponseException> source, boolean forceReloadOnNull, long refreshTimeout, TimeUnit timeUnit) {
         super(source, forceReloadOnNull, refreshTimeout, timeUnit);
     }

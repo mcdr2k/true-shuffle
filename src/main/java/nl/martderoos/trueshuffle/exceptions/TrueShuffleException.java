@@ -15,8 +15,4 @@ public class TrueShuffleException extends Exception {
     public TrueShuffleException(String message) {
         super(message);
     }
-
-    public TrueShuffleException() {
-        super();
-    }
 }

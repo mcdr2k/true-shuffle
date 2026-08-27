@@ -1,8 +1,8 @@
 package nl.martderoos.trueshuffle.jobs;
 
 import nl.martderoos.trueshuffle.InternalTrueShuffleUser;
-import nl.martderoos.trueshuffle.model.ShufflePlaylist;
 import nl.martderoos.trueshuffle.exceptions.FatalRequestResponseException;
+import nl.martderoos.trueshuffle.model.ShufflePlaylist;
 import nl.martderoos.trueshuffle.utility.ShuffleUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

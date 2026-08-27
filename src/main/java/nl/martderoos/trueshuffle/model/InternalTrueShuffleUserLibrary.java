@@ -1,10 +1,10 @@
 package nl.martderoos.trueshuffle.model;
 
 
-import nl.martderoos.trueshuffle.api.TrueShufflePlaylistOwner;
-import nl.martderoos.trueshuffle.api.TrueShuffleUserLibrary;
 import nl.martderoos.trueshuffle.adhoc.LazyExpiringApiData;
 import nl.martderoos.trueshuffle.api.TrueShufflePlaylistMetadata;
+import nl.martderoos.trueshuffle.api.TrueShufflePlaylistOwner;
+import nl.martderoos.trueshuffle.api.TrueShuffleUserLibrary;
 import nl.martderoos.trueshuffle.exceptions.FatalRequestResponseException;
 
 import java.util.*;

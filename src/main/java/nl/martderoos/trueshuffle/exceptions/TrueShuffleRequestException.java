@@ -1,7 +1,5 @@
 package nl.martderoos.trueshuffle.exceptions;
 
-import nl.martderoos.trueshuffle.exceptions.TrueShuffleException;
-
 /**
  * Root exception for TrueShuffle http request failures.
  */
