@@ -1,4 +1,4 @@
-package nl.martderoos.trueshuffle.internal.adhoc;
+package nl.martderoos.trueshuffle.adhoc;
 
 import nl.martderoos.trueshuffle.adhoc.DataSource;
 import nl.martderoos.trueshuffle.adhoc.LazyExpiringData;

@@ -1,4 +1,4 @@
-package nl.martderoos.trueshuffle.internal.model;
+package nl.martderoos.trueshuffle.model;
 
 import nl.martderoos.trueshuffle.exceptions.ImmutablePlaylistException;
 import nl.martderoos.trueshuffle.exceptions.FatalRequestResponseException;

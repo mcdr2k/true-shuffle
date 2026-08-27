@@ -1,4 +1,4 @@
-package nl.martderoos.trueshuffle.internal;
+package nl.martderoos.trueshuffle;
 
 import nl.martderoos.trueshuffle.InternalTrueShuffleClient;
 import nl.martderoos.trueshuffle.InternalTrueShuffleUser;

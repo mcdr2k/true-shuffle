@@ -1,6 +1,6 @@
-package nl.martderoos.trueshuffle.api;
+package nl.martderoos.trueshuffle;
 
-import nl.martderoos.trueshuffle.TrueShuffleClientFactory;
+import nl.martderoos.trueshuffle.api.TrueShuffleClient;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;

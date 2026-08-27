@@ -1,4 +1,4 @@
-package nl.martderoos.trueshuffle.internal.jobs;
+package nl.martderoos.trueshuffle.jobs;
 
 import nl.martderoos.trueshuffle.exceptions.UserNotFoundException;
 import nl.martderoos.trueshuffle.jobs.*;

@@ -1,10 +1,12 @@
-package nl.martderoos.trueshuffle.internal.jobs;
+package nl.martderoos.trueshuffle.jobs;
 
 import org.junit.jupiter.api.Test;
 import nl.martderoos.trueshuffle.api.TrueShuffleImage;
 
 import java.util.List;
 
+import static nl.martderoos.trueshuffle.jobs.TrueShuffleJobPlaylistData.newLikedSongsData;
+import static nl.martderoos.trueshuffle.jobs.TrueShuffleJobPlaylistData.newPlaylistData;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TrueShuffleJobPlaylistDataTest {

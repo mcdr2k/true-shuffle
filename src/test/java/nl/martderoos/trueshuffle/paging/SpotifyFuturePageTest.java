@@ -1,4 +1,4 @@
-package nl.martderoos.trueshuffle.internal.paging;
+package nl.martderoos.trueshuffle.paging;
 
 import nl.martderoos.trueshuffle.exceptions.FatalRequestResponseException;
 import nl.martderoos.trueshuffle.paging.SpotifyFuturePage;

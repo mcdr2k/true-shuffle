@@ -1,6 +1,5 @@
-package nl.martderoos.trueshuffle.internal;
+package nl.martderoos.trueshuffle.api;
 
-import nl.martderoos.trueshuffle.api.TrueShuffleUserCredentials;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

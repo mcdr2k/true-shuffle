@@ -1,4 +1,4 @@
-package nl.martderoos.trueshuffle.internal.requests;
+package nl.martderoos.trueshuffle.requests;
 
 import nl.martderoos.trueshuffle.exceptions.AuthorizationRevokedException;
 import nl.martderoos.trueshuffle.exceptions.FatalRequestResponseException;
