@@ -32,10 +32,11 @@ public class InternalTrueShuffleUserLibrary implements TrueShuffleUserLibrary {
     }
 
     public synchronized List<String> getUserLikedTracksUris() throws FatalRequestResponseException {
-        return userLikedTracksUris.getData();
+        return new ArrayList<>(userLikedTracksUris.getData());
     }
 
     public synchronized List<TrueShufflePlaylistMetadata> getMostRecentPlaylists(int limit) throws FatalRequestResponseException {
+        if (limit < 0) throw new IllegalArgumentException("Limit must be at least 0");
         return new ArrayList<>(this.index.getData().getMostRecentPlaylists(limit));
     }
 
