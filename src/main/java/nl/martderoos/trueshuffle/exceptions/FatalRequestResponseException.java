@@ -1,4 +1,4 @@
-package nl.martderoos.trueshuffle.requests.exceptions;
+package nl.martderoos.trueshuffle.exceptions;
 
 /**
  * When thrown, indicates that an Api request could not complete appropriately and that any attempt to retry the
@@ -7,5 +7,9 @@ package nl.martderoos.trueshuffle.requests.exceptions;
 public class FatalRequestResponseException extends TrueShuffleRequestException {
     public FatalRequestResponseException(String message) {
         super(message);
+    }
+
+    public FatalRequestResponseException(String message, Throwable cause) {
+        super(message, cause);
     }
 }

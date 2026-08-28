@@ -1,33 +1,37 @@
 package nl.martderoos.trueshuffle.model;
 
-import nl.martderoos.trueshuffle.requests.exceptions.FatalRequestResponseException;
+import nl.martderoos.trueshuffle.api.TrueShufflePlaylistMetadata;
+import nl.martderoos.trueshuffle.exceptions.FatalRequestResponseException;
 import org.junit.jupiter.api.Test;
-import se.michaelthelin.spotify.model_objects.specification.*;
+import se.michaelthelin.spotify.model_objects.specification.Paging;
+import se.michaelthelin.spotify.model_objects.specification.Playlist;
+import se.michaelthelin.spotify.model_objects.specification.PlaylistTrack;
+import se.michaelthelin.spotify.model_objects.specification.User;
 
 import java.util.List;
 
-import static nl.martderoos.trueshuffle.utility.PlaylistUtil.toSimplifiedPlaylist;
+import static nl.martderoos.trueshuffle.utility.PlaylistUtil.toPlaylistData;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
-public class UserLibraryTest {
+public class InternalTrueShuffleUserLibraryTest {
     @Test
     public void testGetLikedTracks() throws FatalRequestResponseException {
-        var api = mock(ShuffleApi.class);
-        var lib = new UserLibrary(api);
+        var api = mock(TrueShuffleApi.class);
+        var lib = new InternalTrueShuffleUserLibrary(api);
         when(api.streamUserLikedTracksUris(anyInt())).thenReturn(List.of("l1", "l3"));
         assertEquals(List.of("l1", "l3"), lib.getUserLikedTracksUris());
     }
 
     @Test
     public void testCreatingNewPlaylist() throws FatalRequestResponseException {
-        var api = mock(ShuffleApi.class);
+        var api = mock(TrueShuffleApi.class);
         when(api.getUserId()).thenReturn("user");
 
-        var lib = new UserLibrary(api);
-        var uploadedPlaylist = defaultPlaylistBuilder().setId("upload-id").setName("newPlaylist").build();
+        var lib = new InternalTrueShuffleUserLibrary(api);
+        var uploadedPlaylist = toPlaylistData(defaultPlaylistBuilder().setId("upload-id").setName("newPlaylist").build());
         when(api.uploadPlaylist(anyString(), anyString())).thenReturn(uploadedPlaylist);
 
         lib.createPlaylist("newPlaylist", "newDescription");
@@ -35,25 +39,25 @@ public class UserLibraryTest {
         verify(api).uploadPlaylist("newPlaylist", "newDescription");
 
         var actualFoundPlaylist = lib.getPlaylistByName("newPlaylist", true).get(0);
-        assertEquals("newPlaylist", actualFoundPlaylist.getName());
+        assertEquals("newPlaylist", actualFoundPlaylist.getMetadata().name());
         assertEquals("upload-id", actualFoundPlaylist.getPlaylistId());
 
         actualFoundPlaylist = lib.getPlaylistById("upload-id");
         assertNotNull(actualFoundPlaylist);
-        assertEquals("newPlaylist", actualFoundPlaylist.getName());
+        assertEquals("newPlaylist", actualFoundPlaylist.getMetadata().name());
     }
 
     @Test
     public void testGetPlaylistByName() throws FatalRequestResponseException {
-        var api = mock(ShuffleApi.class);
+        var api = mock(TrueShuffleApi.class);
         when(api.getUserId()).thenReturn("user");
 
-        PlaylistSimplified p1 = toSimplifiedPlaylist(defaultPlaylistBuilder().setName("cool").setId("pid1").build());
-        PlaylistSimplified p2 = toSimplifiedPlaylist(defaultPlaylistBuilder().setName("cool").setId("pid2").setOwner(createUser("some guy", "some name")).build());
-        PlaylistSimplified p3 = toSimplifiedPlaylist(defaultPlaylistBuilder().setName("cool").setId("pid3").build());
+        TrueShufflePlaylistMetadata p1 = toPlaylistData(defaultPlaylistBuilder().setName("cool").setId("pid1").build());
+        TrueShufflePlaylistMetadata p2 = toPlaylistData(defaultPlaylistBuilder().setName("cool").setId("pid2").setOwner(createUser("some guy", "some name")).build());
+        TrueShufflePlaylistMetadata p3 = toPlaylistData(defaultPlaylistBuilder().setName("cool").setId("pid3").build());
         when(api.searchPlaylistByExactName(eq("cool"), anyInt())).thenReturn(List.of(p1, p2, p3));
 
-        var lib = new UserLibrary(api);
+        var lib = new InternalTrueShuffleUserLibrary(api);
         var result = lib.getPlaylistByName("cool", false);
         assertEquals(3, result.size());
         assertEquals("pid1", result.get(0).getPlaylistId());
@@ -70,15 +74,15 @@ public class UserLibraryTest {
 
     @Test
     public void testGetPlaylistById() throws FatalRequestResponseException {
-        var api = mock(ShuffleApi.class);
+        var api = mock(TrueShuffleApi.class);
         when(api.getUserId()).thenReturn("user");
 
-        PlaylistSimplified p1 = toSimplifiedPlaylist(defaultPlaylistBuilder().setName("n1").setId("pid1").build());
-        PlaylistSimplified p2 = toSimplifiedPlaylist(defaultPlaylistBuilder().setName("n2").setId("pid2").setOwner(createUser("some guy", "some name")).build());
+        TrueShufflePlaylistMetadata p1 = toPlaylistData(defaultPlaylistBuilder().setName("n1").setId("pid1").build());
+        TrueShufflePlaylistMetadata p2 = toPlaylistData(defaultPlaylistBuilder().setName("n2").setId("pid2").setOwner(createUser("some guy", "some name")).build());
         when(api.streamPlaylistSimplified("pid1")).thenReturn(p1);
         when(api.streamPlaylistSimplified("pid2")).thenReturn(p2);
 
-        var lib = new UserLibrary(api);
+        var lib = new InternalTrueShuffleUserLibrary(api);
         var result = lib.getPlaylistById("pid1");
 
         assertEquals("pid1", result.getPlaylistId());
@@ -96,10 +100,10 @@ public class UserLibraryTest {
 
     @Test
     public void testGetEmptyMostRecentPlaylists() throws FatalRequestResponseException {
-        var api = mock(ShuffleApi.class);
+        var api = mock(TrueShuffleApi.class);
         when(api.getUserId()).thenReturn("user");
 
-        var lib = new UserLibrary(api);
+        var lib = new InternalTrueShuffleUserLibrary(api);
         var result = lib.getMostRecentPlaylists(10);
         assertEquals(List.of(), result);
         result = lib.getMostRecentPlaylists(10);
@@ -110,15 +114,15 @@ public class UserLibraryTest {
 
     @Test
     public void testGetNonEmptyMostRecentPlaylists() throws FatalRequestResponseException {
-        var api = mock(ShuffleApi.class);
+        var api = mock(TrueShuffleApi.class);
         when(api.getUserId()).thenReturn("user");
 
-        var p1 = toSimplifiedPlaylist(defaultPlaylistBuilder().setId("p1").build());
-        var p2 = toSimplifiedPlaylist(defaultPlaylistBuilder().setId("p2").build());
-        var p3 = toSimplifiedPlaylist(defaultPlaylistBuilder().setId("p3").build());
+        var p1 = toPlaylistData(defaultPlaylistBuilder().setId("p1").build());
+        var p2 = toPlaylistData(defaultPlaylistBuilder().setId("p2").build());
+        var p3 = toPlaylistData(defaultPlaylistBuilder().setId("p3").build());
         when(api.streamUserPlaylists(anyInt())).thenReturn(List.of(p2, p1, p3));
 
-        var lib = new UserLibrary(api);
+        var lib = new InternalTrueShuffleUserLibrary(api);
         var result = lib.getMostRecentPlaylists(10);
         assertEquals(List.of(p2, p1, p3), result);
         result = lib.getMostRecentPlaylists(10);

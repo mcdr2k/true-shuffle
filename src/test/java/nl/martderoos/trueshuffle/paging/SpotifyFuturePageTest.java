@@ -1,8 +1,10 @@
 package nl.martderoos.trueshuffle.paging;
 
-import nl.martderoos.trueshuffle.requests.exceptions.FatalRequestResponseException;
+import nl.martderoos.trueshuffle.exceptions.FatalRequestResponseException;
 import org.junit.jupiter.api.Test;
 import se.michaelthelin.spotify.model_objects.specification.Paging;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -62,7 +64,7 @@ public class SpotifyFuturePageTest {
         assertEquals(0, result.getOffset());
         assertEquals(3, result.getLimit());
         assertEquals(6, result.getTotal());
-        assertArrayEquals(new String[]{"first", "second", "third"}, result.getItems());
+        assertEquals(List.of("first", "second", "third"), result.getItems());
         assertNotNull(result.getNext());
     }
 
@@ -88,7 +90,7 @@ public class SpotifyFuturePageTest {
         assertEquals(3, result.getOffset());
         assertEquals(2, result.getLimit());
         assertEquals(6, result.getTotal());
-        assertArrayEquals(new String[]{"fourth", "fifth"}, result.getItems());
+        assertEquals(List.of("fourth", "fifth"), result.getItems());
         assertNotNull(result.getNext());
     }
 
@@ -114,7 +116,7 @@ public class SpotifyFuturePageTest {
         assertEquals(5, result.getOffset());
         assertEquals(10, result.getLimit());
         assertEquals(6, result.getTotal());
-        assertArrayEquals(new String[]{"sixth"}, result.getItems());
+        assertEquals(List.of("sixth"), result.getItems());
         assertNull(result.getNext());
     }
 }

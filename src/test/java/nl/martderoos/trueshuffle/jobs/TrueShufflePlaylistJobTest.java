@@ -1,9 +1,11 @@
 package nl.martderoos.trueshuffle.jobs;
 
-import nl.martderoos.trueshuffle.TrueShuffleUser;
-import nl.martderoos.trueshuffle.model.ShuffleApi;
+import nl.martderoos.trueshuffle.InternalTrueShuffleUser;
+import nl.martderoos.trueshuffle.api.TrueShufflePlaylistMetadata;
+import nl.martderoos.trueshuffle.api.TrueShufflePlaylistOwner;
+import nl.martderoos.trueshuffle.model.InternalTrueShuffleUserLibrary;
 import nl.martderoos.trueshuffle.model.ShufflePlaylist;
-import nl.martderoos.trueshuffle.model.UserLibrary;
+import nl.martderoos.trueshuffle.model.TrueShuffleApi;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import se.michaelthelin.spotify.model_objects.specification.Paging;
@@ -13,35 +15,64 @@ import se.michaelthelin.spotify.model_objects.specification.User;
 
 import java.util.List;
 
-import static nl.martderoos.trueshuffle.utility.PlaylistUtil.toSimplifiedPlaylist;
+import static nl.martderoos.trueshuffle.utility.PlaylistUtil.toPlaylistData;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.verify;
 
 public class TrueShufflePlaylistJobTest {
 
     @Test
+    public void testShuffleInPlaceTerminatesWhenSourceIsNotOwned() throws Exception {
+        var library = mock(InternalTrueShuffleUserLibrary.class);
+        var user = mock(InternalTrueShuffleUser.class);
+        var sourcePlaylist = mock(ShufflePlaylist.class);
+        var sourceMetadata = new TrueShufflePlaylistMetadata(
+                "pid",
+                "p-name",
+                new TrueShufflePlaylistOwner("owner", "owner name"),
+                null,
+                false,
+                true,
+                "snap",
+                0,
+                List.of()
+        );
+        var status = new InternalTrueShuffleJobStatus(ETrueShuffleJobStatus.WAITING, null);
+
+        when(user.getUserLibrary()).thenReturn(library);
+        when(library.isOwnerOf(sourcePlaylist)).thenReturn(false);
+        when(sourcePlaylist.getMetadata()).thenReturn(sourceMetadata);
+        when(sourcePlaylist.getPlaylistId()).thenReturn("pid");
+
+        TrueShuffleJob.shuffleInPlace(user, status, sourcePlaylist);
+
+        verify(sourcePlaylist, never()).shuffleInPlace();
+        assertEquals(ETrueShuffleJobStatus.TERMINATED, status.getStatus());
+        assertTrue(status.getMessage().contains("not the owner"));
+        assertNull(status.getSourcePlaylist());
+        assertNull(status.getTargetPlaylist());
+    }
+
+    @Test
     public void testShufflePlaylistIntoDesignatedPlaylist() throws Exception {
-        var api = mock(ShuffleApi.class);
-        var library = mock(UserLibrary.class);
-        var user = mock(TrueShuffleUser.class);
+        var api = mock(TrueShuffleApi.class);
+        var library = mock(InternalTrueShuffleUserLibrary.class);
+        var user = mock(InternalTrueShuffleUser.class);
 
         when(user.getUserLibrary()).thenReturn(library);
         when(user.getApi()).thenReturn(api);
 
         var sourcePlaylist = defaultPlaylistBuilder().build();
-        var sourceShufflePlaylist = spy(new ShufflePlaylist(api, toSimplifiedPlaylist(sourcePlaylist), false));
+        var sourceShufflePlaylist = spy(new ShufflePlaylist(api, toPlaylistData(sourcePlaylist), false));
         when(library.getPlaylistById(sourcePlaylist.getId())).thenReturn(sourceShufflePlaylist);
         var sourceTracks = List.of("t1", "t2", "t3");
-        doReturn(sourceTracks).when(sourceShufflePlaylist).getPlaylistTracksUris(); // works differently for spies
+        doReturn(sourceTracks).when(sourceShufflePlaylist).getTracksUris(); // works differently for spies
 
         var targetPlaylist = defaultPlaylistBuilder().setId("target").setName("target-name").build();
-        var targetShufflePlaylist = spy(new ShufflePlaylist(api, toSimplifiedPlaylist(targetPlaylist), true));
+        var targetShufflePlaylist = spy(new ShufflePlaylist(api, toPlaylistData(targetPlaylist), true));
         when(library.getPlaylistById(targetPlaylist.getId())).thenReturn(targetShufflePlaylist);
-        when(library.isOwner(targetShufflePlaylist)).thenReturn(true);
+        when(library.isOwnerOf(targetShufflePlaylist)).thenReturn(true);
         Mockito.doNothing().when(targetShufflePlaylist).shuffleInPlace();
         Mockito.doNothing().when(targetShufflePlaylist).addAndRemoveTracks(any(), any());
         var targetTracks = List.of("t1", "t4");
@@ -50,11 +81,11 @@ public class TrueShufflePlaylistJobTest {
         when(api.getDisplayName()).thenReturn("user display name");
 
         var job = new TrueShufflePlaylistJob("user", "pid", "target");
-        var result = job.execute((s) -> user, Runnable::run);
+        var result = new TrueShuffleJobExecutor().execute(job, (s) -> user, Runnable::run).getStatus();
 
         verify(targetShufflePlaylist).shuffleInPlace();
         verify(targetShufflePlaylist).addAndRemoveTracks(eq(List.of("t2", "t3")), eq(List.of("t4")));
-        assertEquals(ETrueShuffleJobStatus.FINISHED, result.getStatus());
+        assertEquals(ETrueShuffleJobStatus.COMPLETED, result.getStatus());
         assertFalse(result.getSourcePlaylist().isLikedSongsPlaylist());
         assertEquals("target", result.getTargetPlaylist().getPlaylistId());
         assertEquals("target-name", result.getTargetPlaylist().getName());
@@ -62,19 +93,19 @@ public class TrueShufflePlaylistJobTest {
 
     @Test
     public void testShufflePlaylistIntoDesignatedSelf() throws Exception {
-        var api = mock(ShuffleApi.class);
-        var library = mock(UserLibrary.class);
-        var user = mock(TrueShuffleUser.class);
+        var api = mock(TrueShuffleApi.class);
+        var library = mock(InternalTrueShuffleUserLibrary.class);
+        var user = mock(InternalTrueShuffleUser.class);
 
         when(user.getUserLibrary()).thenReturn(library);
         when(user.getApi()).thenReturn(api);
 
         var sourcePlaylist = defaultPlaylistBuilder().build();
-        var sourceShufflePlaylist = spy(new ShufflePlaylist(api, toSimplifiedPlaylist(sourcePlaylist), false));
+        var sourceShufflePlaylist = spy(new ShufflePlaylist(api, toPlaylistData(sourcePlaylist), false));
         when(library.getPlaylistById(sourcePlaylist.getId())).thenReturn(sourceShufflePlaylist);
-        when(library.isOwner(sourceShufflePlaylist)).thenReturn(true);
+        when(library.isOwnerOf(sourceShufflePlaylist)).thenReturn(true);
         var sourceTracks = List.of("t1", "t2", "t3");
-        doReturn(sourceTracks).when(sourceShufflePlaylist).getPlaylistTracksUris(); // works differently for spies
+        doReturn(sourceTracks).when(sourceShufflePlaylist).getTracksUris(); // works differently for spies
 
         Mockito.doNothing().when(sourceShufflePlaylist).shuffleInPlace();
         Mockito.doNothing().when(sourceShufflePlaylist).addAndRemoveTracks(any(), any());
@@ -82,11 +113,11 @@ public class TrueShufflePlaylistJobTest {
         when(api.getDisplayName()).thenReturn("user display name");
 
         var job = new TrueShufflePlaylistJob("user", "pid", "pid");
-        var result = job.execute((s) -> user, Runnable::run);
+        var result = new TrueShuffleJobExecutor().execute(job, (s) -> user, Runnable::run).getStatus();
 
         verify(sourceShufflePlaylist).shuffleInPlace();
         verify(sourceShufflePlaylist, times(0)).addAndRemoveTracks(any(), any());
-        assertEquals(ETrueShuffleJobStatus.FINISHED, result.getStatus());
+        assertEquals(ETrueShuffleJobStatus.COMPLETED, result.getStatus());
         assertFalse(result.getSourcePlaylist().isLikedSongsPlaylist());
         assertEquals("pid", result.getTargetPlaylist().getPlaylistId());
         assertEquals("p-name", result.getTargetPlaylist().getName());
@@ -94,19 +125,19 @@ public class TrueShufflePlaylistJobTest {
 
     @Test
     public void testShufflePlaylistIntoItselfIfOwnerAndNoDesignatedPlaylistAssigned() throws Exception {
-        var api = mock(ShuffleApi.class);
-        var library = mock(UserLibrary.class);
-        var user = mock(TrueShuffleUser.class);
+        var api = mock(TrueShuffleApi.class);
+        var library = mock(InternalTrueShuffleUserLibrary.class);
+        var user = mock(InternalTrueShuffleUser.class);
 
         when(user.getUserLibrary()).thenReturn(library);
         when(user.getApi()).thenReturn(api);
 
         var sourcePlaylist = defaultPlaylistBuilder().build();
-        var sourceShufflePlaylist = spy(new ShufflePlaylist(api, toSimplifiedPlaylist(sourcePlaylist), false));
+        var sourceShufflePlaylist = spy(new ShufflePlaylist(api, toPlaylistData(sourcePlaylist), false));
         when(library.getPlaylistById(sourcePlaylist.getId())).thenReturn(sourceShufflePlaylist);
-        when(library.isOwner(sourceShufflePlaylist)).thenReturn(true);
+        when(library.isOwnerOf(sourceShufflePlaylist)).thenReturn(true);
         var sourceTracks = List.of("t1", "t2", "t3");
-        doReturn(sourceTracks).when(sourceShufflePlaylist).getPlaylistTracksUris(); // works differently for spies
+        doReturn(sourceTracks).when(sourceShufflePlaylist).getTracksUris(); // works differently for spies
 
         Mockito.doNothing().when(sourceShufflePlaylist).shuffleInPlace();
         Mockito.doNothing().when(sourceShufflePlaylist).addAndRemoveTracks(any(), any());
@@ -114,11 +145,11 @@ public class TrueShufflePlaylistJobTest {
         when(api.getDisplayName()).thenReturn("user display name");
 
         var job = new TrueShufflePlaylistJob("user", "pid");
-        var result = job.execute((s) -> user, Runnable::run);
+        var result = new TrueShuffleJobExecutor().execute(job, (s) -> user, Runnable::run).getStatus();
 
         verify(sourceShufflePlaylist).shuffleInPlace();
         verify(sourceShufflePlaylist, times(0)).addAndRemoveTracks(any(), any());
-        assertEquals(ETrueShuffleJobStatus.FINISHED, result.getStatus());
+        assertEquals(ETrueShuffleJobStatus.COMPLETED, result.getStatus());
         assertFalse(result.getSourcePlaylist().isLikedSongsPlaylist());
         assertEquals("pid", result.getTargetPlaylist().getPlaylistId());
         assertEquals("p-name", result.getTargetPlaylist().getName());
@@ -126,24 +157,24 @@ public class TrueShufflePlaylistJobTest {
 
     @Test
     public void testShufflePlaylistAfterCopyWhenNotTheOwner() throws Exception {
-        var api = mock(ShuffleApi.class);
-        var library = mock(UserLibrary.class);
-        var user = mock(TrueShuffleUser.class);
+        var api = mock(TrueShuffleApi.class);
+        var library = mock(InternalTrueShuffleUserLibrary.class);
+        var user = mock(InternalTrueShuffleUser.class);
 
         when(user.getUserLibrary()).thenReturn(library);
         when(user.getApi()).thenReturn(api);
 
         var sourcePlaylist = defaultPlaylistBuilder().build();
-        var sourceShufflePlaylist = spy(new ShufflePlaylist(api, toSimplifiedPlaylist(sourcePlaylist), false));
+        var sourceShufflePlaylist = spy(new ShufflePlaylist(api, toPlaylistData(sourcePlaylist), false));
         when(library.getPlaylistById(sourcePlaylist.getId())).thenReturn(sourceShufflePlaylist);
-        when(library.isOwner(sourceShufflePlaylist)).thenReturn(false);
+        when(library.isOwnerOf(sourceShufflePlaylist)).thenReturn(false);
         var sourceTracks = List.of("t1", "t2", "t3");
-        doReturn(sourceTracks).when(sourceShufflePlaylist).getPlaylistTracksUris(); // works differently for spies
+        doReturn(sourceTracks).when(sourceShufflePlaylist).getTracksUris(); // works differently for spies
 
         var targetPlaylist = defaultPlaylistBuilder().setId("target").setName("target-name").build();
-        var targetShufflePlaylist = spy(new ShufflePlaylist(api, toSimplifiedPlaylist(targetPlaylist), true));
+        var targetShufflePlaylist = spy(new ShufflePlaylist(api, toPlaylistData(targetPlaylist), true));
         when(library.getPlaylistByName(sourcePlaylist.getName() + TrueShuffleJob.TRUE_SHUFFLE_SUFFIX, true)).thenReturn(List.of(targetShufflePlaylist));
-        when(library.isOwner(targetShufflePlaylist)).thenReturn(true);
+        when(library.isOwnerOf(targetShufflePlaylist)).thenReturn(true);
         Mockito.doNothing().when(targetShufflePlaylist).shuffleInPlace();
         Mockito.doNothing().when(targetShufflePlaylist).addAndRemoveTracks(any(), any());
         var targetTracks = List.of("t1", "t4");
@@ -152,11 +183,11 @@ public class TrueShufflePlaylistJobTest {
         when(api.getDisplayName()).thenReturn("user display name");
 
         var job = new TrueShufflePlaylistJob("user", "pid");
-        var result = job.execute((s) -> user, Runnable::run);
+        var result = new TrueShuffleJobExecutor().execute(job, (s) -> user, Runnable::run).getStatus();
 
         verify(targetShufflePlaylist).shuffleInPlace();
         verify(targetShufflePlaylist).addAndRemoveTracks(eq(List.of("t2", "t3")), eq(List.of("t4")));
-        assertEquals(ETrueShuffleJobStatus.FINISHED, result.getStatus());
+        assertEquals(ETrueShuffleJobStatus.COMPLETED, result.getStatus());
         assertFalse(result.getSourcePlaylist().isLikedSongsPlaylist());
         assertEquals("target", result.getTargetPlaylist().getPlaylistId());
         assertEquals("target-name", result.getTargetPlaylist().getName());

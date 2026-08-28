@@ -1,6 +1,6 @@
 package nl.martderoos.trueshuffle.paging;
 
-import nl.martderoos.trueshuffle.requests.exceptions.FatalRequestResponseException;
+import nl.martderoos.trueshuffle.exceptions.FatalRequestResponseException;
 import org.junit.jupiter.api.Test;
 import se.michaelthelin.spotify.model_objects.specification.Paging;
 
@@ -35,6 +35,35 @@ public class PageAggregatorTest {
         var result = PageAggregator.aggregate(future, 0, false);
         assertEquals(List.of(), result);
         verify(spyLoader, times(1)).loadPage(eq(0), anyInt());
+    }
+
+    @Test
+    public void testNegativeHardLimitIsRejected() {
+        var future = new SpotifyFuturePage<>(new IntLoader(), 0, 100);
+
+        assertThrows(IllegalArgumentException.class, () -> PageAggregator.aggregate(future, -1, false));
+    }
+
+    @Test
+    public void testEmptyPageEndsAggregation() throws FatalRequestResponseException {
+        var loader = (SpotifyPageLoader<Integer>) (offset, limit) -> {
+            if (offset > 1)
+                throw new AssertionError("The aggregator loaded beyond the empty page");
+
+            var items = offset == 0 ? new Integer[]{1} : new Integer[0];
+            return new Paging.Builder<Integer>()
+                    .setPrevious("previous")
+                    .setHref("page")
+                    .setNext("page")
+                    .setLimit(limit)
+                    .setOffset(offset)
+                    .setTotal(2)
+                    .setItems(items)
+                    .build();
+        };
+        var future = new SpotifyFuturePage<>(loader, 0, 100);
+
+        assertEquals(List.of(1), PageAggregator.aggregate(future, 2, false));
     }
 
     @Test

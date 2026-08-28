@@ -2,6 +2,9 @@ package nl.martderoos.trueshuffle.paging;
 
 import se.michaelthelin.spotify.model_objects.specification.Paging;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Capture of items for a specific loaded page. It is a direct product of executing a {@link SpotifyFuturePage<T>}.
  * Contains additional functionality for navigating through multiple pages.
@@ -26,7 +29,7 @@ public class SpotifyResultPage<T> {
         if (paging.getNext() == null) {
             this.next = null;
         } else {
-            this.next = new SpotifyFuturePage<>(loader, getOffset() + getItems().length, getLimit());
+            this.next = new SpotifyFuturePage<>(loader, getOffset() + getItems().size(), getLimit());
         }
     }
 
@@ -35,8 +38,8 @@ public class SpotifyResultPage<T> {
      *
      * @return the items captured, never null.
      */
-    public T[] getItems() {
-        return paging.getItems();
+    public List<T> getItems() {
+        return Arrays.asList(paging.getItems());
     }
 
     /**

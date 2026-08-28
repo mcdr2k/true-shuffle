@@ -1,6 +1,6 @@
 package nl.martderoos.trueshuffle.adhoc;
 
-import nl.martderoos.trueshuffle.requests.exceptions.FatalRequestResponseException;
+import nl.martderoos.trueshuffle.exceptions.FatalRequestResponseException;
 
 import java.util.concurrent.TimeUnit;
 
@@ -8,14 +8,6 @@ public class LazyExpiringApiData<T> extends LazyExpiringData<T, FatalRequestResp
 
     public LazyExpiringApiData(DataSource<T, FatalRequestResponseException> source) {
         super(source);
-    }
-
-    public LazyExpiringApiData(DataSource<T, FatalRequestResponseException> source, boolean forceReloadOnNull) {
-        super(source, forceReloadOnNull);
-    }
-
-    public LazyExpiringApiData(DataSource<T, FatalRequestResponseException> source, long refreshTimeout, TimeUnit timeUnit) {
-        super(source, refreshTimeout, timeUnit);
     }
 
     public LazyExpiringApiData(DataSource<T, FatalRequestResponseException> source, boolean forceReloadOnNull, long refreshTimeout, TimeUnit timeUnit) {

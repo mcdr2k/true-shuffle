@@ -1,8 +1,8 @@
 package nl.martderoos.trueshuffle.utility;
 
-import nl.martderoos.trueshuffle.model.ShuffleApi;
+import nl.martderoos.trueshuffle.exceptions.FatalRequestResponseException;
 import nl.martderoos.trueshuffle.model.ShufflePlaylist;
-import nl.martderoos.trueshuffle.requests.exceptions.FatalRequestResponseException;
+import nl.martderoos.trueshuffle.model.TrueShuffleApi;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -27,8 +27,8 @@ public class ShuffleUtil {
      * @param target the target playlist.
      * @param tracks the list of tracks that should be in target playlist.
      */
-    public static void shuffleInto(ShuffleApi api, ShufflePlaylist target, Collection<String> tracks) throws FatalRequestResponseException {
-        var currentTracks = target.getPlaylistTracksUris();
+    public static void shuffleInto(TrueShuffleApi api, ShufflePlaylist target, Collection<String> tracks) throws FatalRequestResponseException {
+        var currentTracks = target.getTracksUris();
         var currentTracksCounter = new ItemCounter<>(currentTracks);
 
         List<String> tracksToAdd = new ArrayList<>();
@@ -45,7 +45,7 @@ public class ShuffleUtil {
                 tracksToRemove.add(currentTrack);
         }
 
-        LOGGER.info("Updating playlist '{}' for {} ({} tracks removed, {} tracks added)", target.getName(), api.getDisplayName(), tracksToRemove.size(), tracksToAdd.size());
+        LOGGER.info("Updating playlist '{}' for {} ({} tracks removed, {} tracks added)", target.getMetadata().name(), api.getDisplayName(), tracksToRemove.size(), tracksToAdd.size());
 
         target.addAndRemoveTracks(tracksToAdd, tracksToRemove);
         target.shuffleInPlace();

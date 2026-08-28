@@ -1,7 +1,7 @@
 package nl.martderoos.trueshuffle.jobs;
 
 /**
- * Enumerates the possible states a {@link TrueShuffleJob} can be in.
+ * Enumerates the possible states a {@link TrueShuffleJobExecution} can be in.
  */
 public enum ETrueShuffleJobStatus {
     /**
@@ -13,13 +13,17 @@ public enum ETrueShuffleJobStatus {
      */
     EXECUTING,
     /**
-     * Indicates that the job finished appropriately.
+     * Indicates that the job completed fully.
      */
-    FINISHED,
+    COMPLETED,
     /**
      * Indicates that the job was skipped for some specific reason.
      */
     SKIPPED,
+    /**
+     * Indicates that execution was cancelled before it completed.
+     */
+    CANCELLED,
     /**
      * Indicates that the job terminated inappropriately.
      */
@@ -40,10 +44,10 @@ public enum ETrueShuffleJobStatus {
     }
 
     /**
-     * @return true if the job has finished executing, which can be either {@link #FINISHED}, {@link #SKIPPED} or
-     * {@link #TERMINATED}, false otherwise.
+     * @return true if the job has finished executing, which can be either {@link #COMPLETED}, {@link #SKIPPED},
+     * {@link #CANCELLED} or {@link #TERMINATED}, false otherwise.
      */
-    public boolean isDone() {
-        return this == FINISHED || this == SKIPPED || this == TERMINATED;
+    public boolean isFinished() {
+        return this == COMPLETED || this == SKIPPED || this == CANCELLED || this == TERMINATED;
     }
 }

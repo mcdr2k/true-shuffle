@@ -1,8 +1,14 @@
 package nl.martderoos.trueshuffle.utility;
 
-import se.michaelthelin.spotify.model_objects.miscellaneous.PlaylistTracksInformation;
+import nl.martderoos.trueshuffle.api.TrueShuffleImage;
+import nl.martderoos.trueshuffle.api.TrueShufflePlaylistMetadata;
+import nl.martderoos.trueshuffle.api.TrueShufflePlaylistOwner;
 import se.michaelthelin.spotify.model_objects.specification.Playlist;
 import se.michaelthelin.spotify.model_objects.specification.PlaylistSimplified;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * utility class for {@link Playlist}.
@@ -10,23 +16,64 @@ import se.michaelthelin.spotify.model_objects.specification.PlaylistSimplified;
 public class PlaylistUtil {
     private PlaylistUtil() {}
 
-    /**
-     * Convert a rich {@link Playlist} instance to a {@link PlaylistSimplified} instance.
-     */
-    public static PlaylistSimplified toSimplifiedPlaylist(Playlist playlist) {
-        return new PlaylistSimplified.Builder()
-                .setCollaborative(playlist.getIsCollaborative())
-                .setExternalUrls(playlist.getExternalUrls())
-                .setTracks(new PlaylistTracksInformation.Builder().setTotal(playlist.getTracks().getTotal()).setHref(playlist.getTracks().getHref()).build())
-                .setHref(playlist.getHref())
-                .setId(playlist.getId())
-                .setImages(playlist.getImages())
-                .setName(playlist.getName())
-                .setOwner(playlist.getOwner())
-                .setPublicAccess(playlist.getIsPublicAccess())
-                .setSnapshotId(playlist.getSnapshotId())
-                .setType(playlist.getType())
-                .setUri(playlist.getUri())
-                .build();
+    public static TrueShufflePlaylistMetadata toPlaylistData(Playlist playlist) {
+        return toPlaylistData(
+                playlist.getId(),
+                playlist.getName(),
+                playlist.getOwner().getId(),
+                playlist.getOwner().getDisplayName(),
+                playlist.getDescription(),
+                playlist.getIsCollaborative(),
+                playlist.getIsPublicAccess(),
+                playlist.getSnapshotId(),
+                playlist.getTracks().getTotal(),
+                playlist.getImages()
+        );
+    }
+
+    public static TrueShufflePlaylistMetadata toPlaylistData(PlaylistSimplified playlist) {
+        return toPlaylistData(
+                playlist.getId(),
+                playlist.getName(),
+                playlist.getOwner().getId(),
+                playlist.getOwner().getDisplayName(),
+                null,
+                playlist.getIsCollaborative(),
+                playlist.getIsPublicAccess(),
+                playlist.getSnapshotId(),
+                playlist.getTracks().getTotal(),
+                playlist.getImages()
+        );
+    }
+
+    private static TrueShufflePlaylistMetadata toPlaylistData(
+            String id,
+            String name,
+            String ownerId,
+            String ownerDisplayName,
+            String description,
+            boolean collaborative,
+            boolean publicPlaylist,
+            String snapshotId,
+            int trackCount,
+            se.michaelthelin.spotify.model_objects.specification.Image[] images
+    ) {
+        var domainImages = images == null
+                ? List.<TrueShuffleImage>of()
+                : Arrays.stream(images)
+                .filter(Objects::nonNull)
+                .map(image -> new TrueShuffleImage(image.getUrl(), image.getWidth(), image.getHeight()))
+                .toList();
+        return new TrueShufflePlaylistMetadata(
+                id,
+                name,
+                new TrueShufflePlaylistOwner(ownerId, ownerDisplayName),
+                description,
+                collaborative,
+                publicPlaylist,
+                snapshotId,
+                trackCount,
+                domainImages
+        );
     }
 }

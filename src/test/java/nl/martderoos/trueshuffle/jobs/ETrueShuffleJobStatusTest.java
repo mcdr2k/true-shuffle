@@ -10,8 +10,9 @@ public class ETrueShuffleJobStatusTest {
     public void testIsWaiting() {
         assertTrue(ETrueShuffleJobStatus.WAITING.isWaiting());
         assertFalse(ETrueShuffleJobStatus.EXECUTING.isWaiting());
-        assertFalse(ETrueShuffleJobStatus.FINISHED.isWaiting());
+        assertFalse(ETrueShuffleJobStatus.COMPLETED.isWaiting());
         assertFalse(ETrueShuffleJobStatus.SKIPPED.isWaiting());
+        assertFalse(ETrueShuffleJobStatus.CANCELLED.isWaiting());
         assertFalse(ETrueShuffleJobStatus.TERMINATED.isWaiting());
     }
 
@@ -19,17 +20,19 @@ public class ETrueShuffleJobStatusTest {
     public void testIsRunning() {
         assertFalse(ETrueShuffleJobStatus.WAITING.isRunning());
         assertTrue(ETrueShuffleJobStatus.EXECUTING.isRunning());
-        assertFalse(ETrueShuffleJobStatus.FINISHED.isRunning());
+        assertFalse(ETrueShuffleJobStatus.COMPLETED.isRunning());
         assertFalse(ETrueShuffleJobStatus.SKIPPED.isRunning());
+        assertFalse(ETrueShuffleJobStatus.CANCELLED.isRunning());
         assertFalse(ETrueShuffleJobStatus.TERMINATED.isRunning());
     }
 
     @Test
-    public void testIsDone() {
-        assertFalse(ETrueShuffleJobStatus.WAITING.isDone());
-        assertFalse(ETrueShuffleJobStatus.EXECUTING.isDone());
-        assertTrue(ETrueShuffleJobStatus.FINISHED.isDone());
-        assertTrue(ETrueShuffleJobStatus.SKIPPED.isDone());
-        assertTrue(ETrueShuffleJobStatus.TERMINATED.isDone());
+    public void testIsFinished() {
+        assertFalse(ETrueShuffleJobStatus.WAITING.isFinished());
+        assertFalse(ETrueShuffleJobStatus.EXECUTING.isFinished());
+        assertTrue(ETrueShuffleJobStatus.COMPLETED.isFinished());
+        assertTrue(ETrueShuffleJobStatus.SKIPPED.isFinished());
+        assertTrue(ETrueShuffleJobStatus.CANCELLED.isFinished());
+        assertTrue(ETrueShuffleJobStatus.TERMINATED.isFinished());
     }
 }

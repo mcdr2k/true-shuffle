@@ -3,6 +3,7 @@ package nl.martderoos.trueshuffle.adhoc;
 import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.TimeUnit;
+import java.util.function.LongSupplier;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -60,29 +61,30 @@ public class LazyExpiringDataTest {
     }
 
     @Test
-    public void testQuickRefreshTimeout() throws InterruptedException {
-        var data = new LazyExpiringData<>(new Source(), 5, TimeUnit.MILLISECONDS);
+    public void testQuickRefreshTimeout() {
+        var clock = new TestClock();
+        var data = new LazyExpiringData<>(new Source(), true, 5, TimeUnit.MILLISECONDS, clock);
         assertEquals(1, data.getData());
-        Thread.sleep(6);
+        clock.advanceMillis(6);
         assertEquals(2, data.getData());
-        Thread.sleep(6);
+        clock.advanceMillis(6);
         assertEquals(3, data.getData());
-        Thread.sleep(6);
+        clock.advanceMillis(6);
         assertEquals(4, data.getData());
-        Thread.sleep(6);
+        clock.advanceMillis(6);
         assertEquals(5, data.getData());
     }
 
     @Test
-    public void testRefreshTimeoutWithValidateForAtLeast() throws InterruptedException {
-        var data = new LazyExpiringData<>(new Source(), 10, TimeUnit.MILLISECONDS);
-        // note that this test could potentially fail it not given enough CPU time
+    public void testRefreshTimeoutWithValidateForAtLeast() {
+        var clock = new TestClock();
+        var data = new LazyExpiringData<>(new Source(), true, 10, TimeUnit.MILLISECONDS, clock);
         assertEquals(1, data.getData());
         assertEquals(1, data.getData());
-        Thread.sleep(11);
+        clock.advanceMillis(11);
         assertEquals(2, data.getData());
         data.validateForAtLeast(1, TimeUnit.MINUTES);
-        Thread.sleep(20);
+        clock.advanceMillis(20);
         assertEquals(2, data.getData()); // still valid
     }
 
@@ -94,6 +96,39 @@ public class LazyExpiringDataTest {
         assertEquals(1, data.getData());
     }
 
+    @Test
+    public void testNegativeDurationsAreRejected() {
+        assertThrows(IllegalArgumentException.class,
+                () -> new LazyExpiringData<>(new Source(), -1, TimeUnit.SECONDS));
+
+        var data = new LazyExpiringData<>(new Source());
+        assertThrows(IllegalArgumentException.class,
+                () -> data.validateForAtLeast(-1, TimeUnit.SECONDS));
+    }
+
+    @Test
+    public void testVeryLargeDurationDoesNotExpireImmediately() {
+        var data = new LazyExpiringData<>(new Source(), Long.MAX_VALUE, TimeUnit.DAYS);
+
+        assertEquals(1, data.getData());
+        assertEquals(1, data.getData());
+    }
+
+    @Test
+    public void testCachedValueIsRetainedAfterRefreshFailure() throws Exception {
+        var source = new FailingSource();
+        var data = new LazyExpiringData<>(source, true, 1, TimeUnit.MINUTES, new TestClock());
+
+        assertEquals(1, data.getData());
+        source.fail = true;
+        data.expire();
+        assertThrows(Exception.class, data::getData);
+        assertEquals(1, data.getCachedData());
+
+        source.fail = false;
+        assertEquals(2, data.getData());
+    }
+
     private static class Source implements DataSource<Integer, RuntimeException> {
         private boolean loaded = false;
         private int x;
@@ -102,6 +137,31 @@ public class LazyExpiringDataTest {
         public Integer load() {
             loaded = true;
             return ++x;
+        }
+    }
+
+    private static class TestClock implements LongSupplier {
+        private long nanos;
+
+        @Override
+        public long getAsLong() {
+            return nanos;
+        }
+
+        void advanceMillis(long millis) {
+            nanos += TimeUnit.MILLISECONDS.toNanos(millis);
+        }
+    }
+
+    private static class FailingSource implements DataSource<Integer, Exception> {
+        private boolean fail;
+        private int value;
+
+        @Override
+        public Integer load() throws Exception {
+            if (fail)
+                throw new Exception("load failed");
+            return ++value;
         }
     }
 }

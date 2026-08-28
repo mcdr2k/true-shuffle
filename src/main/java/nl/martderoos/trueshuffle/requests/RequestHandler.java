@@ -1,6 +1,10 @@
 package nl.martderoos.trueshuffle.requests;
 
-import nl.martderoos.trueshuffle.requests.exceptions.*;
+import nl.martderoos.trueshuffle.exceptions.AuthorizationRevokedException;
+import nl.martderoos.trueshuffle.exceptions.FatalRequestResponseException;
+import nl.martderoos.trueshuffle.requests.exceptions.RefreshTokenException;
+import nl.martderoos.trueshuffle.requests.exceptions.RetryShortlyException;
+import nl.martderoos.trueshuffle.requests.exceptions.SlowDownException;
 import org.apache.hc.core5.http.ParseException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -9,6 +13,8 @@ import se.michaelthelin.spotify.exceptions.detailed.*;
 import se.michaelthelin.spotify.requests.IRequest;
 
 import java.io.IOException;
+import java.util.Objects;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -17,12 +23,13 @@ import java.util.concurrent.TimeUnit;
  */
 public class RequestHandler {
     /**
-     * The maximum number of retries before a single request is considered a lost cause.
+     * The maximum number of retries after the initial request attempt.
      */
-    public static final int MAX_RETRIES = 8;
+    public static final int MAX_RETRIES = 5;
     private static final Logger LOGGER = LogManager.getLogger(RequestHandler.class);
 
     private final AccessTokenRefresher refresher;
+    private final Sleeper sleeper;
 
     /**
      * Create a new handler with provided {@link AccessTokenRefresher}.
@@ -32,18 +39,23 @@ public class RequestHandler {
      *                  to never be called concurrently from within the same handler.
      */
     public RequestHandler(AccessTokenRefresher refresher) {
+        this(refresher, Thread::sleep);
+    }
+
+    RequestHandler(AccessTokenRefresher refresher, Sleeper sleeper) {
         this.refresher = refresher;
+        this.sleeper = Objects.requireNonNull(sleeper);
     }
 
     /**
-     * Send the request, retrying it at most {@link #MAX_RETRIES} times before considering it a lost cause. Note that
+     * Send the request, retrying it at most {@link #MAX_RETRIES} times after the initial attempt before considering it a lost cause. Note that
      * retries will be implemented using exponential backoff, meaning that it may take quite some time before this
      * method returns.
      *
      * @param request the request to execute.
      * @param <T>     the type of the returned value.
      * @return the returned value by the request.
-     * @throws FatalRequestResponseException if the request is deemed to never succeed or fails once more after 10 retries.
+     * @throws FatalRequestResponseException if the request is deemed to never succeed or exceeds the retry limit.
      */
     public <T> T handleRequest(IRequest<T> request) throws FatalRequestResponseException {
         return new ApiRequest<>(request).execute();
@@ -66,29 +78,30 @@ public class RequestHandler {
         private Exception lastException;
 
         private ApiRequest(IRequest<T> request) {
-            this.request = request;
+            this.request = Objects.requireNonNull(request);
         }
 
         public T execute() throws FatalRequestResponseException {
-            while (retries < MAX_RETRIES) {
+            while (retries <= MAX_RETRIES) {
+                checkInterrupted();
                 try {
                     return request.execute();
                 } catch (IOException | ParseException e) {
                     // IOException should not happen if we have a proper connection, so if it does just terminate the job
                     // ParseException should NEVER happen unless the api has changed
-                    throw new FatalRequestResponseException(e.getMessage());
+                    throw new FatalRequestResponseException(e.getMessage(), e);
                 } catch (SpotifyWebApiException e) {
                     // handle and then continue
                     handleError(e);
                 } catch (Exception e) {
                     // this should never happen, unless the SpotifyApi library we use is faulty
-                    LOGGER.error("Request threw an unidentified error: {}", e.getMessage());
-                    throw new FatalRequestResponseException(e.getMessage());
+                    LOGGER.error("Request threw an unexpected error: {}", e.getMessage());
+                    throw new FatalRequestResponseException(e.getMessage(), e);
                 }
 
                 retries++;
             }
-            throw new FatalRequestResponseException("Request exceeded maximum number of retries, cause of last exception was: " + lastException.getMessage());
+            throw new FatalRequestResponseException("Request exceeded maximum number of retries, cause of last exception was: " + lastException.getMessage(), lastException);
         }
 
         private void handleError(SpotifyWebApiException spotifyException) throws FatalRequestResponseException {
@@ -98,8 +111,9 @@ public class RequestHandler {
                 rethrow(spotifyException);
             } catch (RetryShortlyException e) {
                 // exponential backoff
-                var backoffSeconds = (int) Math.pow(2, retries);
-                sleep(backoffSeconds, TimeUnit.SECONDS);
+                var backoffSeconds = 1L << Math.min(retries, 8);
+                var jitterMillis = ThreadLocalRandom.current().nextLong(250);
+                sleep(TimeUnit.SECONDS.toMillis(backoffSeconds) + jitterMillis, TimeUnit.MILLISECONDS);
             } catch (SlowDownException e) {
                 sleep(e.getSlowdownSeconds(), TimeUnit.SECONDS);
             } catch (RefreshTokenException e) {
@@ -108,17 +122,28 @@ public class RequestHandler {
         }
 
         @SuppressWarnings("SameParameterValue")
-        private void sleep(long amount, TimeUnit unit) {
+        private void sleep(long amount, TimeUnit unit) throws FatalRequestResponseException {
             try {
                 var millis = unit.toMillis(amount);
                 millis = Math.min(millis, MAX_WAIT_TIME_MILLIS);
                 millis = Math.max(MIN_WAIT_TIME_MILLIS, millis);
                 LOGGER.debug("A request has been delayed for {} milliseconds", millis);
-                Thread.sleep(millis);
+                sleeper.sleep(millis);
             } catch (InterruptedException e) {
-                // ok
+                Thread.currentThread().interrupt();
+                throw new FatalRequestResponseException("Request retry interrupted", e);
             }
         }
+
+        private void checkInterrupted() throws FatalRequestResponseException {
+            if (Thread.currentThread().isInterrupted())
+                throw new FatalRequestResponseException("Request interrupted");
+        }
+    }
+
+    @FunctionalInterface
+    interface Sleeper {
+        void sleep(long millis) throws InterruptedException;
     }
 
     private static void rethrow(SpotifyWebApiException e) throws FatalRequestResponseException, RetryShortlyException, SlowDownException, RefreshTokenException {
@@ -129,20 +154,20 @@ public class RequestHandler {
         } else if (e instanceof BadRequestException) {
             // The request could not be understood by the server due to malformed syntax
             // note to self: this should never happen, assuming that the api we use is correct
-            throw new FatalRequestResponseException(e.getMessage());
+            throw new FatalRequestResponseException(e.getMessage(), e);
         } else if (e instanceof ForbiddenException) {
             // The server understood the request, but is refusing to fulfill it.
             // note to self: in general http codes this is used to indicate that you are authenticated, but you are not
             // allowed to perform that operation. With Spotify, this could mean that our access was revoked entirely...
-            throw new AuthorizationRevokedException(e.getMessage());
+            throw new AuthorizationRevokedException(e.getMessage(), e);
         } else if (e instanceof InternalServerErrorException) {
             // You should never receive this error because our clever coders catch them all ...
             // but if you are unlucky enough to get one, please report it to us
-            throw new FatalRequestResponseException(e.getMessage());
+            throw new FatalRequestResponseException(e.getMessage(), e);
         } else if (e instanceof NotFoundException) {
             // The requested resource could not be found. This error can be due to a temporary or permanent condition
             // note to self: this may happen during concurrent modifications or when we try to access inaccessible resources like private playlists
-            throw new FatalRequestResponseException(e.getMessage());
+            throw new FatalRequestResponseException(e.getMessage(), e);
         } else if (e instanceof ServiceUnavailableException) {
             // The server is currently unable to handle the request due to a temporary condition which will be
             // alleviated after some delay. You can choose to resend the request again.
@@ -159,6 +184,6 @@ public class RequestHandler {
         }
         // the if-statements should have exhausted all options
         // but in the case they did not, let's just terminate the call
-        throw new FatalRequestResponseException(e.getMessage());
+        throw new FatalRequestResponseException(e.getMessage(), e);
     }
 }

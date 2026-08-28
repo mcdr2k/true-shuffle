@@ -1,13 +1,17 @@
 package nl.martderoos.trueshuffle;
 
-import com.neovisionaries.i18n.CountryCode;
+import nl.martderoos.trueshuffle.api.TrueShuffleImage;
+import nl.martderoos.trueshuffle.api.TrueShuffleUser;
+import nl.martderoos.trueshuffle.api.TrueShuffleUserCredentials;
 import nl.martderoos.trueshuffle.jobs.TrueShuffleLikedJob;
 import nl.martderoos.trueshuffle.jobs.TrueShufflePlaylistJob;
-import nl.martderoos.trueshuffle.model.ShuffleApi;
-import nl.martderoos.trueshuffle.model.UserLibrary;
+import nl.martderoos.trueshuffle.model.InternalTrueShuffleUserLibrary;
+import nl.martderoos.trueshuffle.model.TrueShuffleApi;
 import se.michaelthelin.spotify.model_objects.specification.Image;
 import se.michaelthelin.spotify.model_objects.specification.User;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -15,35 +19,36 @@ import java.util.Objects;
  * {@link #getApi()} and {@link #getUserLibrary()}. Note that TrueShuffle jobs ({@link TrueShuffleLikedJob} and
  * {@link TrueShufflePlaylistJob}) glue multiple operations across playlists together as if they were a single operation.
  */
-public class TrueShuffleUser {
-    private final ShuffleApi api;
-    private final UserLibrary userLibrary;
+public class InternalTrueShuffleUser implements TrueShuffleUser {
+    private final TrueShuffleApi api;
+    private final InternalTrueShuffleUserLibrary userLibrary;
 
     private final String userId;
     private final String birthdate;
-    private final CountryCode country;
     private final String displayName;
     private final String email;
-    private final Image[] images;
+    private final List<TrueShuffleImage> images;
 
-    public TrueShuffleUser(User user, ShuffleApi api) {
+    public InternalTrueShuffleUser(User user, TrueShuffleApi api) {
         this.api = Objects.requireNonNull(api);
 
         Objects.requireNonNull(user);
         this.userId = user.getId();
         this.birthdate = user.getBirthdate();
-        this.country = user.getCountry();
         this.displayName = user.getDisplayName();
         this.email = user.getEmail();
-        this.images = user.getImages();
+        this.images = Arrays.stream(Objects.requireNonNullElse(user.getImages(), new Image[0]))
+                .filter(Objects::nonNull)
+                .map(InternalTrueShuffleUser::convert)
+                .toList();
 
-        this.userLibrary = new UserLibrary(api);
+        this.userLibrary = new InternalTrueShuffleUserLibrary(api);
     }
 
     /**
      * Get the user's library.
      */
-    public UserLibrary getUserLibrary() {
+    public InternalTrueShuffleUserLibrary getUserLibrary() {
         return userLibrary;
     }
 
@@ -59,15 +64,6 @@ public class TrueShuffleUser {
      */
     public String getBirthdate() {
         return birthdate;
-    }
-
-    /**
-     * Get the user's country code.
-     *
-     * @return null, TrueShuffle is not authorized to access this information (requires USER_READ_PRIVATE).
-     */
-    public CountryCode getCountry() {
-        return country;
     }
 
     /**
@@ -91,16 +87,16 @@ public class TrueShuffleUser {
      *
      * @return the user's profile images in different resolutions.
      */
-    public Image[] getImages() {
+    public List<TrueShuffleImage> getImages() {
         return images;
     }
 
     /**
-     * Get the underlying {@link ShuffleApi} linked to this user. Can be used.
+     * Get the underlying {@link TrueShuffleApi} linked to this user.
      *
      * @return the linked api, never null.
      */
-    public ShuffleApi getApi() {
+    public TrueShuffleApi getApi() {
         return api;
     }
 
@@ -112,11 +108,15 @@ public class TrueShuffleUser {
     }
 
     /**
-     * Get the current credentials used by the underlying {@link ShuffleApi}.
+     * Get the current credentials used by the underlying {@link TrueShuffleApi}.
      *
      * @return the credentials, never null.
      */
     public TrueShuffleUserCredentials getCredentials() {
         return api.getCredentials();
+    }
+
+    private static TrueShuffleImage convert(Image image) {
+        return new TrueShuffleImage(image.getUrl(), image.getWidth(), image.getHeight());
     }
 }

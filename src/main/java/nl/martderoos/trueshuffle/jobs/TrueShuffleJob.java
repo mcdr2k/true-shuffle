@@ -1,23 +1,21 @@
 package nl.martderoos.trueshuffle.jobs;
 
-import nl.martderoos.trueshuffle.TrueShuffleUser;
-import nl.martderoos.trueshuffle.exceptions.UserNotFoundException;
-import nl.martderoos.trueshuffle.model.ShuffleApi;
+import nl.martderoos.trueshuffle.InternalTrueShuffleUser;
+import nl.martderoos.trueshuffle.exceptions.FatalRequestResponseException;
+import nl.martderoos.trueshuffle.model.InternalTrueShuffleUserLibrary;
 import nl.martderoos.trueshuffle.model.ShufflePlaylist;
-import nl.martderoos.trueshuffle.model.UserLibrary;
-import nl.martderoos.trueshuffle.requests.exceptions.FatalRequestResponseException;
+import nl.martderoos.trueshuffle.model.TrueShuffleApi;
 import nl.martderoos.trueshuffle.utility.ShuffleUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.Collection;
 import java.util.Objects;
-import java.util.concurrent.Executor;
 
 import static nl.martderoos.trueshuffle.jobs.TrueShuffleJobPlaylistData.newPlaylistData;
 
 /**
- * Thread-safe and immutable sealed base class for TrueShuffle-like jobs.
+ * Thread-safe and immutable sealed base class for TrueShuffle-like job descriptions.
  *
  * @see TrueShuffleLikedJob
  * @see TrueShufflePlaylistJob
@@ -34,53 +32,12 @@ public abstract sealed class TrueShuffleJob permits TrueShuffleLikedJob, TrueShu
     }
 
     /**
-     * Executes this job, following the provided executor's schedule.
-     *
-     * @param executor The execution schedule.
-     * @return The status of this job, which is updated continuously throughout the execution of this job.
-     */
-    public final TrueShuffleJobStatus execute(TrueShuffleUserResolver resolver, Executor executor) {
-        var status = new TrueShuffleJobStatus();
-        executor.execute(() -> this.execute(resolver, status));
-        return status;
-    }
-
-    private void execute(TrueShuffleUserResolver resolver, TrueShuffleJobStatus status) {
-        final var jobName = getClass().getSimpleName() + "-" + userId;
-        TrueShuffleUser user;
-        try {
-            user = resolver.resolve(userId);
-        } catch (UserNotFoundException e) {
-            LOGGER.info("Skipped {} because we could not find the specified user: {}", jobName, e.getMessage());
-            status.setStatusMessage(ETrueShuffleJobStatus.SKIPPED, e.getMessage());
-            return;
-        }
-        status.setStatusMessage(ETrueShuffleJobStatus.EXECUTING, null);
-        try {
-            internalExecute(user, status);
-            if (status.getStatus() == ETrueShuffleJobStatus.EXECUTING) {
-                status.setStatusMessage(ETrueShuffleJobStatus.FINISHED, null);
-                LOGGER.info("{} completed appropriately", jobName);
-            } else if (status.getStatus() != ETrueShuffleJobStatus.FINISHED) {
-                LOGGER.info("{} completed with status {} and message: {}", jobName, status.getStatus(), status.getMessage());
-            }
-        } catch (FatalRequestResponseException e) {
-            var message = jobName + " could not complete: " + e.getMessage();
-            LOGGER.error(message);
-            status.setStatusMessage(ETrueShuffleJobStatus.TERMINATED, message);
-        } catch (Throwable t) {
-            status.setStatusMessage(ETrueShuffleJobStatus.TERMINATED, "Encountered an unexpected issue");
-            throw t;
-        }
-    }
-
-    /**
-     * Abstract method for subclasses to implement their logic.
+     * Performs this job's operation.
      *
      * @param user   the user for which to execute the job, never null.
      * @param status the status that may be updated continuously throughout the job, never null.
      */
-    protected abstract void internalExecute(TrueShuffleUser user, TrueShuffleJobStatus status) throws FatalRequestResponseException;
+    abstract void perform(InternalTrueShuffleUser user, InternalTrueShuffleJobStatus status) throws FatalRequestResponseException;
 
     /**
      * Attempts to find a user owned playlist with the given name or create a new one if it does not exist. If 2 or more
@@ -94,7 +51,7 @@ public abstract sealed class TrueShuffleJob permits TrueShuffleLikedJob, TrueShu
      * @param description the description of the returned playlist in the case that we create a new one.
      * @return null if the provided name is not unique for a user's playlists.
      */
-    protected static ShufflePlaylist findOrCreateUniqueUserOwnedPlaylistByName(UserLibrary library, TrueShuffleJobStatus status, String name, String description) throws FatalRequestResponseException {
+    protected static ShufflePlaylist findOrCreateUniqueUserOwnedPlaylistByName(InternalTrueShuffleUserLibrary library, InternalTrueShuffleJobStatus status, String name, String description) throws FatalRequestResponseException {
         var list = library.getPlaylistByName(name, true);
         if (list == null || list.isEmpty()) {
             return library.createPlaylist(name, description);
@@ -115,20 +72,22 @@ public abstract sealed class TrueShuffleJob permits TrueShuffleLikedJob, TrueShu
      * @param status the status to update continuously.
      * @param source the playlist to shuffle in-place.
      */
-    protected static void shuffleInPlace(TrueShuffleUser user, TrueShuffleJobStatus status, ShufflePlaylist source) throws FatalRequestResponseException {
+    protected static void shuffleInPlace(InternalTrueShuffleUser user, InternalTrueShuffleJobStatus status, ShufflePlaylist source) throws FatalRequestResponseException {
         var library = user.getUserLibrary();
-        if (!library.isOwner(source)) {
+        if (!library.isOwnerOf(source)) {
             status.setStatusMessage(ETrueShuffleJobStatus.TERMINATED,
-                    String.format("Could not shuffle playlist %s (%s) in-place because we are not the owner of the playlist", source.getName(), source.getPlaylistId())
+                    String.format("Could not shuffle playlist %s (%s) in-place because we are not the owner of the playlist", source.getMetadata().name(), source.getPlaylistId())
             );
             return;
         }
-        status.setSourcePlaylist(newPlaylistData(source.getPlaylistId(), source.getName(), source.getImages()));
-        status.setTargetPlaylist(newPlaylistData(source.getPlaylistId(), source.getName(), source.getImages()));
+        var sourceData = source.getMetadata();
+        status.setSourcePlaylist(newPlaylistData(sourceData.id(), sourceData.name(), sourceData.images()));
+        status.setTargetPlaylist(newPlaylistData(sourceData.id(), sourceData.name(), sourceData.images()));
 
         source.shuffleInPlace();
 
-        status.setTargetPlaylist(newPlaylistData(source.getPlaylistId(), source.getName(), source.getImages()));
+        sourceData = source.getMetadata();
+        status.setTargetPlaylist(newPlaylistData(sourceData.id(), sourceData.name(), sourceData.images()));
     }
 
     /**
@@ -136,7 +95,7 @@ public abstract sealed class TrueShuffleJob permits TrueShuffleLikedJob, TrueShu
      * the target playlist's tracks. Once the tracks have been transferred, the target playlist is shuffled in-place.
      * If the target playlist is null, then a new playlist will be created for the user. If the target playlist is not
      * null but the provided user is not the owner of the playlist, then this method will update the status and return early.
-     * This operation makes use of {@link ShuffleUtil#shuffleInto(ShuffleApi, ShufflePlaylist, Collection)} to perform
+     * This operation makes use of {@link ShuffleUtil#shuffleInto(TrueShuffleApi, ShufflePlaylist, Collection)} to perform
      * the shuffle.
      *
      * @param user   the user to perform the shuffle for.
@@ -145,39 +104,42 @@ public abstract sealed class TrueShuffleJob permits TrueShuffleLikedJob, TrueShu
      * @param target the target playlist that will contain the tracks of the source playlist and is then shuffled
      *               afterward (nullable).
      */
-    protected static void shuffleAfterCopy(TrueShuffleUser user, TrueShuffleJobStatus status, ShufflePlaylist source, ShufflePlaylist target) throws FatalRequestResponseException {
+    protected static void shuffleAfterCopy(InternalTrueShuffleUser user, InternalTrueShuffleJobStatus status, ShufflePlaylist source, ShufflePlaylist target) throws FatalRequestResponseException {
         String name;
         if (target != null) {
-            name = target.getName();
-            if (!user.getUserLibrary().isOwner(target)) {
+            name = target.getMetadata().name();
+            if (!user.getUserLibrary().isOwnerOf(target)) {
                 status.setStatusMessage(ETrueShuffleJobStatus.TERMINATED,
-                        String.format("Could not shuffle playlist %s into %s because we are not the owner of the target playlist", source.getName(), target.getName())
+                        String.format("Could not shuffle playlist %s into %s because we are not the owner of the target playlist", source.getMetadata().name(), name)
                 );
                 return;
             }
         } else {
-            name = source.getName();
+            name = source.getMetadata().name();
             if (!name.endsWith(TRUE_SHUFFLE_SUFFIX))
                 name += TRUE_SHUFFLE_SUFFIX;
         }
 
-        LOGGER.info("Copying {} to {} before shuffling", source.getName(), name);
-        status.setSourcePlaylist(newPlaylistData(source.getPlaylistId(), source.getName(), source.getImages()));
+        var sourceData = source.getMetadata();
+        LOGGER.info("Copying {} to {} before shuffling", sourceData.name(), name);
+        status.setSourcePlaylist(newPlaylistData(sourceData.id(), sourceData.name(), sourceData.images()));
 
         if (target == null) {
             target = findOrCreateUniqueUserOwnedPlaylistByName(
                     user.getUserLibrary(),
                     status,
                     name,
-                    source.getName() + " shuffled by TrueShuffle"
+                    sourceData.name() + " shuffled by TrueShuffle"
             );
             if (target == null)
                 return;
         }
 
-        status.setTargetPlaylist(newPlaylistData(target.getPlaylistId(), target.getName(), target.getImages()));
-        ShuffleUtil.shuffleInto(user.getApi(), target, source.getPlaylistTracksUris());
-        status.setTargetPlaylist(newPlaylistData(target.getPlaylistId(), target.getName(), target.getImages()));
+        var targetData = target.getMetadata();
+        status.setTargetPlaylist(newPlaylistData(targetData.id(), targetData.name(), targetData.images()));
+        ShuffleUtil.shuffleInto(user.getApi(), target, source.getTracksUris());
+        targetData = target.getMetadata();
+        status.setTargetPlaylist(newPlaylistData(targetData.id(), targetData.name(), targetData.images()));
     }
 
     /**

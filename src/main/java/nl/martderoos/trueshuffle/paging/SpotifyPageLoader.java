@@ -1,6 +1,6 @@
 package nl.martderoos.trueshuffle.paging;
 
-import nl.martderoos.trueshuffle.requests.exceptions.FatalRequestResponseException;
+import nl.martderoos.trueshuffle.exceptions.FatalRequestResponseException;
 import se.michaelthelin.spotify.model_objects.specification.Paging;
 
 /**

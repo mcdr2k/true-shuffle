@@ -1,15 +1,13 @@
-package nl.martderoos.trueshuffle;
+package nl.martderoos.trueshuffle.api;
 
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TrueShuffleUserCredentialsTest {
+public class InternalTrueShuffleUserCredentialsTest {
     @Test
     public void testIllegalArgument() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            new TrueShuffleUserCredentials(0, "a", "r", -1);
-        });
+        assertThrows(IllegalArgumentException.class, () -> new TrueShuffleUserCredentials(0, "a", "r", -1));
         assertDoesNotThrow(() -> new TrueShuffleUserCredentials(0, "a", "r", 0));
     }
 
