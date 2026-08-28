@@ -3,6 +3,7 @@ package nl.martderoos.trueshuffle.api;
 import nl.martderoos.trueshuffle.exceptions.AuthorizationException;
 import nl.martderoos.trueshuffle.exceptions.InitializationException;
 import nl.martderoos.trueshuffle.exceptions.UserNotFoundException;
+import nl.martderoos.trueshuffle.jobs.TrueShuffleJob;
 import nl.martderoos.trueshuffle.jobs.TrueShuffleJobExecution;
 
 import java.net.URI;
@@ -91,6 +92,8 @@ public interface TrueShuffleClient {
      * @throws IllegalStateException when the client has not been initialized yet.
      */
     TrueShuffleJobExecution shufflePlaylist(String userId, String playlistId, Executor executor) throws UserNotFoundException;
+
+    TrueShuffleJobExecution execute(TrueShuffleJob job, Executor executor) throws UserNotFoundException;
 
     /**
      * Builds the URI for this client which redirects users to the authorization page of spotify with the appropriate
