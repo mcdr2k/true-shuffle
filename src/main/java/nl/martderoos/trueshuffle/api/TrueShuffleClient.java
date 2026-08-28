@@ -74,10 +74,9 @@ public interface TrueShuffleClient {
      * @param userId   the id of the user.
      * @param executor the execution schedule (should be an asynchronous schedule).
      * @return the execution handle, which exposes status and lifecycle operations.
-     * @throws UserNotFoundException when no user could be found with the provided user identifier.
      * @throws IllegalStateException when the client has not been initialized yet.
      */
-    TrueShuffleJobExecution shuffleLikedSongs(String userId, Executor executor) throws UserNotFoundException;
+    TrueShuffleJobExecution shuffleLikedSongs(String userId, Executor executor);
 
     /**
      * Perform a shuffle on the provided playlist for a specific user, following the provided executor's schedule.
@@ -88,12 +87,15 @@ public interface TrueShuffleClient {
      * @param playlistId the id of the playlist to shuffle.
      * @param executor   the execution schedule (should be an asynchronous schedule).
      * @return the execution handle, which exposes status and lifecycle operations.
-     * @throws UserNotFoundException when no user could be found with the provided user identifier.
      * @throws IllegalStateException when the client has not been initialized yet.
      */
-    TrueShuffleJobExecution shufflePlaylist(String userId, String playlistId, Executor executor) throws UserNotFoundException;
+    TrueShuffleJobExecution shufflePlaylist(String userId, String playlistId, Executor executor);
 
-    TrueShuffleJobExecution execute(TrueShuffleJob job, Executor executor) throws UserNotFoundException;
+    /**
+     * Execute a job using the provided executor.
+     * @return the execution of the job.
+     */
+    TrueShuffleJobExecution execute(TrueShuffleJob job, Executor executor);
 
     /**
      * Builds the URI for this client which redirects users to the authorization page of spotify with the appropriate

@@ -188,21 +188,20 @@ public class InternalTrueShuffleClient implements TrueShuffleClient {
         return getInternalAuthorizedUser(userId);
     }
 
-    public InternalTrueShuffleJobExecution execute(TrueShuffleJob job, Executor executor) throws UserNotFoundException {
+    public InternalTrueShuffleJobExecution execute(TrueShuffleJob job, Executor executor) {
         verifyInit();
         Objects.requireNonNull(job);
         Objects.requireNonNull(executor);
-        resolver.resolve(job.getUserId());
         return jobExecutor.execute(job, resolver, executor);
     }
 
     @Override
-    public InternalTrueShuffleJobExecution shuffleLikedSongs(String userId, Executor executor) throws UserNotFoundException {
+    public InternalTrueShuffleJobExecution shuffleLikedSongs(String userId, Executor executor) {
         return execute(new TrueShuffleLikedJob(userId), executor);
     }
 
     @Override
-    public InternalTrueShuffleJobExecution shufflePlaylist(String userId, String playlistId, Executor executor) throws UserNotFoundException {
+    public InternalTrueShuffleJobExecution shufflePlaylist(String userId, String playlistId, Executor executor) {
         return execute(new TrueShufflePlaylistJob(userId, playlistId), executor);
     }
 
